@@ -1,0 +1,14 @@
+{
+  "workflow_id": "moonfind.humanoid-research.v1",
+  "owner": "moonfind",
+  "runtime": "moonflow",
+  "agent_runtime": "moonclaw",
+  "stages": [
+    {"id":"acquire","tool":"papers.acquire-arxiv","authority":"observe"},
+    {"id":"rank","tool":"humanoid.rank-papers","authority":"sandbox-execution"},
+    {"id":"analyze","tool":"research.prepare-analysis","authority":"sandbox-execution","model":"gpt-5.6-sol"},
+    {"id":"synthesize","tool":"research.cross-paper-synthesize","runtime":"moontown","pattern":"research-salon"},
+    {"id":"review","tool":"research.review","authority":"named-human"},
+    {"id":"learn","tool":"bookkeeper.outcome-handoff","authority":"named-human"}
+  ]
+}

@@ -1,0 +1,31 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind-rabbita/main"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+
+// Errors
+
+// Types and methods
+type Idea derive(@debug.Debug, @json.FromJson)
+
+type Model
+
+type Msg
+
+type Paper derive(@debug.Debug, @json.FromJson)
+
+type Question derive(@debug.Debug, @json.FromJson)
+
+type Summary derive(@debug.Debug, @json.FromJson)
+
+type Workspace derive(@debug.Debug, @json.FromJson)
+
+// Type aliases
+
+// Traits
+

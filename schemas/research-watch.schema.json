@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"moonfind.research-watch.v1","type":"object","required":["watch_id","query","domain_profile"],"properties":{"watch_id":{"type":"string"},"query":{"type":"string"},"domain_profile":{"type":"string"}}}

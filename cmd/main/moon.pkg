@@ -1,0 +1,20 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+  "vectie/moonfind/agent",
+  "vectie/moonfind/app",
+  "vectie/moonfind/arxiv",
+  "vectie/moonfind/closed_loop",
+  "vectie/moonfind/humanoid",
+  "vectie/moonfind/moontown",
+  "vectie/moonfind/research",
+  "vectie/moonfind/store",
+  "vectie/moonfind/suitepack",
+}
+
+supported_targets = "native"
+
+options(
+  "is-main": true,
+)

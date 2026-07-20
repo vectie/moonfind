@@ -1,0 +1,42 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/app"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+  "vectie/moonfind/research",
+}
+
+// Values
+pub fn project_research_workspace(@research.ResearchRun) -> ResearchWorkspaceProjection
+
+// Errors
+
+// Types and methods
+pub(all) struct ResearchWorkspaceProjection {
+  product_id : String
+  title : String
+  run_id : String
+  status : String
+  watch_title : String
+  query : String
+  paper_count : Int
+  summary_count : Int
+  idea_count : Int
+  question_count : Int
+  accepted_idea_count : Int
+  pipeline : Array[String]
+  active_stage : String
+  papers : Array[@research.PaperRecord]
+  summaries : Array[@research.PaperSummary]
+  ideas : Array[@research.ResearchIdea]
+  questions : Array[@research.ResearchQuestion]
+  validation_issues : Array[String]
+  bookkeeper_route : String
+  three_gap_state : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+// Type aliases
+
+// Traits
+

@@ -1,0 +1,20 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/suitepack"
+
+import {
+  "vectie/moonlib/pack",
+}
+
+// Values
+pub fn manifest() -> @pack.MoonPackManifest
+
+pub fn validation_report() -> @pack.ValidationReport
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

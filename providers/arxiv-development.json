@@ -1,0 +1,8 @@
+{
+  "provider_id": "arxiv-public-api",
+  "kind": "paper-metadata",
+  "endpoint": "https://export.arxiv.org/api/query",
+  "classification": "development-and-research",
+  "full_text_included": false,
+  "notes": "Verify source, PDF, storage, redistribution, and commercial-use terms before paid deployment."
+}

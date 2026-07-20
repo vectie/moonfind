@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"moonfind.moontown-research-scenario.v1","type":"object","required":["communication_pattern_id","participants","ideas","review_gate"],"properties":{"communication_pattern_id":{"const":"research-salon"},"participants":{"type":"array","minItems":2},"ideas":{"type":"array"},"review_gate":{"const":"named-human"}}}

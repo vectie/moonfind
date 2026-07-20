@@ -1,0 +1,24 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/arxiv"
+
+import {
+  "vectie/moonfind/research",
+}
+
+// Values
+pub fn decode_atom_feed(String, Int64) -> Array[@research.PaperRecord] raise
+
+pub fn encode_query_component(String) -> String
+
+pub async fn fetch_papers(String, Int, Int64) -> Array[@research.PaperRecord]
+
+pub fn search_url(String, Int) -> String raise
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

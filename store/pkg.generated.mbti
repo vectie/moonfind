@@ -1,0 +1,24 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/store"
+
+// Values
+pub fn digest_json(Json) -> String
+
+pub async fn ensure_run_directory(String, String) -> String
+
+pub async fn read_json(String) -> Json
+
+pub fn run_directory(String, String) -> String raise
+
+pub async fn write_json(String, Json) -> Unit
+
+pub async fn write_run_artifact(String, String, String, Json) -> Unit
+
+// Errors
+
+// Types and methods
+
+// Type aliases
+
+// Traits
+

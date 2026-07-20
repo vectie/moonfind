@@ -1,0 +1,47 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/humanoid"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+  "vectie/moonfind/research",
+}
+
+// Values
+pub fn complete_humanoid_run(@research.ResearchRun, @research.ResearchAnalysisResult, Int64) -> @research.ResearchRun raise
+
+pub fn rank_papers(ArrayView[@research.PaperRecord]) -> Array[@research.PaperRecord]
+
+pub fn research_watch() -> @research.ResearchWatch
+
+pub fn score_paper(@research.PaperRecord) -> @research.PaperRecord
+
+pub fn validate_humanoid_analysis(@research.ResearchRun, @research.ResearchAnalysisResult) -> Array[String]
+
+pub fn validate_model_specification(HumanoidModelSpecification) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub(all) struct HumanoidModelSpecification {
+  model_name : String
+  target_capability : String
+  backbone : String
+  observation_tokens : Array[String]
+  memory_state : String
+  action_representation : String
+  training_objectives : Array[String]
+  training_stages : Array[String]
+  dataset_plan : Array[String]
+  simulation_plan : String
+  hardware_assumptions : Array[String]
+  evaluation_benchmarks : Array[String]
+  required_ablations : Array[String]
+  safety_constraints : Array[String]
+  falsification_metric : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+// Type aliases
+
+// Traits
+

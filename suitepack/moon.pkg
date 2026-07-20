@@ -1,0 +1,5 @@
+import {
+  "vectie/moonlib/pack",
+}
+
+supported_targets = "native"

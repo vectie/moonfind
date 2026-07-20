@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"moonfind.capability-observation.v1","type":"object","required":["observation_id","scope_id","participant_id","assignment","capability","outcome","reward_evidence","accepted"],"properties":{"scope_id":{"const":"moonfind.humanoid.synthesis"},"assignment":{"enum":["baseline","challenger"]}}}

@@ -1,0 +1,31 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/agent"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+  "vectie/moonfind/research",
+}
+
+// Values
+pub fn prepare_humanoid_analysis_command(@research.ResearchRun, String, String) -> MoonClawResearchCommand raise
+
+// Errors
+
+// Types and methods
+pub(all) struct MoonClawResearchCommand {
+  protocol : String
+  session_id : String
+  book_root : String
+  command : String
+  model : String
+  capability_scope_id : String
+  capability_participant_id : String
+  text : String
+  packet : Json
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+// Type aliases
+
+// Traits
+

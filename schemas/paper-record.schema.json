@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"moonfind.paper-record.v1","type":"object","required":["paper_id","title","abstract_text","source_digest"],"properties":{"paper_id":{"type":"string"},"title":{"type":"string"},"abstract_text":{"type":"string"},"source_digest":{"type":"string"}}}

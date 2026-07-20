@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"moonfind.human-research-review.v1","type":"object","required":["review_id","run_id","reviewer_id","authority_ref","disposition"],"properties":{"disposition":{"enum":["accept","revise","reject"]}}}

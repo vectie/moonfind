@@ -1,0 +1,110 @@
+{
+  "contract_version": "moonfind.research.v1",
+  "result_id": "analysis-humanoid-demo",
+  "model": "gpt-5.6-sol",
+  "summaries": [
+    {
+      "paper_id": "2607.00001",
+      "one_sentence": "Contact-aware action tokens couple humanoid locomotion and manipulation in one whole-body policy.",
+      "problem": "Humanoid mobile manipulation fails when contact and balance are planned independently.",
+      "method": "Simulation-pretrained whole-body policy with contact-aware action tokens.",
+      "evidence": "The supplied abstract reports combined manipulation and locomotion with contact-aware tokens.",
+      "limitations": ["The supplied evidence does not report hardware robustness or dataset scale."],
+      "claims": [{
+        "claim_id": "claim-contact-token",
+        "statement": "The paper proposes contact-aware tokens for a combined whole-body policy.",
+        "paper_ids": ["2607.00001"],
+        "evidence_location": "title and abstract",
+        "confidence": "high",
+        "counterevidence": "No quantitative result is available in the supplied abstract."
+      }],
+      "open_questions": ["Do contact-aware tokens improve recovery on hardware?"]
+    },
+    {
+      "paper_id": "2607.00002",
+      "one_sentence": "A recurrent world model supplies memory for long-horizon humanoid control under partial observation.",
+      "problem": "Reactive policies cannot preserve task state through partial observations.",
+      "method": "Recurrent latent world model for embodied-state prediction and locomotion control.",
+      "evidence": "The supplied abstract states that the model predicts embodied state and supports long-horizon locomotion.",
+      "limitations": ["The supplied evidence does not establish manipulation transfer."],
+      "claims": [{
+        "claim_id": "claim-recurrent-memory",
+        "statement": "The paper uses recurrent state prediction for partially observed humanoid locomotion.",
+        "paper_ids": ["2607.00002"],
+        "evidence_location": "abstract",
+        "confidence": "high",
+        "counterevidence": "No cross-task or manipulation evidence appears in the supplied abstract."
+      }],
+      "open_questions": ["Can the memory state encode contact history useful for manipulation?"]
+    },
+    {
+      "paper_id": "2607.00003",
+      "one_sentence": "Teleoperation data trains a vision-language-action model intended to transfer manipulation across robots.",
+      "problem": "Robot-specific demonstration data limits embodied policy reuse.",
+      "method": "Vision-language-action pretraining over teleoperation demonstrations with cross-robot transfer evaluation.",
+      "evidence": "The supplied abstract reports teleoperation training and cross-robot transfer study.",
+      "limitations": ["Humanoid balance and whole-body contact are not established by the supplied evidence."],
+      "claims": [{
+        "claim_id": "claim-vla-transfer",
+        "statement": "The paper studies cross-robot transfer from teleoperated manipulation data.",
+        "paper_ids": ["2607.00003"],
+        "evidence_location": "title and abstract",
+        "confidence": "high",
+        "counterevidence": "The supplied abstract does not claim humanoid locomotion transfer."
+      }],
+      "open_questions": ["Which action representation best transfers to torque-controlled humanoids?"]
+    }
+  ],
+  "questions": [
+    {
+      "question_id": "question-memory-contact",
+      "question": "Can recurrent memory make contact-aware action tokens more stable across multi-stage mobile-manipulation tasks?",
+      "source_paper_ids": ["2607.00001", "2607.00002"],
+      "missing_evidence": ["Matched-seed comparison with and without contact-history memory", "Hardware disturbance trials"],
+      "next_check": "Run a controlled simulation ablation before collecting more hardware data."
+    },
+    {
+      "question_id": "question-vla-adapter",
+      "question": "Can a VLA semantic plan be adapted into contact-safe whole-body action chunks?",
+      "source_paper_ids": ["2607.00001", "2607.00003"],
+      "missing_evidence": ["Common action ontology", "Cross-morphology adapter benchmark"],
+      "next_check": "Train a frozen-VLA adapter against the whole-body baseline."
+    }
+  ],
+  "ideas": [
+    {
+      "idea_id": "idea-contact-memory-vla",
+      "title": "Contact-memory VLA for long-horizon humanoid mobile manipulation",
+      "thesis": "A hierarchical model can preserve semantic task intent while a recurrent contact memory stabilizes whole-body action chunks.",
+      "mechanism": "A frozen vision-language planner emits subgoals; a recurrent world-state module compresses proprioception and contact history; a whole-body decoder emits short contact-aware action chunks.",
+      "source_paper_ids": ["2607.00001", "2607.00002", "2607.00003"],
+      "cross_paper_bridge": "It combines contact-aware whole-body tokens, recurrent partial-observation memory, and teleoperation-trained VLA transfer instead of treating them as separate policies.",
+      "novelty_claim": "The proposal is the falsifiable bridge between these supplied mechanisms; it is not a claim that the combined model has already been tested.",
+      "counter_hypothesis": "A memoryless whole-body policy conditioned directly on VLA embeddings performs equally well and is easier to optimize.",
+      "risks": ["VLA subgoals may be dynamically infeasible", "Memory may overfit simulator contact", "Teleoperation actions may not map across morphology"],
+      "falsifier": "Reject the recurrent bridge if it fails to improve held-out long-horizon task completion by at least 8 percentage points over the memoryless matched-compute baseline.",
+      "next_experiment": "Build a three-task simulation benchmark and compare frozen-VLA plus memoryless decoder against frozen-VLA plus recurrent contact memory under matched seeds and compute.",
+      "domain_payload": {
+        "model_name": "LunaContact-VLA-1",
+        "target_capability": "Long-horizon humanoid mobile manipulation under partial observation",
+        "backbone": "Frozen vision-language encoder plus recurrent latent world model and whole-body action decoder",
+        "observation_tokens": ["multi-view RGB", "proprioception", "foot and hand contacts", "language subgoal"],
+        "memory_state": "Recurrent latent state updated from proprioception, contacts, visual tokens, and prior action chunk",
+        "action_representation": "Eight-step whole-body action chunks with contact phase, base twist, joint targets, and gripper command",
+        "training_objectives": ["next latent-state prediction", "behavior cloning", "contact phase prediction", "value-weighted consistency"],
+        "training_stages": ["simulation world-model pretraining", "teleoperation adapter training", "whole-body imitation", "constrained hardware fine-tuning"],
+        "dataset_plan": ["simulation perturbation rollouts", "licensed teleoperation demonstrations", "small robot calibration set"],
+        "simulation_plan": "Randomize friction, delay, payload, camera pose, and contact noise across three long-horizon tasks.",
+        "hardware_assumptions": ["torque or impedance-controlled humanoid", "wrist and foot contact estimation", "onboard safety controller"],
+        "evaluation_benchmarks": ["long-horizon task completion", "fall and intervention rate", "contact prediction calibration", "cross-object transfer"],
+        "required_ablations": ["remove recurrent memory", "remove contact tokens", "replace VLA subgoals with task IDs", "freeze versus tune world model"],
+        "safety_constraints": ["joint and torque envelopes", "fall detector", "human exclusion zone", "supervised emergency stop"],
+        "falsification_metric": "Less than 8 percentage-point completion improvement over a matched-compute memoryless baseline"
+      }
+    }
+  ],
+  "synthesis_notes": [
+    "Reported facts are restricted to the supplied titles and abstracts.",
+    "The model architecture and expected bridge are proposals requiring experiment and named-human review."
+  ]
+}

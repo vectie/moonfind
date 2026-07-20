@@ -1,0 +1,9 @@
+import {
+  "moonbitlang/async/http",
+  "moonbitlang/async/io",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/x/crypto",
+  "vectie/moonfind/research",
+}
+
+supported_targets = "native"

@@ -1,0 +1,20 @@
+{
+  "contract_version": "moonbook.bookkeeper.capability_activation_request.v1",
+  "request": {"record_id":"moonfind-activation-request-1","record_version":"1","record_digest":"sha256:moonfind-activation-request-1"},
+  "receipt": {"record_id":"moonfind-adoption-receipt-1","record_version":"1","record_digest":"sha256:moonfind-adoption-receipt-1"},
+  "scope_id": "moonfind.humanoid.synthesis",
+  "rollout_mode": "canary",
+  "challenger_participant_ids": ["moonfind-canary-agent"],
+  "max_observations": 8,
+  "experiment": {"record_id":"moonfind-synthesis-experiment-1","record_version":"1","record_digest":"sha256:moonfind-synthesis-experiment-1"},
+  "old_capability": {"record_id":"moonfind-humanoid-synthesis","record_version":"1","record_digest":"sha256:moonfind-humanoid-synthesis:v1"},
+  "new_capability": {"record_id":"moonfind-humanoid-synthesis","record_version":"2","record_digest":"sha256:moonfind-humanoid-synthesis:v2"},
+  "rollback": {"record_id":"moonfind-synthesis-rollback-1","record_version":"1","record_digest":"sha256:moonfind-synthesis-rollback-1"},
+  "activation_review": {"record_id":"moonfind-activation-review-1","record_version":"1","record_digest":"sha256:moonfind-activation-review-1"},
+  "activation_reviewer_id": "robotics-research-lead",
+  "activation_reviewer_authority_ref": "authority:robotics-research-lead",
+  "requested_at": "1000",
+  "adoption_authorized": true,
+  "source_side_effects_applied": false,
+  "activation_side_effects_applied": false
+}

@@ -1,0 +1,13 @@
+import {
+  "moonbit-community/rabbita/cmd",
+  "moonbit-community/rabbita",
+  "moonbit-community/rabbita/html",
+  "moonbit-community/rabbita/http",
+  "moonbitlang/core/json",
+}
+
+supported_targets = "js"
+
+options(
+  "is-main": true,
+)

@@ -1,0 +1,11 @@
+{
+  "review_id": "human-review-humanoid-demo",
+  "run_id": "humanoid-cross-paper-demo",
+  "reviewer_id": "robotics-research-lead",
+  "authority_ref": "authority:robotics-research-lead",
+  "disposition": "accept",
+  "accepted_idea_ids": ["idea-contact-memory-vla"],
+  "rejected_idea_ids": [],
+  "notes": "Accept as a falsifiable research program, not as a validated performance claim.",
+  "reviewed_at": "3000"
+}
