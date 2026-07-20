@@ -1,0 +1,18 @@
+{
+  "contract_id": "moonfind.provider-policy.v1",
+  "provider_id": "semantic-scholar-api",
+  "provider_kind": "scholarly-metadata",
+  "license_class": "api-terms-review-required",
+  "terms_ref": "https://www.semanticscholar.org/product/api",
+  "status": "review-required",
+  "permitted_uses": ["discovery"],
+  "model_input_allowed": false,
+  "commercial_use_allowed": false,
+  "retention_days": 0,
+  "redistribution": "none",
+  "deletion_supported": true,
+  "audit_supported": true,
+  "reviewed_by": "",
+  "reviewed_at": 0,
+  "expires_at": null
+}

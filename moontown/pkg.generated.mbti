@@ -20,6 +20,8 @@ pub fn town_receipt_contract_version() -> String
 
 pub fn validate_town_execution_receipt(TownExecutionReceipt, String) -> Array[String]
 
+pub fn validate_town_synthesis_output(TownSynthesisOutput, TownExecutionReceipt) -> Array[String]
+
 // Errors
 
 // Types and methods
@@ -100,6 +102,23 @@ pub(all) struct TownResearchScenario {
   skill_rules : Array[String]
   participants : Array[TownParticipant]
   ideas : Array[TownIdea]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct TownSynthesisIdea {
+  id : String
+  title : String
+  summary : String
+  participating_books : Array[String]
+  research_questions : Array[String]
+  why_it_matters : String
+  next_experiment : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct TownSynthesisOutput {
+  contract_id : String
+  scenario_id : String
+  participant_book_ids : Array[String]
+  ideas : Array[TownSynthesisIdea]
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 // Type aliases

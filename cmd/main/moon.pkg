@@ -8,6 +8,7 @@ import {
   "vectie/moonfind/arxiv",
   "vectie/moonfind/closed_loop",
   "vectie/moonfind/humanoid",
+  "vectie/moonfind/hardening",
   "vectie/moonfind/moontown",
   "vectie/moonfind/research",
   "vectie/moonfind/store",

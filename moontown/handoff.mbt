@@ -43,6 +43,25 @@ pub(all) struct TownExecutionReceipt {
 } derive(Debug, Eq, ToJson, FromJson)
 
 ///|
+pub(all) struct TownSynthesisIdea {
+  id : String
+  title : String
+  summary : String
+  participating_books : Array[String]
+  research_questions : Array[String]
+  why_it_matters : String
+  next_experiment : String
+} derive(Debug, Eq, ToJson, FromJson)
+
+///|
+pub(all) struct TownSynthesisOutput {
+  contract_id : String
+  scenario_id : String
+  participant_book_ids : Array[String]
+  ideas : Array[TownSynthesisIdea]
+} derive(Debug, Eq, ToJson, FromJson)
+
+///|
 pub fn cross_paper_handoff(
   run : @research.ResearchRun,
 ) -> TownResearchHandoff raise {
@@ -94,6 +113,47 @@ pub fn validate_town_execution_receipt(
     }
   } else if receipt.review_status != "blocked" {
     errors.push("non-completed synthesis receipt must be blocked")
+  }
+  errors
+}
+
+///|
+pub fn validate_town_synthesis_output(
+  output : TownSynthesisOutput,
+  receipt : TownExecutionReceipt,
+) -> Array[String] {
+  let errors : Array[String] = []
+  if output.contract_id != "civic.communication.output.v1" {
+    errors.push("unsupported Moontown reducer-output contract")
+  }
+  if output.scenario_id != receipt.scenario_id {
+    errors.push("reducer output scenario does not match the receipt")
+  }
+  if output.participant_book_ids.length() != receipt.participant_count ||
+    output.participant_book_ids.length() < 2 {
+    errors.push("participant books do not match the execution receipt")
+  }
+  if output.ideas.length() != receipt.reviewable_output_count ||
+    output.ideas.is_empty() {
+    errors.push("reviewable outputs do not match the execution receipt")
+  }
+  let ids : Array[String] = []
+  for idea in output.ideas {
+    if idea.id.is_blank() ||
+      ids.contains(idea.id) ||
+      idea.title.is_blank() ||
+      idea.summary.is_blank() ||
+      idea.why_it_matters.is_blank() ||
+      idea.next_experiment.is_blank() ||
+      idea.research_questions.is_empty() ||
+      idea.participating_books.length() < 2 ||
+      idea.participating_books.any(book => {
+        !output.participant_book_ids.contains(book)
+      }) {
+      errors.push("invalid reviewable reducer output: \{idea.id}")
+    } else {
+      ids.push(idea.id)
+    }
   }
   errors
 }

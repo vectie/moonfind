@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "moonfind.recovery-snapshot.v1",
+  "type": "object",
+  "required": ["contract_id", "run_id", "run_status", "next_action", "terminal", "recorded_at"],
+  "properties": {
+    "contract_id": {"const": "moonfind.recovery-snapshot.v1"},
+    "run_id": {"type": "string", "minLength": 1},
+    "run_status": {"type": "string", "minLength": 1},
+    "next_action": {"type": "string", "minLength": 1},
+    "terminal": {"type": "boolean"},
+    "recorded_at": {"type": "integer", "minimum": 0}
+  },
+  "additionalProperties": true
+}

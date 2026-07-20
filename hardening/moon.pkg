@@ -1,7 +1,5 @@
 import {
   "moonbitlang/core/json",
-  "vectie/moonfind/research",
-  "vectie/moonfind/hardening",
 }
 
 supported_targets = "native"

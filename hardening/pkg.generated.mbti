@@ -1,0 +1,115 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/hardening"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn decide_provider_use(ProviderPolicy, ProviderUseRequest) -> ProviderUseDecision
+
+pub fn full_text_evidence_contract() -> String
+
+pub fn provider_policy_contract() -> String
+
+pub fn quarantine_document(DocumentIsolationReceipt, String) -> DocumentIsolationReceipt
+
+pub fn recovery_snapshot(String, String, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Int64) -> RecoverySnapshot raise
+
+pub fn validate_full_text_evidence(FullTextEvidence) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub(all) struct DocumentIsolationReceipt {
+  contract_id : String
+  receipt_id : String
+  document_digest : String
+  extractor_id : String
+  extractor_version : String
+  isolation_profile : String
+  network_disabled : Bool
+  active_content_removed : Bool
+  decompressed_bytes : Int64
+  page_count : Int
+  suspicious_signals : Array[String]
+  disposition : String
+  recorded_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct FullTextEvidence {
+  contract_id : String
+  evidence_id : String
+  paper_id : String
+  provider_id : String
+  source_url : String
+  pdf_digest : String
+  extracted_text_digest : String
+  extracted_text_artifact : String
+  evidence_locations : Array[String]
+  provider_decision : ProviderUseDecision
+  isolation_receipt : DocumentIsolationReceipt
+  retrieved_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ProviderPolicy {
+  contract_id : String
+  provider_id : String
+  provider_kind : String
+  license_class : String
+  terms_ref : String
+  status : String
+  permitted_uses : Array[String]
+  model_input_allowed : Bool
+  commercial_use_allowed : Bool
+  retention_days : Int
+  redistribution : String
+  deletion_supported : Bool
+  audit_supported : Bool
+  reviewed_by : String
+  reviewed_at : Int64
+  expires_at : Int64?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ProviderUseDecision {
+  contract_id : String
+  provider_id : String
+  use_case : String
+  decision : String
+  reasons : Array[String]
+  terms_ref : String
+  reviewed_by : String
+  decided_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ProviderUseRequest {
+  provider_id : String
+  use_case : String
+  sends_to_model : Bool
+  commercial : Bool
+  requested_retention_days : Int
+  redistribution : String
+  requested_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct RecoverySnapshot {
+  contract_id : String
+  run_id : String
+  run_status : String
+  full_text_ready : Bool
+  moonclaw_command_ready : Bool
+  analysis_ready : Bool
+  moontown_handoff_ready : Bool
+  moontown_receipt_ready : Bool
+  human_review_ready : Bool
+  bookkeeper_handoff_ready : Bool
+  next_action : String
+  terminal : Bool
+  recorded_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+// Type aliases
+
+// Traits
+

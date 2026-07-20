@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "moonfind.full-text-evidence.v1",
+  "type": "object",
+  "required": ["contract_id", "evidence_id", "paper_id", "provider_id", "pdf_digest", "extracted_text_digest", "extracted_text_artifact", "provider_decision", "isolation_receipt"],
+  "properties": {
+    "contract_id": {"const": "moonfind.full-text-evidence.v1"},
+    "evidence_id": {"type": "string", "minLength": 1},
+    "paper_id": {"type": "string", "minLength": 1},
+    "provider_id": {"type": "string", "minLength": 1},
+    "pdf_digest": {"type": "string", "minLength": 1},
+    "extracted_text_digest": {"type": "string", "minLength": 1},
+    "extracted_text_artifact": {"type": "string", "minLength": 1},
+    "provider_decision": {"type": "object"},
+    "isolation_receipt": {"type": "object"}
+  },
+  "additionalProperties": true
+}

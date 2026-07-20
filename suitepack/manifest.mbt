@@ -41,6 +41,9 @@ pub fn manifest() -> @pack.MoonPackManifest {
     schemas: [
       schema("research-watch"),
       schema("paper-record"),
+      schema("full-text-evidence"),
+      schema("provider-use-decision"),
+      schema("recovery-snapshot"),
       schema("research-run"),
       schema("research-analysis-result"),
       schema("human-research-review"),
@@ -52,6 +55,15 @@ pub fn manifest() -> @pack.MoonPackManifest {
       tool("papers.acquire-arxiv", "research-watch", "paper-record", Observe, [
         "raw/arxiv", "records/papers",
       ]),
+      tool(
+        "papers.record-isolated-fulltext",
+        "full-text-evidence",
+        "full-text-evidence",
+        SandboxExecution,
+        [
+          "raw/quarantine", "records/fulltext-evidence", "records/isolation-receipts",
+        ],
+      ),
       tool(
         "research.prepare-analysis",
         "research-run",
@@ -95,6 +107,9 @@ pub fn manifest() -> @pack.MoonPackManifest {
       @pack.contract_ref(
         "humanoid-research", "1.0.0", "workflows/humanoid-research.v1.json",
       ),
+      @pack.contract_ref(
+        "humanoid-robotics-suite", "1.0.0", "workflows/humanoid-robotics-suite.v1.json",
+      ),
     ],
     skills: [
       @pack.contract_ref(
@@ -109,6 +124,18 @@ pub fn manifest() -> @pack.MoonPackManifest {
     provider_ports: [
       @pack.contract_ref(
         "arxiv-paper-metadata", "1.0.0", "providers/arxiv-development.json",
+      ),
+      @pack.contract_ref(
+        "crossref-policy", "1.0.0", "providers/crossref-policy.json",
+      ),
+      @pack.contract_ref(
+        "openalex-policy", "1.0.0", "providers/openalex-policy.json",
+      ),
+      @pack.contract_ref(
+        "semantic-scholar-policy", "1.0.0", "providers/semantic-scholar-policy.json",
+      ),
+      @pack.contract_ref(
+        "licensed-fulltext-policy", "1.0.0", "providers/licensed-fulltext-policy.json",
       ),
     ],
     schedules: [

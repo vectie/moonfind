@@ -13,14 +13,13 @@
 - Rabbita research workspace.
 - Named-human reviewed deliverable intake into MoonBook Bookkeeper, followed by Bookkeeper-owned outcome binding, plus an assignment-bound MoonFlow observation.
 
-## Phase 2 — real-provider operation
+## Phase 2 — governed provider operation (implemented contracts and ports)
 
-- Add PDF/full-text acquisition behind source-specific license and retention metadata.
-- Add citation-location extraction from section/page spans rather than abstract-only locations.
-- Let MoonDesk submit the versioned handoff to Moontown and invoke the existing MoonClaw host automatically; do not embed another runtime in MoonDesk, Moonfind, or Moontown.
-- Import Moontown reducer output as a separately versioned critique/synthesis record before human review.
+- Full-text evidence is admitted only with provider-use and hostile-PDF isolation receipts; page/section locations are mandatory.
+- MoonDesk composes and imports the typed graph, then invokes only authority-bound MoonFlow actions backed by the existing MoonClaw host; no secondary runtime exists.
+- Moontown reducer output is imported and validated separately from its execution receipt before human review.
 - Add research-watch scheduling through generic MoonFlow schedules.
-- Add connectors for Semantic Scholar, Crossref, OpenAlex, licensed full-text feeds, and private corpora as pack-local providers, with an explicit permitted-use/retention/redistribution policy for each provider.
+- Crossref, OpenAlex, Semantic Scholar, and licensed-fulltext policy ports are present and deny by default until reviewed terms permit the requested use.
 
 ## Phase 3 — experiment execution
 
@@ -38,20 +37,33 @@
 - Resolve the assigned capability at MoonClaw run start and record the exact outcome/reward evidence afterward.
 - Promote, hold, or roll back only through a named-human settlement.
 
-## Phase 5 — deferred hardening
+## Phase 5 — hardening foundation (implemented)
 
-- Source rate limits, retries, checkpointing, restart recovery, and stale-run handling.
+- Durable recovery projection and missing-command reconstruction are implemented; source-specific retry/rate-limit adapters remain provider work.
 - Strong content-addressed storage and canonical digests supplied by owning systems.
-- Treat PDFs and retrieved documents as hostile input: isolate parsing, strip active content, constrain size/decompression, separate quoted evidence from instructions, and quarantine suspicious documents.
+- Hostile-document admission requires isolated parsing, disabled networking, active-content removal, bounded expansion/pages, instruction/evidence separation by artifact contract, and quarantine on any suspicious signal.
 - Comprehensive schema validation, replay, negative, accessibility, and browser tests.
-- Broader provider licensing and compliance review, including commercial reuse, model-input permission, retention, redistribution, provenance, deletion, and audit obligations.
+- Provider decisions enforce commercial use, model-input permission, retention, redistribution, expiry, deletion, audit, provenance, and named review.
 
-## Current manual handoff boundary
+## Phase 6 — cross-suite robotics composition (implemented)
+
+- A typed humanoid-robotics graph connects MoonWiki, Moonfind, MoonTown,
+  MoonChat, MoonProj, MoonCode, MoonMini, MoonMold, MoonRobo, MoonMoon, MoonStat,
+  MoonGate, MoonVis, MoonCast, and MoonBook.
+- MoonDesk provides the infinite composition canvas and generic selection
+  overlay; MoonFlow compiles a dependency-closed, digest-bound run.
+- MoonDesk, MoonFlow, and MoonClaw remain the control plane. Physical authority
+  is never inferred from canvas inclusion.
+
+## External readiness boundary
 
 Moonfind writes both the backward-compatible raw `moontown-scenario.json` and the preferred versioned `moontown-handoff.json`. An operator runs the handoff through Moontown and imports the resulting receipt with `moonfind record-moontown`. The normal `moonfind review` command fails closed until a completed, run-bound receipt exists. The receipt proves orchestration and durable materialization only; `review_status=pending` is mandatory and does not approve the synthesis. The self-contained `run-fixture` command bypasses this cross-repository prerequisite solely for deterministic pack-local tests.
 
-Automatic submission from MoonDesk, full-text evidence, reducer-output ingestion, restart recovery, malicious-document isolation, and broader licensed-provider operation are deliberately not claimed by Phase 1.
+The software paths now exist and fail closed. A live provider node remains
+disabled until its actual contract, credentials, extractor isolation, retention
+configuration, and adapter health are present. Those are external operational
+facts, not code defaults.
 
 ## Release gates
 
-The pack is feature-usable when a live or fixture watch produces a durable research run, a MoonClaw packet, a Moontown scenario, a reviewed model idea, and closed-loop handoffs visible in Rabbita. It is not production-research ready until full-text evidence, real MoonClaw/Moontown execution, restart recovery, source governance, and prospective experiment outcomes are demonstrated.
+The pack is feature-usable when a live or fixture watch produces a durable research run, a MoonClaw packet, a Moontown scenario, a reviewed model idea, and closed-loop handoffs visible in Rabbita. Production promotion still requires an operational demonstration with licensed full text, the real isolated extractor, real MoonClaw/Moontown execution, restart recovery under failure, reviewed provider terms, and prospective experiment outcomes. The software enforces these gates; a fixture cannot satisfy them.

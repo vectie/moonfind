@@ -1,0 +1,18 @@
+{
+  "contract_id": "moonfind.provider-policy.v1",
+  "provider_id": "licensed-fulltext-port",
+  "provider_kind": "paper-fulltext",
+  "license_class": "customer-supplied-contract",
+  "terms_ref": "",
+  "status": "disabled-until-contract-review",
+  "permitted_uses": [],
+  "model_input_allowed": false,
+  "commercial_use_allowed": false,
+  "retention_days": 0,
+  "redistribution": "none",
+  "deletion_supported": false,
+  "audit_supported": false,
+  "reviewed_by": "",
+  "reviewed_at": 0,
+  "expires_at": null
+}

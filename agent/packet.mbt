@@ -28,6 +28,21 @@ fn paper_context(paper : @research.PaperRecord) -> Json {
 }
 
 ///|
+fn full_text_context(evidence : @hardening.FullTextEvidence) -> Json {
+  {
+    "evidence_id": evidence.evidence_id,
+    "paper_id": evidence.paper_id,
+    "provider_id": evidence.provider_id,
+    "pdf_digest": evidence.pdf_digest,
+    "extracted_text_digest": evidence.extracted_text_digest,
+    "extracted_text_artifact": evidence.extracted_text_artifact,
+    "evidence_locations": evidence.evidence_locations,
+    "isolation_receipt_id": evidence.isolation_receipt.receipt_id,
+    "license_terms_ref": evidence.provider_decision.terms_ref,
+  }
+}
+
+///|
 fn humanoid_output_contract() -> String {
   let contract =
     #|Return exactly one JSON object matching moonfind.research.v1. Summarize every supplied paper separately. Every claim must cite known paper_ids and an evidence location. Every generated idea must bridge at least two distinct papers, state a counter-hypothesis, risks, a falsifier, and a next experiment. Each idea.domain_payload must contain: model_name, target_capability, backbone, observation_tokens, memory_state, action_representation, training_objectives, training_stages, dataset_plan, simulation_plan, hardware_assumptions, evaluation_benchmarks, required_ablations, safety_constraints, and falsification_metric. Do not claim experimental results that are absent from the supplied evidence.
@@ -40,10 +55,32 @@ pub fn prepare_humanoid_analysis_command(
   book_root : String,
   participant_id : String,
 ) -> MoonClawResearchCommand raise {
+  prepare_humanoid_analysis_command_with_evidence(
+    run,
+    book_root,
+    participant_id,
+    [],
+  )
+}
+
+///|
+pub fn prepare_humanoid_analysis_command_with_evidence(
+  run : @research.ResearchRun,
+  book_root : String,
+  participant_id : String,
+  full_text_evidence : Array[@hardening.FullTextEvidence],
+) -> MoonClawResearchCommand raise {
   guard run.status == "awaiting-agent-analysis" &&
     !book_root.is_blank() &&
     !participant_id.is_blank() else {
     fail("analysis command requires a collected run, book root and participant")
+  }
+  for evidence in full_text_evidence {
+    let issues = @hardening.validate_full_text_evidence(evidence)
+    guard issues.is_empty() &&
+      run.papers.any(paper => paper.paper_id == evidence.paper_id) else {
+      fail("invalid or unrelated full-text evidence: \{issues.join("; ")}")
+    }
   }
   let papers = run.papers.map(paper_context)
   {
@@ -61,6 +98,9 @@ pub fn prepare_humanoid_analysis_command(
       "run_id": run.run_id,
       "watch": run.watch,
       "papers": Json::array(papers),
+      "full_text_evidence": Json::array(
+        full_text_evidence.map(full_text_context),
+      ),
       "output_contract": humanoid_output_contract(),
       "required_review": "named-human",
       "owner_route": "moonfind.humanoid-models",
