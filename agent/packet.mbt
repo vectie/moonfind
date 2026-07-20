@@ -50,6 +50,54 @@ fn humanoid_output_contract() -> String {
 }
 
 ///|
+fn packet_string(packet : Json, key : String) -> String? {
+  match packet {
+    Object(fields) =>
+      match fields.get(key) {
+        Some(String(value)) => Some(value)
+        _ => None
+      }
+    _ => None
+  }
+}
+
+///|
+/// Verifies that a Moonfind packet delegates only the model loop to MoonClaw.
+/// Research ownership, review, capability activation, and external effects
+/// remain outside the runtime command.
+pub fn research_command_responsibility_issues(
+  command : MoonClawResearchCommand,
+) -> Array[String] {
+  let issues : Array[String] = []
+  if command.protocol != "moonclaw.mooncode.v1" || command.command != "prompt" {
+    issues.push("Moonfind must use the existing MoonClaw prompt protocol")
+  }
+  if command.model != "gpt-5.6-sol" {
+    issues.push("Moonfind analysis must use gpt-5.6-sol")
+  }
+  if command.capability_scope_id != "moonfind.humanoid.synthesis" ||
+    command.capability_participant_id.is_blank() {
+    issues.push("analysis must bind the reviewed Moonfind capability scope")
+  }
+  if packet_string(command.packet, "product_id") != Some("moonfind") ||
+    packet_string(command.packet, "required_review") != Some("named-human") ||
+    packet_string(command.packet, "owner_route") !=
+    Some("moonfind.humanoid-models") {
+    issues.push(
+      "packet must preserve Moonfind ownership and named-human review",
+    )
+  }
+  let serialized = command.packet.stringify().to_lower()
+  if serialized.contains("api_key") ||
+    serialized.contains("credential") ||
+    serialized.contains("publication_authority") ||
+    serialized.contains("capability_activation") {
+    issues.push("runtime packet carries authority or secret-shaped fields")
+  }
+  issues
+}
+
+///|
 pub fn prepare_humanoid_analysis_command(
   run : @research.ResearchRun,
   book_root : String,
@@ -83,7 +131,7 @@ pub fn prepare_humanoid_analysis_command_with_evidence(
     }
   }
   let papers = run.papers.map(paper_context)
-  {
+  let command : MoonClawResearchCommand = {
     protocol: "moonclaw.mooncode.v1",
     session_id: "moonfind-\{run.run_id}",
     book_root,
@@ -106,4 +154,12 @@ pub fn prepare_humanoid_analysis_command_with_evidence(
       "owner_route": "moonfind.humanoid-models",
     },
   }
+  let responsibility_issues = research_command_responsibility_issues(command)
+  guard responsibility_issues.is_empty() else {
+    fail(
+      "irresponsible MoonClaw research command: " +
+      responsibility_issues.join("; "),
+    )
+  }
+  command
 }

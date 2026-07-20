@@ -13,6 +13,8 @@ pub fn prepare_humanoid_analysis_command(@research.ResearchRun, String, String) 
 
 pub fn prepare_humanoid_analysis_command_with_evidence(@research.ResearchRun, String, String, Array[@hardening.FullTextEvidence]) -> MoonClawResearchCommand raise
 
+pub fn research_command_responsibility_issues(MoonClawResearchCommand) -> Array[String]
+
 // Errors
 
 // Types and methods

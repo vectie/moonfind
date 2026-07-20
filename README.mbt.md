@@ -24,6 +24,9 @@ Research watch
 
 Moonfind never installs a capability or approves its own output. Model ideas are proposals until evidence and a named human review say otherwise.
 
+See [Responsibility and testability](docs/RESPONSIBILITY_AND_TESTABILITY.md)
+for the executable delegation boundary and layered test model.
+
 ## Run the complete fixture
 
 ```bash
