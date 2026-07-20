@@ -38,6 +38,7 @@ The run is written below `.moonsuite/products/moonfind/runs/<run-id>/` with:
 - a MoonClaw command bound to `gpt-5.6-sol` and `moonfind.humanoid.synthesis`;
 - the validated analysis and human-review state;
 - a Moontown `research-salon` scenario;
+- a versioned Moontown handoff bound to the Moonfind run;
 - a MoonBook Bookkeeper deliverable candidate, ready for its own durable review before outcome binding;
 - a MoonFlow capability observation;
 - a Rabbita workspace projection.
@@ -56,6 +57,27 @@ moon run cmd/main -- review ~/Research moonfind-2026-07-20 human-review.json
 ```
 
 The arXiv adapter is a public development/research adapter. Any paid deployment must verify source terms, retention, redistribution, and downstream PDF licenses.
+
+## Run the current Moontown handoff
+
+Moonfind and Moontown remain separate products. Moonfind writes a versioned handoff; Moontown consumes it through its existing civic runtime and writes a machine-readable receipt. Until MoonDesk automation is implemented, this boundary is intentionally operator-triggered:
+
+```bash
+RUN_DIR="$HOME/Research/.moonsuite/products/moonfind/runs/moonfind-2026-07-20"
+RECEIPT="/tmp/moonfind-2026-07-20-moontown-receipt.json"
+
+cd ../moontown
+moon run src/cmd/main -- civic protocols pattern-handoff \
+  "$RUN_DIR/moontown-handoff.json" "$RECEIPT" "$HOME/Research/.moontown"
+
+cd ../moonfind
+moon run cmd/main -- record-moontown \
+  "$HOME/Research" moonfind-2026-07-20 "$RECEIPT"
+```
+
+The production route uses Moontown's existing MoonClaw reducer. `pattern-handoff-fixture` exists only for deterministic integration testing. The normal `moonfind review` command refuses to proceed until `record-moontown` has stored a completed receipt bound to that run. A completed receipt must still say `review_status: pending`; Bookkeeper/human review is a separate authority gate. The self-contained `run-fixture` command bypasses the cross-repository prerequisite only as a pack-local fixture.
+
+Full-text PDF evidence, automatic MoonClaw execution from MoonDesk, reducer-output ingestion, restart recovery, malicious-document isolation, and broader provider licensing remain later-phase work rather than Phase 1 claims.
 
 ## Rabbita UI
 

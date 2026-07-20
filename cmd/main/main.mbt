@@ -5,6 +5,7 @@ fn usage() -> Unit {
     "  moonfind run-fixture <workspace> <fixtures-directory>\n" +
     "  moonfind prepare-live <workspace> <run-id>\n" +
     "  moonfind complete <workspace> <run-id> <analysis-result.json>\n" +
+    "  moonfind record-moontown <workspace> <run-id> <execution-receipt.json>\n" +
     "  moonfind review <workspace> <run-id> <human-review.json>\n" +
     "  moonfind export-ui <workspace> <run-id> <moonfind-workspace.json>\n" +
     "  moonfind status <workspace> <run-id>\n" +
@@ -59,13 +60,20 @@ async fn complete_run(
     @store.read_json(analysis_path),
   )
   let completed = @humanoid.complete_humanoid_run(run, result, @async.now())
-  let scenario = @moontown.cross_paper_scenario(completed)
+  let handoff = @moontown.cross_paper_handoff(completed)
+  let scenario = handoff.scenario
   @store.write_run_artifact(workspace, run_id, "run.json", completed.to_json())
   @store.write_run_artifact(
     workspace,
     run_id,
     "moontown-scenario.json",
     scenario.to_json(),
+  )
+  @store.write_run_artifact(
+    workspace,
+    run_id,
+    "moontown-handoff.json",
+    handoff.to_json(),
   )
   @store.write_run_artifact(
     workspace,
@@ -79,14 +87,58 @@ async fn complete_run(
 }
 
 ///|
+async fn record_moontown_receipt(
+  workspace : String,
+  run_id : String,
+  receipt_path : String,
+) -> Unit {
+  let receipt : @moontown.TownExecutionReceipt = @json.from_json(
+    @store.read_json(receipt_path),
+  )
+  let errors = @moontown.validate_town_execution_receipt(receipt, run_id)
+  guard errors.length() == 0 else {
+    fail("Invalid Moontown receipt: \{errors.join("; ")}")
+  }
+  @store.write_run_artifact(
+    workspace,
+    run_id,
+    "moontown-receipt.json",
+    receipt.to_json(),
+  )
+  println(receipt.to_json().stringify(indent=2))
+}
+
+///|
 async fn review_run(
   workspace : String,
   run_id : String,
   review_path : String,
+  require_moontown_receipt? : Bool = true,
 ) -> Unit {
   let run : @research.ResearchRun = @json.from_json(
     @store.read_json(@store.run_directory(workspace, run_id) + "/run.json"),
   )
+  if require_moontown_receipt {
+    let receipt_path = @store.run_directory(workspace, run_id) +
+      "/moontown-receipt.json"
+    guard @fs.exists(receipt_path) else {
+      fail(
+        "Moontown execution receipt is required before named-human review; run record-moontown first",
+      )
+    }
+    let receipt : @moontown.TownExecutionReceipt = @json.from_json(
+      @store.read_json(receipt_path),
+    )
+    let receipt_errors = @moontown.validate_town_execution_receipt(
+      receipt, run_id,
+    )
+    guard receipt_errors.length() == 0 else {
+      fail("Invalid Moontown receipt: \{receipt_errors.join("; ")}")
+    }
+    guard receipt.status == "completed" else {
+      fail("Moontown synthesis is not review-ready: status=\{receipt.status}")
+    }
+  }
   let review : @research.HumanResearchReview = @json.from_json(
     @store.read_json(review_path),
   )
@@ -156,7 +208,12 @@ async fn run_fixture(workspace : String, fixtures : String) -> Unit {
   )
   persist_pending(workspace, run)
   complete_run(workspace, run.run_id, fixtures + "/analysis-result.json")
-  review_run(workspace, run.run_id, fixtures + "/human-review.json")
+  review_run(
+    workspace,
+    run.run_id,
+    fixtures + "/human-review.json",
+    require_moontown_receipt=false,
+  )
 }
 
 ///|
@@ -185,6 +242,8 @@ async fn main {
     ["prepare-live", workspace, run_id] => prepare_live(workspace, run_id)
     ["complete", workspace, run_id, analysis] =>
       complete_run(workspace, run_id, analysis)
+    ["record-moontown", workspace, run_id, receipt] =>
+      record_moontown_receipt(workspace, run_id, receipt)
     ["review", workspace, run_id, review] =>
       review_run(workspace, run_id, review)
     ["export-ui", workspace, run_id, output] =>

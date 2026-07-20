@@ -8,11 +8,40 @@ import {
 }
 
 // Values
+pub fn cross_paper_handoff(@research.ResearchRun) -> TownResearchHandoff raise
+
 pub fn cross_paper_scenario(@research.ResearchRun) -> TownResearchScenario raise
+
+pub fn town_handoff_contract_version() -> String
+
+pub fn town_handoff_id(String) -> String
+
+pub fn town_receipt_contract_version() -> String
+
+pub fn validate_town_execution_receipt(TownExecutionReceipt, String) -> Array[String]
 
 // Errors
 
 // Types and methods
+pub(all) struct TownExecutionReceipt {
+  contract_version : String
+  handoff_id : String
+  producer : String
+  producer_run_id : String
+  consumer : String
+  scenario_id : String
+  round_id : String
+  round_number : Int
+  status : String
+  reducer_kind : String
+  participant_count : Int
+  reviewable_output_count : Int
+  review_status : String
+  building_book_id : String
+  artifact_refs : Array[String]
+  summary : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct TownIdea {
   id : String
   title : String
@@ -32,6 +61,14 @@ pub(all) struct TownParticipant {
   current_question : String
   contribution : String
   next_artifact : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct TownResearchHandoff {
+  contract_version : String
+  handoff_id : String
+  producer : String
+  producer_run_id : String
+  scenario : TownResearchScenario
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct TownResearchScenario {

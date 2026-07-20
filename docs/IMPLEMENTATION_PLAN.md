@@ -6,6 +6,8 @@
 - Live arXiv Atom acquisition plus deterministic humanoid relevance ranking.
 - `gpt-5.6-sol` MoonClaw command packet with strict evidence and humanoid-model output contracts.
 - Moontown `research-salon` projection where each paper is a participant book and every proposed idea bridges at least two books.
+- Versioned `moontown.civic.communication.handoff.v1` envelope binding the scenario to the exact Moonfind producer run.
+- Durable `moontown.civic.communication.receipt.v1` import that proves which reducer ran, how many participant books and reviewable outputs were materialized, and which synthesis/review artifacts were written.
 - Typed humanoid model specification covering tokens, memory, actions, objectives, training, datasets, simulation, hardware, benchmarks, ablations, safety, and falsification.
 - Durable MoonBit CLI run bundle.
 - Rabbita research workspace.
@@ -15,10 +17,10 @@
 
 - Add PDF/full-text acquisition behind source-specific license and retention metadata.
 - Add citation-location extraction from section/page spans rather than abstract-only locations.
-- Invoke the existing MoonClaw host from MoonDesk using the generated command packet; do not embed another runtime.
+- Let MoonDesk submit the versioned handoff to Moontown and invoke the existing MoonClaw host automatically; do not embed another runtime in MoonDesk, Moonfind, or Moontown.
 - Import Moontown reducer output as a separately versioned critique/synthesis record before human review.
 - Add research-watch scheduling through generic MoonFlow schedules.
-- Add connectors for Semantic Scholar, Crossref, OpenAlex, and private corpora as pack-local providers.
+- Add connectors for Semantic Scholar, Crossref, OpenAlex, licensed full-text feeds, and private corpora as pack-local providers, with an explicit permitted-use/retention/redistribution policy for each provider.
 
 ## Phase 3 — experiment execution
 
@@ -40,9 +42,15 @@
 
 - Source rate limits, retries, checkpointing, restart recovery, and stale-run handling.
 - Strong content-addressed storage and canonical digests supplied by owning systems.
-- Prompt-injection and malicious-PDF isolation.
+- Treat PDFs and retrieved documents as hostile input: isolate parsing, strip active content, constrain size/decompression, separate quoted evidence from instructions, and quarantine suspicious documents.
 - Comprehensive schema validation, replay, negative, accessibility, and browser tests.
-- Licensed-source compliance review, observability, performance, and multi-tenant access control.
+- Broader provider licensing and compliance review, including commercial reuse, model-input permission, retention, redistribution, provenance, deletion, and audit obligations.
+
+## Current manual handoff boundary
+
+Moonfind writes both the backward-compatible raw `moontown-scenario.json` and the preferred versioned `moontown-handoff.json`. An operator runs the handoff through Moontown and imports the resulting receipt with `moonfind record-moontown`. The normal `moonfind review` command fails closed until a completed, run-bound receipt exists. The receipt proves orchestration and durable materialization only; `review_status=pending` is mandatory and does not approve the synthesis. The self-contained `run-fixture` command bypasses this cross-repository prerequisite solely for deterministic pack-local tests.
+
+Automatic submission from MoonDesk, full-text evidence, reducer-output ingestion, restart recovery, malicious-document isolation, and broader licensed-provider operation are deliberately not claimed by Phase 1.
 
 ## Release gates
 
