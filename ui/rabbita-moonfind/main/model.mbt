@@ -302,6 +302,49 @@ struct WorkspaceSnapshot {
 } derive(Debug, FromJson)
 
 ///|
+struct SeriesPhaseProjection {
+  phase_id : String
+  title : String
+  outcome : String
+  product_ids : Array[String]
+  stage_ids : Array[String]
+} derive(Debug, Eq, FromJson)
+
+///|
+struct SeriesStageProjection {
+  stage_id : String
+  product_id : String
+  desired_operation_ref : String?
+} derive(Debug, Eq, FromJson)
+
+///|
+struct SeriesExclusionProjection {
+  product_id : String?
+  capability : String?
+  reason : String
+} derive(Debug, Eq, FromJson)
+
+///|
+struct SeriesGraphProjection {
+  graph_id : String
+  stages : Array[SeriesStageProjection]
+  intentional_exclusions : Array[SeriesExclusionProjection]?
+} derive(Debug, Eq, FromJson)
+
+///|
+struct SeriesUseCaseProjection {
+  contract_id : String
+  use_case_id : String
+  title : String
+  summary : String
+  primary_user : String
+  primary_action : String
+  completion_statement : String
+  phases : Array[SeriesPhaseProjection]
+  graph : SeriesGraphProjection
+} derive(Debug, Eq, FromJson)
+
+///|
 enum ResearchPhase {
   Ready
   CreatingSession
@@ -358,6 +401,13 @@ struct Model {
   moonflow_receiver_status : MoonFlowReceiverStatus?
   moonflow_receipt_reply : MoonFlowReviewReceiptReply?
   moonflow_receiver_error : String?
+  series_catalog : Array[SeriesUseCaseProjection]
+  selected_series_id : String
+  selected_series_phase_id : String
+  inspected_series : SeriesUseCaseProjection?
+  series_action_loading : Bool
+  series_action_status : String?
+  series_error : String?
   notice : String?
   error : String?
 }
@@ -365,6 +415,12 @@ struct Model {
 ///|
 enum Msg {
   WorkspaceLoaded(Result[WorkspaceSnapshot, String])
+  RefreshSeriesCatalog
+  SeriesCatalogLoaded(Result[Array[SeriesUseCaseProjection], String])
+  SelectSeries(String)
+  SelectSeriesPhase(String)
+  ValidateSeriesTemplate
+  SeriesTemplateLoaded(Result[SeriesUseCaseProjection, String])
   RefreshMoonTownStatus
   SetBookDir(String)
   SetModelName(String)
@@ -404,6 +460,7 @@ enum Msg {
   QaAnswered(Result[CoworkSessionDetail, String])
 }
 
+///|
 #cfg(target="js")
 extern "js" fn browser_gateway_base() -> String =
   #| () => {
@@ -465,8 +522,105 @@ extern "js" fn browser_query_value(name : String) -> String =
   #| }
 
 ///|
+extern "js" fn browser_series_selection(name : String) -> String =
+  #| name => {
+  #|   const key = `moonfind.${name}`;
+  #|   const params = new URL(globalThis.location?.href || "http://local/")
+  #|     .searchParams;
+  #|   const query = params.get(name);
+  #|   if (query) return query;
+  #|   try { return globalThis.localStorage?.getItem(key) || ""; }
+  #|   catch (_) { return ""; }
+  #| }
+
+///|
+fn moonfind_template_launch_valid(
+  template_id : String,
+  template_version : String,
+  catalog_id : String,
+  catalog_version : String,
+  catalog_digest : String,
+  source_digest : String,
+) -> Bool {
+  template_id == "lunar-habitat-decision-series" &&
+  template_version == "1.0.0" &&
+  catalog_id == "moonfind.series-templates" &&
+  catalog_version == "1.0.0" &&
+  catalog_digest ==
+  "sha256:0efa52d842fb6edaeda28994c15312e461d7c8487803b5340fd0a750c874f853" &&
+  source_digest ==
+  "sha256:3c95e516d9d47301a7312cccd69d2fa257a45d7a58fc949c41474508b1b2fab5"
+}
+
+///|
+fn initial_series_selection() -> (String, String?) {
+  let template_id = browser_query_value("template")
+  if template_id == "" {
+    return (browser_series_selection("series"), None)
+  }
+  if moonfind_template_launch_valid(
+    template_id,
+    browser_query_value("template_version"),
+    browser_query_value("template_catalog"),
+    browser_query_value("template_catalog_version"),
+    browser_query_value("template_catalog_digest"),
+    browser_query_value("template_source_digest"),
+  ) {
+    (template_id, None)
+  } else {
+    (
+      "",
+      Some(
+        "Template preview rejected because its version or digest does not match MoonFind's installed catalog. Return to MoonDesk and refresh templates.",
+      ),
+    )
+  }
+}
+
+///|
+extern "js" fn persist_series_selection(
+  series_id : String,
+  phase_id : String,
+) -> Unit =
+  #| (seriesId, phaseId) => {
+  #|   try {
+  #|     globalThis.localStorage?.setItem("moonfind.series", seriesId);
+  #|     globalThis.localStorage?.setItem("moonfind.phase", phaseId);
+  #|     const url = new URL(globalThis.location.href);
+  #|     url.searchParams.set("series", seriesId);
+  #|     if (phaseId) url.searchParams.set("phase", phaseId);
+  #|     globalThis.history?.replaceState(null, "", url);
+  #|   } catch (_) {}
+  #| }
+
+///|
+extern "js" fn moondesk_series_url(
+  series_id : String,
+  phase_id : String,
+) -> String =
+  #| (seriesId, phaseId) => {
+  #|   const explicit = new URL(globalThis.location?.href || "http://local/")
+  #|     .searchParams.get("moondesk_base");
+  #|   let base = "http://127.0.0.1:4302/editor";
+  #|   if (explicit) {
+  #|     try {
+  #|       const candidate = new URL(explicit);
+  #|       if (["127.0.0.1", "localhost", "::1", "[::1]"].includes(candidate.hostname)) {
+  #|         base = candidate.href;
+  #|       }
+  #|     } catch (_) {}
+  #|   }
+  #|   const url = new URL(base);
+  #|   url.searchParams.set("series", seriesId);
+  #|   if (phaseId) url.searchParams.set("phase", phaseId);
+  #|   url.searchParams.set("source", "moonfind-series-catalog");
+  #|   return url.href;
+  #| }
+
+///|
 fn initial_model() -> Model {
   let book_dir = "/Users/kq/Workspace/deepseek-research-book"
+  let (selected_series_id, template_error) = initial_series_selection()
   {
     gateway_base: browser_gateway_base(),
     gateway_published: false,
@@ -504,6 +658,13 @@ fn initial_model() -> Model {
     moonflow_receiver_status: None,
     moonflow_receipt_reply: None,
     moonflow_receiver_error: None,
+    series_catalog: [],
+    selected_series_id,
+    selected_series_phase_id: browser_series_selection("phase"),
+    inspected_series: None,
+    series_action_loading: false,
+    series_action_status: None,
+    series_error: template_error,
     notice: Some("Waiting for the trusted MoonFind host workspace…"),
     error: None,
   }
@@ -517,9 +678,71 @@ fn valid_workspace_snapshot(snapshot : WorkspaceSnapshot) -> Bool {
   !snapshot.workspace.run_id.is_blank() &&
   snapshot.moontown_handoff.contract_id == "moonfind.moontown-handoff-status.v1" &&
   snapshot.moontown_handoff.run_id == snapshot.workspace.run_id &&
-  snapshot.review_workflow.contract_id ==
-  "moonfind.review-workflow-status.v1" &&
+  snapshot.review_workflow.contract_id == "moonfind.review-workflow-status.v1" &&
   snapshot.review_workflow.run_id == snapshot.workspace.run_id
+}
+
+///|
+fn series_template_issues(series : SeriesUseCaseProjection) -> Array[String] {
+  let issues : Array[String] = []
+  if series.contract_id != "moonsuite.series-use-case.v1" {
+    issues.push("unsupported series contract")
+  }
+  if series.use_case_id.is_blank() || series.graph.graph_id.is_blank() {
+    issues.push("series and graph identities are required")
+  }
+  if series.phases.is_empty() || series.graph.stages.is_empty() {
+    issues.push("series phases and desired stages are required")
+  }
+  let stage_ids : Map[String, Unit] = Map([])
+  for stage in series.graph.stages {
+    if stage_ids.contains(stage.stage_id) {
+      issues.push("duplicate desired stage: " + stage.stage_id)
+    } else {
+      stage_ids[stage.stage_id] = ()
+    }
+    if !stage.desired_operation_ref
+      .map(value => value.contains("/") && value.contains("@"))
+      .unwrap_or(false) {
+      issues.push("unversioned desired operation: " + stage.stage_id)
+    }
+  }
+  let covered : Map[String, Unit] = Map([])
+  for phase in series.phases {
+    if phase.stage_ids.is_empty() {
+      issues.push("phase has no desired stages: " + phase.phase_id)
+    }
+    for stage_id in phase.stage_ids {
+      if !stage_ids.contains(stage_id) {
+        issues.push("phase references an unknown desired stage: " + stage_id)
+      } else if covered.contains(stage_id) {
+        issues.push("desired stage appears in multiple phases: " + stage_id)
+      } else {
+        covered[stage_id] = ()
+      }
+    }
+  }
+  if covered.length() != stage_ids.length() {
+    issues.push("every desired stage must belong to exactly one phase")
+  }
+  if series.use_case_id == "lunar-habitat-decision-series" {
+    let exclusions = series.graph.intentional_exclusions.unwrap_or([])
+    let labels = exclusions.map(item => {
+      match item.product_id {
+        Some(value) => value.to_lower()
+        None => item.capability.unwrap_or("").to_lower()
+      }
+    })
+    for
+      required in [
+        "moonfish", "physical robot command", "publication", "commercial master",
+      ] {
+      if !labels.any(label => label.contains(required)) {
+        issues.push("missing explicit exclusion: " + required)
+      }
+    }
+  }
+  issues
 }
 
 ///|
@@ -619,9 +842,7 @@ fn safe_moonflow_run_id(value : String) -> Bool {
 ///|
 fn safe_moonflow_token(value : String) -> Bool {
   value.length() == 64 &&
-  value.all(ch => {
-    (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f')
-  })
+  value.all(ch => (ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f'))
 }
 
 ///|
@@ -693,15 +914,12 @@ fn valid_moonflow_receipt_reply(
 ///|
 fn moonflow_review_binding_issue(model : Model) -> String? {
   if !moonflow_launch_present(
-    model.moonflow_run_id,
-    model.moonflow_handoff_token,
-  ) {
+      model.moonflow_run_id,
+      model.moonflow_handoff_token,
+    ) {
     return None
   }
-  if !valid_moonflow_launch(
-    model.moonflow_run_id,
-    model.moonflow_handoff_token,
-  ) {
+  if !valid_moonflow_launch(model.moonflow_run_id, model.moonflow_handoff_token) {
     return Some("The MoonFlow launch identity is malformed.")
   }
   guard model.moonflow_intake is Some(handoff) else {

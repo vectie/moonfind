@@ -57,6 +57,7 @@ pub fn manifest() -> @pack.MoonPackManifest {
       schema("capability-observation"),
       schema("read-only-qa-grounding"),
       schema("ui-workspace"),
+      schema("series-use-case"),
     ],
     tools: [
       tool("papers.acquire-arxiv", "research-watch", "paper-record", Observe, [
@@ -138,6 +139,9 @@ pub fn manifest() -> @pack.MoonPackManifest {
       ),
       @pack.contract_ref(
         "humanoid-robotics-suite-desired", "3.0.0", "workflows/humanoid-robotics-suite.v1.json",
+      ),
+      @pack.contract_ref(
+        "lunar-habitat-decision-series-source", "1.0.0", "workflows/lunar-habitat-decision-series-source.v1.json",
       ),
     ],
     skills: [

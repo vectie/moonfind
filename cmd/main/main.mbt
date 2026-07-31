@@ -15,6 +15,8 @@ fn usage() -> Unit {
     "  moonfind review <workspace> <run-id> <human-review.json>\n" +
     "  moonfind export-ui <workspace> <run-id> <moonfind-workspace.json>\n" +
     "  moonfind status <workspace> <run-id>\n" +
+    "  moonfind series-catalog\n" +
+    "  moonfind series-show <use-case-id>\n" +
     "  moonfind manifest",
   )
 }
@@ -570,6 +572,19 @@ async fn main {
     ["export-ui", workspace, run_id, output] =>
       export_ui(workspace, run_id, output)
     ["status", workspace, run_id] => status(workspace, run_id)
+    ["series-catalog"] =>
+      println(@series.catalog().to_json().stringify(indent=2))
+    ["series-show", use_case_id] =>
+      match @series.find(use_case_id) {
+        Some(use_case) => {
+          let issues = @series.validate(use_case)
+          guard issues.is_empty() else {
+            fail("Series use case is invalid: " + issues.join("; "))
+          }
+          println(use_case.to_json().stringify(indent=2))
+        }
+        None => fail("Unknown series use case: " + use_case_id)
+      }
     ["manifest"] => {
       let report = @suitepack.validation_report()
       guard report.ok else { fail(report.to_json().stringify(indent=2)) }

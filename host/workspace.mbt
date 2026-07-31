@@ -1,7 +1,46 @@
 ///|
+fn moontown_map_path() -> String {
+  "/index.html?seed=20260727"
+}
+
+///|
+fn encode_query_component(value : String) -> String {
+  let encoded = StringBuilder()
+  for byte in @utf8.encode(value) {
+    if (byte >= b'A' && byte <= b'Z') ||
+      (byte >= b'a' && byte <= b'z') ||
+      (byte >= b'0' && byte <= b'9') ||
+      byte is (b'-' | b'.' | b'_' | b'~') {
+      encoded.write_char(byte.to_char())
+    } else {
+      encoded.write_char('%')
+      encoded.write_string(byte.to_hex().to_upper())
+    }
+  }
+  encoded.to_string()
+}
+
+///|
+fn moontown_open_url(
+  base_url : String,
+  handoff_contract : String,
+  handoff_id : String,
+  handoff_url : String,
+) -> String {
+  trimmed_base(base_url) +
+  moontown_map_path() +
+  "&handoff_contract=" +
+  encode_query_component(handoff_contract) +
+  "&handoff_id=" +
+  encode_query_component(handoff_id) +
+  "&handoff_url=" +
+  encode_query_component(handoff_url)
+}
+
+///|
 async fn moontown_reachable(base_url : String) -> Bool {
   try {
-    let (response, _) = @http.get(trimmed_base(base_url) + "/viewport.html")
+    let (response, _) = @http.get(trimmed_base(base_url) + moontown_map_path())
     response.code >= 200 && response.code < 400
   } catch {
     _ => false
@@ -136,14 +175,12 @@ async fn handoff_status(
     match config.moontown_base_url {
       Some(base) if !base.is_blank() && moontown_reachable(base) =>
         open_url = Some(
-          trimmed_base(base) +
-          "/viewport.html?assets=generated&mode=view&v=wenyu" +
-          "&handoff_contract=" +
-          handoff.contract_version +
-          "&handoff_id=" +
-          handoff.handoff_id +
-          "&handoff_url=" +
-          handoff_url,
+          moontown_open_url(
+            base,
+            handoff.contract_version,
+            handoff.handoff_id,
+            handoff_url,
+          ),
         )
       Some(_) =>
         detail = "Typed handoff is valid, but the configured MoonTown host is unavailable."

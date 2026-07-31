@@ -9,6 +9,7 @@ import {
   "moonbitlang/core/string",
   "vectie/moonfind/host",
   "vectie/moonfind/moontown",
+  "vectie/moonfind/series",
 }
 
 supported_targets = "native"

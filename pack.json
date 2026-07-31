@@ -12,6 +12,13 @@
       "path": "book/research-book.md"
     }
   ],
+  "template_catalogs": [
+    {
+      "id": "moonfind.series-templates",
+      "version": "1.0.0",
+      "path": "templates/catalog.v1.json"
+    }
+  ],
   "schemas": [
     {"id": "research-watch", "version": "1.0.0", "path": "schemas/research-watch.schema.json"},
     {"id": "local-input-coverage", "version": "1.0.0", "path": "schemas/local-input-coverage.schema.json"},
@@ -30,7 +37,8 @@
     {"id": "bookkeeper-deliverable-candidate", "version": "1.0.0", "path": "schemas/bookkeeper-deliverable-candidate.schema.json"},
     {"id": "capability-observation", "version": "1.0.0", "path": "schemas/capability-observation.schema.json"},
     {"id": "read-only-qa-grounding", "version": "1.0.0", "path": "schemas/read-only-qa-grounding.schema.json"},
-    {"id": "ui-workspace", "version": "1.0.0", "path": "schemas/ui-workspace.schema.json"}
+    {"id": "ui-workspace", "version": "1.0.0", "path": "schemas/ui-workspace.schema.json"},
+    {"id": "series-use-case", "version": "1.0.0", "path": "schemas/series-use-case.schema.json"}
   ],
   "tools": [
     {
@@ -136,7 +144,8 @@
   ],
   "workflows": [
     {"id": "humanoid-research", "version": "2.0.0", "path": "workflows/humanoid-research.v1.json"},
-    {"id": "humanoid-robotics-suite-desired", "version": "3.0.0", "path": "workflows/humanoid-robotics-suite.v1.json"}
+    {"id": "humanoid-robotics-suite-desired", "version": "3.0.0", "path": "workflows/humanoid-robotics-suite.v1.json"},
+    {"id": "lunar-habitat-decision-series-source", "version": "1.0.0", "path": "workflows/lunar-habitat-decision-series-source.v1.json"}
   ],
   "skills": [
     {"id": "humanoid-cross-paper-synthesis", "version": "1.0.0", "path": "skills/humanoid-cross-paper-synthesis.md"}

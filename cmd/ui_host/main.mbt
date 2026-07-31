@@ -238,6 +238,33 @@ async fn handle_request(
 ) -> Unit {
   let path = route_path(request.path)
   match (request.meth, path) {
+    (Get, "/api/v1/series") =>
+      send_json(conn, 200, "OK", @series.catalog().to_json())
+    (Get, series_path) if series_path.has_prefix("/api/v1/series/") => {
+      let use_case_id = series_path["/api/v1/series/".length():].to_owned()
+      guard !use_case_id.is_blank() &&
+        !use_case_id.contains("/") &&
+        !use_case_id.contains("..") else {
+        send_error(conn, 400, "Bad Request", "invalid series use-case id")
+        return
+      }
+      match @series.find(use_case_id) {
+        Some(use_case) => {
+          let issues = @series.validate(use_case)
+          guard issues.is_empty() else {
+            send_error(
+              conn,
+              409,
+              "Conflict",
+              "series use case is invalid: " + issues.join("; "),
+            )
+            return
+          }
+          send_json(conn, 200, "OK", use_case.to_json())
+        }
+        None => send_error(conn, 404, "Not Found", "series use case not found")
+      }
+    }
     (Get, "/api/v1/workspace") => {
       let snapshot = @host.workspace_snapshot(options.config)
       send_json(conn, 200, "OK", snapshot.to_json())
@@ -347,13 +374,18 @@ async fn main {
   server.run_forever(
     (request, body, conn) => {
       handle_request(options, request, body, conn) catch {
-        error =>
+        error => {
+          // A client may disconnect after the response headers or a partial
+          // body. The original write error is already terminal for that
+          // connection; attempting to serialize a second error must not stop
+          // the host for every other operator.
           send_error(
             conn,
             409,
             "Conflict",
             "MoonFind host rejected the request: \{error}",
-          )
+          ) catch { _ => () }
+        }
       }
     },
     max_connections=32,

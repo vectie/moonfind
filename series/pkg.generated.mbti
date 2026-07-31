@@ -1,0 +1,43 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/series"
+
+import {
+  "moonbitlang/core/debug",
+  "vectie/moonfind/integration",
+}
+
+// Values
+pub fn catalog() -> Array[SeriesUseCaseV1]
+
+pub fn find(String) -> SeriesUseCaseV1?
+
+pub fn lunar_habitat_decision_series() -> SeriesUseCaseV1
+
+pub fn validate(SeriesUseCaseV1) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub(all) struct SeriesPhaseV1 {
+  phase_id : String
+  title : String
+  outcome : String
+  product_ids : Array[String]
+  stage_ids : Array[String]
+} derive(Eq, ToJson, @debug.Debug)
+
+pub(all) struct SeriesUseCaseV1 {
+  contract_id : String
+  use_case_id : String
+  title : String
+  summary : String
+  primary_user : String
+  primary_action : String
+  completion_statement : String
+  phases : Array[SeriesPhaseV1]
+  graph : @integration.DesiredCapabilityGraphV2
+} derive(Eq, ToJson, @debug.Debug)
+
+// Type aliases
+
+// Traits

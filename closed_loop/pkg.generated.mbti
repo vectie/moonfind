@@ -4,13 +4,20 @@ package "vectie/moonfind/closed_loop"
 import {
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
+  "vectie/moonfind/moontown",
   "vectie/moonfind/research",
 }
 
 // Values
+pub fn apply_moonchat_review(@research.ResearchRun, @moontown.TownSynthesisOutput, CrossProductReviewDecision, Json, String) -> @research.ResearchRun raise
+
 pub fn bookkeeper_deliverable_candidate(@research.ResearchRun, @research.HumanResearchReview, String, String) -> BookkeeperDeliverableCandidate raise
 
 pub fn capability_observation(@research.ResearchRun, @research.HumanResearchReview, String, String, VersionedRecordRef, String, String) -> CapabilityObservation raise
+
+pub fn moonbook_product_outcome_submission(@research.ResearchRun, @moontown.TownSynthesisOutput, CrossProductReviewDecision, Json, String, String, String, String) -> Json raise
+
+pub fn moonchat_review_bundle(@research.ResearchRun, @moontown.TownSynthesisOutput, CrossProductReviewDecision, String, String) -> Json raise
 
 // Errors
 
@@ -45,6 +52,27 @@ pub(all) struct CapabilityObservation {
   reward_evidence : VersionedRecordRef
   accepted : Bool
   recorded_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CrossProductReviewDecision {
+  review_id : String
+  reviewer_id : String
+  reviewer_name : String
+  outcome : String
+  accepted_idea_ids : Array[String]
+  rejected_idea_ids : Array[String]
+  rationale : String
+  reviewed_at_utc : String
+  reviewed_at_epoch : Int64
+  information_gap_present : Bool
+  information_gap_severity : Int
+  information_gap_summary : String
+  recognition_gap_present : Bool
+  recognition_gap_severity : Int
+  recognition_gap_summary : String
+  decisiveness_gap_present : Bool
+  decisiveness_gap_severity : Int
+  decisiveness_gap_summary : String
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct VersionedEvidenceRef {

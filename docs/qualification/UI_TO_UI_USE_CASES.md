@@ -72,6 +72,59 @@ execution journal, **Research execution** truthfully reports that no prepared
 execution exists. The typed MoonTown handoff remains `ready`; this fixture
 blocker must not be misread as a failed handoff.
 
+## MF-00 — inspect and commission a series template
+
+Purpose: prove that a user can understand a cross-product outcome, inspect its
+published desired-graph shape, and hand control to MoonDesk without MoonFind
+claiming a run has started or the graph is semantically executable.
+
+1. Open the research-studio URL.
+2. In **Choose a cross-product outcome**, select **Lunar Habitat Decision
+   Series**.
+3. Confirm the surface shows `6 phases · 38 desired stages`, using the count
+   returned by the published catalog rather than a UI hardcode.
+4. Select each phase and confirm its product chips, desired-stage count,
+   outcome, and selected state are visible. Reload the page and confirm the
+   selected series and phase remain selected through the URL/local preference.
+5. Expand **Limits & evidence**. Confirm the versioned contract and graph ids,
+   completion statement, and explicit exclusions for MoonFish, physical robot
+   command, publication, and commercial master are visible.
+6. Confirm the intended outcome remains **Review the commission and start
+   evidence gathering**, while the actual button is precisely **Validate
+   template**.
+7. Click **Validate template**. This is a read-only request to
+   `GET /api/v1/series/lunar-habitat-decision-series`; it must not create a run.
+8. Confirm the status says execution has not started and still requires a
+   MoonDesk run-bound handoff plus capability and semantic projection, source
+   bundles, live health, request materialization, authority, and receipts.
+9. Click **Open MoonDesk canvas** only after template validation succeeds.
+   Confirm the URL carries the exact `series`, selected `phase`, and
+   `source=moonfind-series-catalog` parameters.
+
+Expected visible result:
+
+- goal copy and button effect do not overstate each other;
+- the phase/product/stage topology is inspectable without opening raw JSON;
+- template validation checks the published catalog identity and shape only;
+- MoonFind never displays an execution, evidence, provider-health, or authority
+  success receipt from this flow;
+- MoonDesk is the first surface allowed to commission a run-bound graph.
+
+What this UI-to-UI case does **not** prove:
+
+- that MoonDesk created a valid handoff;
+- that MoonFlow resolved or executed any stage;
+- that MoonGate granted authority or found healthy providers;
+- that the listed products produced evidence or accepted artifacts.
+
+Recovery:
+
+- If the catalog is unavailable, use **Reload** and retry the same endpoint.
+- If **Validate template** fails, do not open or reconstruct a run manually;
+  restore the exact published series endpoint and check again.
+- If MoonDesk is unavailable, retain the selected series/phase URL and resume
+  from **Open MoonDesk canvas** after its local host is restored.
+
 ## MF-01 — inspect an evidence-backed research run
 
 Purpose: prove that the published UI shows durable research truth rather than a
@@ -87,8 +140,8 @@ static demo.
    candidate ideas, counter-hypotheses, falsifiers, and open evidence gaps.
 5. Confirm the page distinguishes reported evidence from synthesis and keeps
    review state visible.
-6. Open **Humanoid robotics composition** and confirm it describes a desired
-   63-stage graph as catalog-bound planning, not as proof of execution.
+6. Complete MF-00 and confirm its desired graph remains catalog-bound planning,
+   not proof of execution.
 
 Expected visible result:
 
@@ -123,10 +176,14 @@ that synthesis already happened.
 1. Complete MF-01 and start MoonTown using its qualification guide.
 2. In **Challenge in MoonTown**, confirm the handoff state is `ready`.
 3. Click **Open typed handoff in MoonTown**.
-4. The new MoonTown surface must show the same handoff id, producer run,
+4. Confirm the browser opens the canonical map at
+   `/index.html?seed=20260727`; `handoff_contract`, `handoff_id`, and
+   `handoff_url` must remain URL-encoded query parameters. Legacy
+   `assets`, `mode`, and `v` parameters must not appear.
+5. The new MoonTown surface must show the same handoff id, producer run,
    participant books, review owner, and `PENDING · NOT EXECUTED`.
-5. Follow MoonTown use case MT-02.
-6. Return to MoonFind and reload the research studio.
+6. Follow MoonTown use case MT-02.
+7. Return to MoonFind and reload the research studio.
 
 Expected visible result after MoonTown returns:
 
@@ -221,6 +278,7 @@ MoonFind commit:
 workspace:
 run id:
 browser URL:
+MF-00: PASS | FAIL | BLOCKED
 MF-01: PASS | FAIL | BLOCKED
 MF-02: PASS | FAIL | BLOCKED
 MF-03: PASS | FAIL | BLOCKED

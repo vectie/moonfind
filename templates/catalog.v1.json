@@ -1,0 +1,48 @@
+{
+  "contract_id": "moonsuite.template-catalog.v1",
+  "catalog_id": "moonfind.series-templates",
+  "owner_product": "moonfind",
+  "version": "1.0.0",
+  "catalog_digest": "sha256:0efa52d842fb6edaeda28994c15312e461d7c8487803b5340fd0a750c874f853",
+  "templates": [
+    {
+      "contract_id": "moonsuite.template-envelope.v1",
+      "template_id": "lunar-habitat-decision-series",
+      "owner_product": "moonfind",
+      "version": "1.0.0",
+      "source_ref": "workflows/lunar-habitat-decision-series-source.v1.json",
+      "source_digest": "sha256:3c95e516d9d47301a7312cccd69d2fa257a45d7a58fc949c41474508b1b2fab5",
+      "template_class": "cross_product_series",
+      "maturity": "local-qualified",
+      "title": "Lunar habitat decision series",
+      "summary": "Turn an owner commission into cited research, a governed digital habitat and robot-readiness package, and a reviewable three-minute internal animatic.",
+      "primary_user": "program owner",
+      "primary_action": "Review the commission and validate capability projection",
+      "completion_statement": "The named owner receives exact digital evidence, an animatic decision, and Bookkeeper Three-Gap closure; no physical action or publication occurs.",
+      "icon": "🌕",
+      "migration_policy": {"strategy": "owner-reviewed", "compatible_from": [], "note": "MoonFind requires a reviewed capability and graph migration before changing this series version."},
+      "preview_ref": "/apps/moonfind/research",
+      "qualification_evidence_refs": [{"kind": "qualification_report", "ref": "docs/qualification/LUNAR_HABITAT_DECISION_SERIES_RUN_2026-07-31.md", "digest": "sha256:986c045ada5e2172818e85ef4c01e71a782f3033332c2e88e89bd64cd540c216"}],
+      "requirements": {
+        "operations": [
+          {"operation_ref": "moonfind/research.cross-paper-synthesize@0.1.0", "input_schema_ref": "moonfind/research-run@1.0.0", "output_schema_ref": "moonfind/moontown-research-scenario@1.0.0", "required": true},
+          {"operation_ref": "mooncast/needs-intake.approve-and-seed@0.3.0", "input_schema_ref": "mooncast/needs-intake-decision@1.0.0", "output_schema_ref": "mooncast/project-seed@1.0.0", "required": true}
+        ],
+        "schemas": ["moonfind/series-use-case@1.0.0", "moonfind/desired-capability-graph@2.0.0"]
+      },
+      "ceilings": {
+        "authorities": ["observe", "workspace-mutation", "sandbox-execution", "external-effect"],
+        "external_effect": true,
+        "cost": {"status": "provider_dependent", "currency": "N/A", "max_minor": null, "note": "Provider and simulation costs require MoonGate grants; the template does not authorize spend."},
+        "licensing": {"status": "review_required", "classes": ["research evidence", "simulation assets", "AIGC model outputs"], "note": "Each owner keeps source and generated-asset rights evidence."},
+        "review": {"required": true, "authority": "named program owner and pack-specific reviewers", "gates": ["commission", "evidence", "rights", "animatic", "bookkeeper_three_gap"]}
+      },
+      "recovery": {
+        "blocked": true,
+        "reason": "MoonCast has not published mooncast/needs-intake.approve-and-seed@0.3.0, and MoonFlow cannot yet materialize all late-bound inputs and auxiliary authority/QC evidence.",
+        "next_action": "Open MoonFind, inspect the 38-stage graph, and validate capability projection without starting execution."
+      },
+      "owner_payload": {"series_id": "lunar-habitat-decision-series", "phase": "understand", "execution_allowed": false}
+    }
+  ]
+}

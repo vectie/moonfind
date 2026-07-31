@@ -51,3 +51,15 @@ test "terminal review state does not require a live MoonClaw gateway" {
     true,
   )
 }
+
+///|
+test "MoonTown handoff opens the canonical map with encoded typed parameters" {
+  assert_eq(moontown_map_path(), "/index.html?seed=20260727")
+  assert_eq(
+    moontown_open_url(
+      "http://127.0.0.1:17842/", "moontown.civic.communication.handoff.v1", "handoff / 中文",
+      "http://127.0.0.1:4313/api/v1/moontown/handoff?run=a&b=c",
+    ),
+    "http://127.0.0.1:17842/index.html?seed=20260727&handoff_contract=moontown.civic.communication.handoff.v1&handoff_id=handoff%20%2F%20%E4%B8%AD%E6%96%87&handoff_url=http%3A%2F%2F127.0.0.1%3A4313%2Fapi%2Fv1%2Fmoontown%2Fhandoff%3Frun%3Da%26b%3Dc",
+  )
+}

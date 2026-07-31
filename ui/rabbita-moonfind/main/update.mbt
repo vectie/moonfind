@@ -20,6 +20,174 @@ fn update(
   model : Model,
 ) -> (@rabbita.Cmd, Model) {
   match msg {
+    RefreshSeriesCatalog =>
+      (load_series_catalog(emit), { ..model, series_error: None })
+    SeriesCatalogLoaded(Ok(catalog)) => {
+      let valid = catalog.filter(item => series_template_issues(item).is_empty())
+      let selected = if valid.any(item => {
+          item.use_case_id == model.selected_series_id
+        }) {
+        model.selected_series_id
+      } else {
+        valid.get(0).map(item => item.use_case_id).unwrap_or("")
+      }
+      let selected_phase = valid
+        .filter(item => item.use_case_id == selected)
+        .get(0)
+        .bind(item => {
+          if item.phases.any(phase => {
+              phase.phase_id == model.selected_series_phase_id
+            }) {
+            Some(model.selected_series_phase_id)
+          } else {
+            item.phases.get(0).map(phase => phase.phase_id)
+          }
+        })
+        .unwrap_or("")
+      if !selected.is_blank() {
+        persist_series_selection(selected, selected_phase)
+      }
+      (
+        @rabbita.none,
+        {
+          ..model,
+          series_catalog: valid,
+          selected_series_id: selected,
+          selected_series_phase_id: selected_phase,
+          series_error: if valid.is_empty() {
+            Some(
+              "No structurally valid series template is currently published.",
+            )
+          } else {
+            None
+          },
+        },
+      )
+    }
+    SeriesCatalogLoaded(Err(error)) =>
+      (
+        @rabbita.none,
+        { ..model, series_error: Some("Series catalog unavailable: " + error) },
+      )
+    SelectSeries(use_case_id) =>
+      if model.series_catalog.any(item => item.use_case_id == use_case_id) {
+        let phase_id = model.series_catalog
+          .filter(item => item.use_case_id == use_case_id)
+          .get(0)
+          .bind(item => item.phases.get(0))
+          .map(phase => phase.phase_id)
+          .unwrap_or("")
+        persist_series_selection(use_case_id, phase_id)
+        (
+          @rabbita.none,
+          {
+            ..model,
+            selected_series_id: use_case_id,
+            selected_series_phase_id: phase_id,
+            inspected_series: None,
+            series_action_status: None,
+            series_error: None,
+          },
+        )
+      } else {
+        (
+          @rabbita.none,
+          {
+            ..model,
+            series_error: Some(
+              "The selected series is not in the validated catalog.",
+            ),
+          },
+        )
+      }
+    SelectSeriesPhase(phase_id) =>
+      match
+        model.series_catalog
+        .filter(item => item.use_case_id == model.selected_series_id)
+        .get(0) {
+        Some(series) if series.phases.any(phase => phase.phase_id == phase_id) => {
+          persist_series_selection(series.use_case_id, phase_id)
+          (@rabbita.none, { ..model, selected_series_phase_id: phase_id })
+        }
+        _ =>
+          (
+            @rabbita.none,
+            {
+              ..model,
+              series_error: Some(
+                "The selected phase is not part of this series.",
+              ),
+            },
+          )
+      }
+    ValidateSeriesTemplate =>
+      if model.selected_series_id.is_blank() {
+        (
+          @rabbita.none,
+          {
+            ..model,
+            series_error: Some(
+              "Select a published series before validating its template.",
+            ),
+          },
+        )
+      } else {
+        (
+          validate_series_template(emit, model.selected_series_id),
+          {
+            ..model,
+            series_action_loading: true,
+            series_action_status: Some(
+              "Validating the catalog contract and desired-graph shape…",
+            ),
+            series_error: None,
+          },
+        )
+      }
+    SeriesTemplateLoaded(Ok(series)) => {
+      let issues = series_template_issues(series)
+      if series.use_case_id != model.selected_series_id {
+        issues.push("template result belongs to another series")
+      }
+      if issues.is_empty() {
+        (
+          @rabbita.none,
+          {
+            ..model,
+            inspected_series: Some(series),
+            series_action_loading: false,
+            series_action_status: Some(
+              "Catalog shape validated only. Execution has not started: capability and semantic projection, source bundles, live health, request materialization, authority, and receipts are still pending in MoonDesk and MoonFlow.",
+            ),
+            series_error: None,
+          },
+        )
+      } else {
+        (
+          @rabbita.none,
+          {
+            ..model,
+            inspected_series: None,
+            series_action_loading: false,
+            series_action_status: None,
+            series_error: Some(
+              "Series template validation failed: " + issues.join("; "),
+            ),
+          },
+        )
+      }
+    }
+    SeriesTemplateLoaded(Err(error)) =>
+      (
+        @rabbita.none,
+        {
+          ..model,
+          inspected_series: None,
+          series_action_loading: false,
+          series_action_status: None,
+          series_error: Some("Series template unavailable: " + error),
+        },
+      )
     RefreshMoonTownStatus =>
       (
         load_workspace_snapshot(emit),
@@ -77,9 +245,7 @@ fn update(
             } else {
               None
             },
-            review_phase: review_phase_from_workflow(
-              snapshot.review_workflow,
-            ),
+            review_phase: review_phase_from_workflow(snapshot.review_workflow),
             qa_ready: gateway_published && model.qa_ready,
             workspace: Some(snapshot.workspace),
             research_execution: snapshot.research_execution,
@@ -106,8 +272,7 @@ fn update(
         @rabbita.none,
         with_sidecar_error(model, "Workspace snapshot unavailable: " + error),
       )
-    SetBookDir(value) =>
-      (@rabbita.none, { ..model, book_dir: value })
+    SetBookDir(value) => (@rabbita.none, { ..model, book_dir: value })
     SetModelName(value) => (@rabbita.none, { ..model, model_name: value })
     SetReviewerName(value) => (@rabbita.none, { ..model, reviewer_name: value })
     SetReviewOutcome(value) =>
@@ -483,11 +648,11 @@ fn update(
     ResearchRefreshed(Err(error)) => (@rabbita.none, with_error(model, error))
     PrepareReview => {
       let issues = review_request_issues(
-        model.reviewer_name,
-        model.review_outcome,
-        model.review_scope,
-        model.review_message,
-      ) +
+          model.reviewer_name,
+          model.review_outcome,
+          model.review_scope,
+          model.review_message,
+        ) +
         review_gap_issues(model)
       match moonflow_review_binding_issue(model) {
         Some(issue) => issues.push(issue)
@@ -505,11 +670,7 @@ fn update(
         )
       } else {
         match model.review_workflow {
-          Some({
-            state: "ready-for-human-review",
-            prepare_url: Some(url),
-            ..
-          }) if !url.is_blank() =>
+          Some({ state: "ready-for-human-review", prepare_url: Some(url), .. }) if !url.is_blank() =>
             (
               prepare_portable_review(emit, url, model),
               {
@@ -544,7 +705,9 @@ fn update(
       if reply.contract_id != "moonfind.review-prepare-reply.v1" ||
         reply.state != "awaiting-moonchat" ||
         reply.operation_ref != "moonchat/conversation.review.record@0.1.0" ||
-        model.workspace.map(value => value.run_id != reply.run_id).unwrap_or(true) {
+        model.workspace
+        .map(value => value.run_id != reply.run_id)
+        .unwrap_or(true) {
         (
           @rabbita.none,
           with_review_error(
@@ -589,10 +752,10 @@ fn update(
       )
     MoonFlowIntakeLoaded(Ok(handoff)) =>
       if !valid_moonflow_intake(
-        handoff,
-        model.moonflow_run_id,
-        model.moonflow_handoff_token,
-      ) {
+          handoff,
+          model.moonflow_run_id,
+          model.moonflow_handoff_token,
+        ) {
         (
           @rabbita.none,
           {
@@ -604,13 +767,7 @@ fn update(
           },
         )
       } else {
-        (
-          @rabbita.none,
-          {
-            ..model,
-            moonflow_intake: Some(handoff),
-          },
-        )
+        (@rabbita.none, { ..model, moonflow_intake: Some(handoff) })
       }
     MoonFlowIntakeLoaded(Err(error)) =>
       (
@@ -625,10 +782,10 @@ fn update(
       )
     MoonFlowStatusLoaded(Ok(status)) =>
       if !valid_moonflow_status(
-        status,
-        model.moonflow_run_id,
-        model.moonflow_handoff_token,
-      ) {
+          status,
+          model.moonflow_run_id,
+          model.moonflow_handoff_token,
+        ) {
         (
           @rabbita.none,
           {
@@ -640,13 +797,7 @@ fn update(
           },
         )
       } else {
-        (
-          @rabbita.none,
-          {
-            ..model,
-            moonflow_receiver_status: Some(status),
-          },
-        )
+        (@rabbita.none, { ..model, moonflow_receiver_status: Some(status) })
       }
     MoonFlowStatusLoaded(Err(error)) =>
       (
@@ -664,20 +815,13 @@ fn update(
         Some(issue) =>
           (
             @rabbita.none,
-            {
-              ..model,
-              moonflow_receiver_error: Some(issue),
-              notice: None,
-            },
+            { ..model, moonflow_receiver_error: Some(issue), notice: None },
           )
         None =>
           match (model.moonflow_intake, model.review_workflow) {
             (
               Some(handoff),
-              Some({
-                state: "awaiting-moonchat" | "ready-for-bookkeeper",
-                ..
-              }),
+              Some({ state: "awaiting-moonchat" | "ready-for-bookkeeper", .. }),
             ) =>
               (
                 prepare_moonflow_receiver_receipt(emit, handoff),
@@ -705,10 +849,10 @@ fn update(
       }
     MoonFlowReceiptPrepared(Ok(reply)) =>
       if !valid_moonflow_receipt_reply(
-        reply,
-        model.moonflow_run_id,
-        model.moonflow_handoff_token,
-      ) {
+          reply,
+          model.moonflow_run_id,
+          model.moonflow_handoff_token,
+        ) {
         (
           @rabbita.none,
           {
@@ -747,10 +891,10 @@ fn update(
       )
     MoonFlowReceiptPosted(Ok(status)) =>
       if !valid_moonflow_status(
-        status,
-        model.moonflow_run_id,
-        model.moonflow_handoff_token,
-      ) ||
+          status,
+          model.moonflow_run_id,
+          model.moonflow_handoff_token,
+        ) ||
         status.status != "accepted" {
         (
           @rabbita.none,

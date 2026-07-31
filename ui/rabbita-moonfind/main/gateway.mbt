@@ -88,6 +88,26 @@ fn decode_moonflow_receipt_reply(
 }
 
 ///|
+fn decode_series_catalog(
+  result : Result[Array[SeriesUseCaseProjection], Error],
+) -> Result[Array[SeriesUseCaseProjection], String] {
+  match result {
+    Ok(payload) => Ok(payload)
+    Err(error) => Err("\{error}")
+  }
+}
+
+///|
+fn decode_series_detail(
+  result : Result[SeriesUseCaseProjection, Error],
+) -> Result[SeriesUseCaseProjection, String] {
+  match result {
+    Ok(payload) => Ok(payload)
+    Err(error) => Err("\{error}")
+  }
+}
+
+///|
 fn load_workspace_snapshot(emit : @rabbita.Emit[Msg]) -> @rabbita.Cmd {
   @http.get(product_api_url("/api/v1/workspace")).expect_json(
     emit.map(result => {
@@ -98,6 +118,23 @@ fn load_workspace_snapshot(emit : @rabbita.Emit[Msg]) -> @rabbita.Cmd {
         },
       )
     }),
+  )
+}
+
+///|
+fn load_series_catalog(emit : @rabbita.Emit[Msg]) -> @rabbita.Cmd {
+  @http.get(product_api_url("/api/v1/series")).expect_json(
+    emit.map(result => SeriesCatalogLoaded(decode_series_catalog(result))),
+  )
+}
+
+///|
+fn validate_series_template(
+  emit : @rabbita.Emit[Msg],
+  use_case_id : String,
+) -> @rabbita.Cmd {
+  @http.get(product_api_url("/api/v1/series/" + use_case_id)).expect_json(
+    emit.map(result => SeriesTemplateLoaded(decode_series_detail(result))),
   )
 }
 
@@ -143,7 +180,9 @@ fn prepare_portable_review(
   }
   @http.post(product_api_url(url))
   .with_json(payload)
-  .expect_json(emit.map(result => ReviewPrepared(decode_review_prepare(result))))
+  .expect_json(
+    emit.map(result => ReviewPrepared(decode_review_prepare(result))),
+  )
 }
 
 ///|
@@ -167,14 +206,10 @@ fn load_moonflow_receiver(
   let endpoint = moonflow_receiver_base(run_id, token)
   @rabbita.batch([
     @http.get(endpoint).expect_json(
-      emit.map(result => {
-        MoonFlowIntakeLoaded(decode_moonflow_intake(result))
-      }),
+      emit.map(result => MoonFlowIntakeLoaded(decode_moonflow_intake(result))),
     ),
     @http.get(endpoint + "/status").expect_json(
-      emit.map(result => {
-        MoonFlowStatusLoaded(decode_moonflow_status(result))
-      }),
+      emit.map(result => MoonFlowStatusLoaded(decode_moonflow_status(result))),
     ),
   ])
 }
@@ -205,9 +240,7 @@ fn post_moonflow_receiver_receipt(
   @http.post(reply.receipt_path)
   .with_json(reply.receiver_receipt)
   .expect_json(
-    emit.map(result => {
-      MoonFlowReceiptPosted(decode_moonflow_status(result))
-    }),
+    emit.map(result => MoonFlowReceiptPosted(decode_moonflow_status(result))),
   )
 }
 

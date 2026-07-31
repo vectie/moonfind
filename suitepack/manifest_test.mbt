@@ -55,6 +55,12 @@ test "manifest exposes a MoonDesk-hostable application route" {
     }),
   )
   assert_true(
+    value.schemas.any(fn(contract) {
+      contract.id == "series-use-case" &&
+      contract.path == "schemas/series-use-case.schema.json"
+    }),
+  )
+  assert_true(
     value.app_entrypoints.any(fn(entrypoint) {
       entrypoint.id == "research-studio" &&
       entrypoint.path == "/apps/moonfind/research"

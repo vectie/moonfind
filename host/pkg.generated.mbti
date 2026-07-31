@@ -20,6 +20,8 @@ pub async fn ingest_moontown_result(Config, @moontown.TownResultIngestRequest) -
 
 pub async fn prepare_cross_product_review(Config, ReviewPrepareRequestV1) -> ReviewPrepareReplyV1
 
+pub async fn prepare_moonflow_review_receipt(Config, ReviewMoonFlowReceiptRequestV1) -> ReviewMoonFlowReceiptReplyV1
+
 pub async fn reconcile_execution(Config, Json) -> CapabilityOperationReplyV1
 
 pub async fn review_workflow_status(Config) -> ReviewWorkflowStatusV1
@@ -116,6 +118,20 @@ pub(all) struct ReviewGapInputV1 {
   present : Bool
   severity : Int
   summary : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ReviewMoonFlowReceiptReplyV1 {
+  contract_id : String
+  run_id : String
+  handoff_token : String
+  receipt_path : String
+  receiver_receipt : Json
+  message : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ReviewMoonFlowReceiptRequestV1 {
+  contract_id : String
+  intake : Json
 } derive(ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct ReviewPrepareReplyV1 {

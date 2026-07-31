@@ -1,5 +1,8 @@
 # MoonFind documentation
 
+- [Series use cases](SERIES_USE_CASES.md) — curated user-goal graphs and the
+  Lunar Habitat Decision Series.
+
 - [Product contract](PRODUCT_CONTRACT.md) — evidence/provider boundary and
   closed-loop release gates.
 - [Implementation plan](IMPLEMENTATION_PLAN.md) — phase status and external

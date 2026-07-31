@@ -1,0 +1,21 @@
+{
+  "contract_id": "moonsuite.series-source.v1",
+  "series_id": "lunar-habitat-decision-series",
+  "source_revision": "owner-intent-v1",
+  "primary_user": "program owner",
+  "goal": "Turn an accepted lunar-habitat commission into cited research, a governed plan and digital habitat, simulated site and robot-readiness evidence, a reviewable three-minute internal animatic, a named decision, and Bookkeeper Three-Gap closure.",
+  "acceptance": [
+    "The commission, unknowns, budget, rights, and decision method remain traceable.",
+    "Every claim in the owner review is bound to cited or generated evidence and contradictory evidence.",
+    "The internal animatic is exactly 180 seconds and has named creative and owner decisions.",
+    "Bookkeeper records the outcome and Three-Gap proposal without self-activating a capability."
+  ],
+  "forbidden_claims": [
+    "securities recommendation",
+    "physical robot command",
+    "publication",
+    "commercial master",
+    "customer acceptance",
+    "execution inferred from a rendered desired graph"
+  ]
+}

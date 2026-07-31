@@ -31,7 +31,7 @@ Expected local URLs:
 
 ```text
 MoonFind  http://127.0.0.1:4313/apps/moonfind/research
-MoonTown  http://127.0.0.1:17842/viewport.html
+MoonTown  http://127.0.0.1:17842/index.html?seed=20260727
 MoonBook  http://127.0.0.1:4321/apps/moonbook/
 ```
 

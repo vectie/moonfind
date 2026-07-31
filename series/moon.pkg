@@ -1,0 +1,6 @@
+import {
+  "moonbitlang/core/json",
+  "vectie/moonfind/integration",
+}
+
+supported_targets = "native"
