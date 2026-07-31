@@ -22,7 +22,13 @@ pub fn town_handoff_id(String) -> String
 
 pub fn town_receipt_contract_version() -> String
 
+pub fn town_result_idempotency_key(String) -> String
+
 pub fn validate_town_execution_receipt(TownExecutionReceipt, String) -> Array[String]
+
+pub fn validate_town_research_handoff(TownResearchHandoff, String) -> Array[String]
+
+pub fn validate_town_result_ingest(TownResultIngestRequest, TownResearchHandoff, String) -> Array[String]
 
 pub fn validate_town_synthesis_output(TownSynthesisOutput, TownExecutionReceipt) -> Array[String]
 
@@ -106,6 +112,16 @@ pub(all) struct TownResearchScenario {
   skill_rules : Array[String]
   participants : Array[TownParticipant]
   ideas : Array[TownIdea]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct TownResultIngestRequest {
+  contract_id : String
+  idempotency_key : String
+  handoff_id : String
+  producer_run_id : String
+  receipt : TownExecutionReceipt
+  output : TownSynthesisOutput
+  source : Json
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct TownSynthesisIdea {

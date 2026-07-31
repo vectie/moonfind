@@ -51,10 +51,12 @@ pub fn manifest() -> @pack.MoonPackManifest {
       schema("capability-graph-projection"),
       schema("research-analysis-result"),
       schema("human-research-review"),
+      schema("cross-product-review-decision"),
       schema("moontown-research-scenario"),
       schema("bookkeeper-deliverable-candidate"),
       schema("capability-observation"),
       schema("read-only-qa-grounding"),
+      schema("ui-workspace"),
     ],
     tools: [
       tool("papers.acquire-arxiv", "research-watch", "paper-record", Observe, [

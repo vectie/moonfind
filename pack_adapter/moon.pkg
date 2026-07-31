@@ -1,0 +1,13 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/json",
+  "vectie/moonlib/pack",
+  "vectie/moonfind/agent",
+  "vectie/moonfind/hardening",
+  "vectie/moonfind/research",
+  "vectie/moonfind/store",
+}
+
+supported_targets = "native"

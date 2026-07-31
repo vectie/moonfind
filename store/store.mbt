@@ -81,3 +81,61 @@ pub fn digest_json(value : Json) -> String {
   }
   "sha256:" + builder.to_string()
 }
+
+///|
+/// Digest exact persisted bytes represented as text. Cross-product evidence
+/// must bind the file representation, not a re-serialized JSON value.
+pub fn digest_text(value : String) -> String {
+  let bytes = @crypto.sha256(@utf8.encode(value))
+  let builder = StringBuilder::new()
+  for byte in bytes {
+    let number = byte.to_int()
+    builder.write_char(hex_digit(number / 16))
+    builder.write_char(hex_digit(number % 16))
+  }
+  "sha256:" + builder.to_string()
+}
+
+///|
+fn digest_bytes(value : Bytes) -> String {
+  let bytes = @crypto.sha256(value)
+  let builder = StringBuilder::new()
+  for byte in bytes {
+    let number = byte.to_int()
+    builder.write_char(hex_digit(number / 16))
+    builder.write_char(hex_digit(number % 16))
+  }
+  "sha256:" + builder.to_string()
+}
+
+///|
+fn safe_declared_artifact_ref(reference : String) -> Bool {
+  !reference.is_blank() &&
+  !reference.has_prefix("/") &&
+  !reference.contains("\\") &&
+  !reference.split("/").any(part => part.is_blank() || part is ("." | ".."))
+}
+
+///|
+/// Reproduce MoonClaw's `declared_artifact_digest` over exact persisted bytes:
+/// first hash every artifact, render `<ref>|<sha256:digest>` in the supplied
+/// order, join identities with a newline, then hash that aggregate.
+pub fn digest_declared_artifact_bytes(
+  artifacts : Array[(String, Bytes)],
+) -> String raise {
+  guard !artifacts.is_empty() else {
+    fail("declared artifact digest requires at least one artifact")
+  }
+  let identities : Array[String] = []
+  let references : Array[String] = []
+  for artifact in artifacts {
+    let (reference, bytes) = artifact
+    guard safe_declared_artifact_ref(reference) &&
+      !references.contains(reference) else {
+      fail("declared artifact references must be safe and unique")
+    }
+    references.push(reference)
+    identities.push("\{reference}|\{digest_bytes(bytes)}")
+  }
+  digest_bytes(@utf8.encode(identities.join("\n")))
+}

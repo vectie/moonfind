@@ -20,6 +20,7 @@ using @html {
   section,
   small,
   span,
+  strong,
   textarea,
   ul,
 }
@@ -60,6 +61,32 @@ fn text_field(
     "width:100%", "box-sizing:border-box", "background:#07101f", "color:#edf5ff",
     "border:1px solid #314563", "border-radius:10px", "padding:11px 12px", "font:inherit",
   ])
+}
+
+///|
+fn gap_severity_field(
+  value : Int,
+  on_change : @rabbita.Emit[String],
+) -> @rabbita.Html {
+  select(
+    on_change~,
+    style=[
+      "width:100%", "min-height:44px", "box-sizing:border-box", "background:#07101f",
+      "color:#edf5ff", "border:1px solid #314563", "border-radius:10px", "padding:10px 12px",
+      "font:inherit",
+    ],
+    [0, 1, 2, 3, 4, 5].map(level => {
+      option(
+        value=level.to_string(),
+        selected=value == level,
+        if level == 0 {
+          "0 · not present"
+        } else {
+          "\{level} · present"
+        },
+      )
+    }),
+  )
 }
 
 ///|
@@ -122,10 +149,23 @@ fn phase_color(phase : ResearchPhase) -> String {
 
 ///|
 fn workflow_steps(model : Model) -> @rabbita.Html {
+  let workspace_ready = model.workspace is Some(_)
+  let analysis_ready = model.workspace
+    .map(workspace => workspace.summary_count > 0 || workspace.idea_count > 0)
+    .unwrap_or(false)
+  let town_complete = model.moontown_handoff
+    .map(handoff => {
+      handoff.state == "completed" ||
+      handoff.state == "ingested-pending-review"
+    })
+    .unwrap_or(false)
+  let review_state = model.review_workflow
+    .map(workflow => workflow.state)
+    .unwrap_or("not-ready")
   let steps = [
-    ("01", "Account 17/17 available pages", true),
-    ("02", "Cross-validate primary sources", true),
-    ("03", "MoonTown four-role challenge", true),
+    ("01", "Load current durable research workspace", workspace_ready),
+    ("02", "Produce evidence-backed analysis", analysis_ready),
+    ("03", "Complete typed MoonTown challenge", town_complete),
     (
       "04",
       "Validate and invoke installed pack capability",
@@ -143,8 +183,17 @@ fn workflow_steps(model : Model) -> @rabbita.Html {
       .map(execution => execution.state is ("runtime-pending" | "needs-review"))
       .unwrap_or(false),
     ),
-    ("06", "Named-human MoonBook review", model.review_phase == ReviewCompleted),
-    ("07", "Retained cited Q&A agent", model.qa_ready),
+    (
+      "06",
+      "Prepare named-human portable review for MoonChat",
+      review_state is ("awaiting-moonchat" | "ready-for-bookkeeper"),
+    ),
+    (
+      "07",
+      "MoonChat record accepted; submit to MoonBook Bookkeeper",
+      review_state == "ready-for-bookkeeper",
+    ),
+    ("08", "Retained cited Q&A agent", model.qa_ready),
   ]
   let rows : Array[@rabbita.Html] = []
   for step in steps {
@@ -177,54 +226,33 @@ fn workflow_steps(model : Model) -> @rabbita.Html {
 ///|
 fn review_phase_text(phase : ReviewPhase) -> String {
   match phase {
-    ReviewIdle => "Decision not started"
-    ReviewCreatingSession => "Creating review session"
-    ReviewPlanning => "Planning decision"
-    ReviewPlanReady => "Review plan ready"
-    ReviewPromoting => "Promoting review plan"
-    ReviewProposalReady => "Review proposal ready"
-    ReviewConfirming => "Confirming decision run"
-    ReviewRunning => "Decision run active"
-    ReviewCompleted => "Decision run completed"
-    ReviewFailed => "Review workflow needs attention"
+    ReviewIdle => "Named-human decision not yet bundled"
+    ReviewPreparing => "Persisting portable MoonChat review bundle"
+    ReviewBundleReady => "Portable review bundle is durable"
+    ReviewFailed => "Portable review preparation needs attention"
   }
 }
 
 ///|
 fn review_actions(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
   let actions : Array[@rabbita.Html] = []
-  let execution_review_ready = model.research_execution
-    .map(execution => execution.state == "needs-review")
+  let workflow_ready = model.review_workflow
+    .map(workflow => {
+      workflow.state == "ready-for-human-review" &&
+      workflow.prepare_url is Some(_)
+    })
     .unwrap_or(false)
   match model.review_phase {
     ReviewIdle | ReviewFailed =>
-      if execution_review_ready {
+      if workflow_ready {
         actions.push(
           action_button(
-            "Prepare scoped review plan",
+            "Prepare MoonChat review bundle",
             emit(PrepareReview),
             primary=true,
           ),
         )
       }
-    ReviewPlanReady =>
-      actions.push(
-        action_button(
-          "Promote review proposal",
-          emit(PromoteReview),
-          primary=true,
-        ),
-      )
-    ReviewProposalReady =>
-      actions.push(
-        action_button(
-          "Confirm durable decision run",
-          emit(ConfirmReview),
-          primary=true,
-        ),
-      )
-    ReviewRunning | ReviewCompleted =>
-      actions.push(action_button("Refresh decision run", emit(RefreshReview)))
     _ => ()
   }
   div(style=["display:flex", "gap:9px", "flex-wrap:wrap"], actions)
@@ -313,21 +341,25 @@ fn research_actions(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
             ),
           )
         "command-ready" =>
-          actions.push(
-            action_button(
-              "Run exact MoonClaw command",
-              emit(StartResearch),
-              primary=true,
-            ),
-          )
+          if model.gateway_published {
+            actions.push(
+              action_button(
+                "Run exact MoonClaw command",
+                emit(StartResearch),
+                primary=true,
+              ),
+            )
+          }
         "runtime-submitting" | "runtime-pending" | "runtime-unknown" =>
-          actions.push(
-            action_button(
-              "Poll persisted MoonClaw run",
-              emit(RefreshResearch),
-              primary=true,
-            ),
-          )
+          if model.gateway_published {
+            actions.push(
+              action_button(
+                "Poll persisted MoonClaw run",
+                emit(RefreshResearch),
+                primary=true,
+              ),
+            )
+          }
         "needs-review" => ()
         _ =>
           actions.push(
@@ -343,6 +375,13 @@ fn research_actions(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
 }
 
 ///|
+fn research_execution_terminal(model : Model) -> Bool {
+  model.research_execution
+  .map(execution => execution.state == "needs-review")
+  .unwrap_or(false)
+}
+
+///|
 fn setup_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
   section(style=surface() + ["padding:18px", "display:grid", "gap:13px"], [
     div([
@@ -350,25 +389,79 @@ fn setup_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
       h2(style=["margin:5px 0 3px", "font-size:20px"], "Research execution"),
       p(
         style=["margin:0", "color:#94a9c4", "line-height:1.5"],
-        "The browser can submit only a host-prepared, catalog-validated capability. The resulting exact command runs in MoonClaw Cowork; no model provider is called directly.",
+        "The browser can submit only the immutable capability published from the current append-only run journal. The exact returned command runs in MoonClaw Cowork; MoonFind never calls a model provider directly.",
       ),
     ]),
-    field_label(
-      "MoonClaw gateway",
-      text_field(
-        model.gateway_base,
-        "http://127.0.0.1:18123",
-        emit.map(value => SetGateway(value)),
-      ),
+    div(
+      style=[
+        "display:grid", "gap:7px", "padding:12px", "background:#07101f", "border:1px solid #273a58",
+        "border-radius:10px",
+      ],
+      [
+        eyebrow("PACK HOST"),
+        span(
+          style=[
+            "color:" +
+            (if model.host_status == "ready" { "#74e0a7" } else { "#f4cb72" }),
+            "font-weight:800",
+          ],
+          model.host_status.to_upper(),
+        ),
+        if model.host_blockers.is_empty() {
+          small(
+            style=["color:#93a8c2"],
+            "Current durable workspace and capability ports are published.",
+          )
+        } else {
+          ul(
+            style=["margin:0", "padding-left:18px", "color:#f4cb72"],
+            model.host_blockers.map(blocker => li(blocker)),
+          )
+        },
+      ],
     ),
-    field_label(
-      "Private source folder",
-      text_field(
-        model.source_dir,
-        "/Users/name/Downloads/deepseek",
-        emit.map(value => SetSourceDir(value)),
-      ),
-    ),
+    if research_execution_terminal(model) {
+      div(
+        style=[
+          "display:grid", "gap:5px", "padding:12px", "background:#07101f", "border:1px solid #273a58",
+          "border-radius:10px",
+        ],
+        [
+          eyebrow("MOONCLAW RUNTIME"),
+          strong(
+            style=["color:#74e0a7"],
+            "Execution complete · live session not required",
+          ),
+          small(
+            style=["color:#93a8c2"],
+            "This view is backed by the immutable MoonClaw receipt and run checkpoint. It will not contact or advertise an unavailable operator.",
+          ),
+        ],
+      )
+    } else if model.gateway_published {
+      div(
+        style=[
+          "display:grid", "gap:5px", "padding:12px", "background:#07101f", "border:1px solid #273a58",
+          "border-radius:10px",
+        ],
+        [
+          eyebrow("REACHABLE MOONCLAW GATEWAY"),
+          code(
+            style=["color:#8fdccc", "overflow-wrap:anywhere"],
+            model.gateway_base,
+          ),
+          small(
+            style=["color:#93a8c2"],
+            "The trusted host verified and published this endpoint.",
+          ),
+        ],
+      )
+    } else {
+      small(
+        style=["color:#f4cb72"],
+        "No reachable MoonClaw gateway was published by the trusted host.",
+      )
+    },
     field_label(
       "MoonBook workspace",
       text_field(
@@ -377,28 +470,18 @@ fn setup_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
         emit.map(value => SetBookDir(value)),
       ),
     ),
-    field_label(
-      "MoonClaw model route",
-      text_field(
-        model.model_name,
-        "codex/gpt-5.6-sol",
-        emit.map(value => SetModelName(value)),
-      ),
-    ),
-    field_label(
-      "Research contract",
-      textarea(
-        value=model.request_text,
-        rows=16,
-        on_input=emit.map(value => SetRequestText(value)),
-        style=[
-          "width:100%", "box-sizing:border-box", "resize:vertical", "background:#07101f",
-          "color:#dbe8f7", "border:1px solid #314563", "border-radius:10px", "padding:12px",
-          "font:12px/1.5 ui-monospace,SFMono-Regular,monospace",
-        ],
-        "",
-      ),
-    ),
+    if research_execution_terminal(model) {
+      @html.nothing
+    } else {
+      field_label(
+        "MoonClaw model route",
+        text_field(
+          model.model_name,
+          "codex/gpt-5.6-sol",
+          emit.map(value => SetModelName(value)),
+        ),
+      )
+    },
     research_actions(emit, model),
     match model.research_execution {
       Some(execution) =>
@@ -434,16 +517,83 @@ fn setup_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
 }
 
 ///|
+fn gap_editor(
+  title : String,
+  severity : Int,
+  summary : String,
+  on_severity : @rabbita.Emit[String],
+  on_summary : @rabbita.Emit[String],
+) -> @rabbita.Html {
+  div(
+    style=[
+      "display:grid", "grid-template-columns:minmax(130px,.42fr) minmax(220px,1fr)",
+      "gap:9px", "padding:11px", "background:#07101f", "border:1px solid #273a58",
+      "border-radius:11px",
+    ],
+    [
+      field_label(title + " severity", gap_severity_field(severity, on_severity)),
+      field_label(
+        title + " evidence statement",
+        text_field(
+          summary,
+          "What was missing, misrecognized, or undecided?",
+          on_summary,
+        ),
+      ),
+    ],
+  )
+}
+
+///|
 fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
+  let workflow = model.review_workflow
   section(style=surface() + ["padding:18px", "display:grid", "gap:11px"], [
     div([
-      eyebrow("MOONBOOK AUTHORITY"),
-      h2(style=["margin:5px 0", "font-size:19px"], "Named-human review"),
+      eyebrow("PORTABLE REVIEW → BOOKKEEPER"),
+      h2(
+        style=["margin:5px 0", "font-size:19px"],
+        "Named-human decision and Three-Gap record",
+      ),
       p(
         style=["margin:0", "color:#95aac5", "line-height:1.5"],
-        "Review remains locked until the persisted MoonClaw run completes and MoonFind records a needs-review checkpoint.",
+        "MoonFind captures this bounded decision and produces a portable bundle. MoonChat records the versioned review through MoonFlow. MoonBook's existing Rabbita queue alone accepts the deliverable and owns Three-Gap learning.",
       ),
     ]),
+    div(
+      style=[
+        "display:grid", "gap:5px", "padding:11px", "background:#07101f", "border:1px solid #273a58",
+        "border-radius:11px",
+      ],
+      [
+        eyebrow("DURABLE REVIEW WORKFLOW"),
+        strong(
+          style=[
+            "color:" +
+            workflow
+            .map(value => {
+              if value.state is
+                ("ready-for-human-review"
+                | "awaiting-moonchat"
+                | "ready-for-bookkeeper") {
+                "#74e0a7"
+              } else {
+                "#f4cb72"
+              }
+            })
+            .unwrap_or("#8297b4"),
+          ],
+          workflow
+          .map(value => value.state.to_upper())
+          .unwrap_or("NOT PUBLISHED"),
+        ),
+        small(
+          style=["color:#a8b9cf", "line-height:1.5"],
+          workflow
+          .map(value => value.detail)
+          .unwrap_or("The trusted host has not published a review workflow."),
+        ),
+      ],
+    ),
     field_label(
       "Reviewer name",
       text_field(
@@ -508,26 +658,51 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
         "",
       ),
     ),
-    if model.phase == NeedsReview &&
-      model.research_execution
-      .map(execution => execution.state == "needs-review")
-      .unwrap_or(false) {
-      action_button(
-        "Submit paused-run guidance",
-        emit(ResumeReview),
-        primary=true,
-      )
-    } else {
+    div(style=["display:grid", "gap:9px"], [
+      eyebrow("THREE-GAP OBSERVATION"),
+      gap_editor(
+        "Information",
+        model.information_gap_severity,
+        model.information_gap_summary,
+        emit.map(value => SetInformationGapSeverity(value)),
+        emit.map(value => SetInformationGapSummary(value)),
+      ),
+      gap_editor(
+        "Recognition",
+        model.recognition_gap_severity,
+        model.recognition_gap_summary,
+        emit.map(value => SetRecognitionGapSeverity(value)),
+        emit.map(value => SetRecognitionGapSummary(value)),
+      ),
+      gap_editor(
+        "Decisiveness",
+        model.decisiveness_gap_severity,
+        model.decisiveness_gap_summary,
+        emit.map(value => SetDecisivenessGapSeverity(value)),
+        emit.map(value => SetDecisivenessGapSummary(value)),
+      ),
       small(
-        style=["color:#8297b4"],
-        if model.research_execution
-          .map(execution => execution.state == "needs-review")
-          .unwrap_or(false) {
-          "The candidate is pending. Approval remains bounded to the explicit scope above."
-        } else {
-          "No review action is available before the durable MoonClaw result reaches needs-review."
-        },
-      )
+        style=["color:#8297b4", "line-height:1.45"],
+        "These are explicit observations for Bookkeeper review, not self-applied learning. Severity 0 means the gap is not present; any positive severity needs a concrete statement.",
+      ),
+    ]),
+    match moonflow_review_binding_issue(model) {
+      Some(issue) =>
+        small(
+          style=["color:#f4cb72", "line-height:1.45"],
+          "MoonFlow binding: " + issue,
+        )
+      None =>
+        small(
+          style=["color:#8297b4"],
+          if workflow
+            .map(value => value.state == "ready-for-human-review")
+            .unwrap_or(false) {
+            "The candidate is ready. Approval remains bounded to the explicit scope and named reviewer above."
+          } else {
+            "This decision form is locked by the durable workflow state shown above."
+          },
+        )
     },
     div(
       style=[
@@ -539,19 +714,77 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
         review_actions(emit, model),
       ],
     ),
-    model.review_session
-    .map(session => {
-      div(
-        style=[
-          "display:grid", "gap:10px", "padding-top:10px", "border-top:1px solid #263654",
-        ],
-        [
-          run_detail(session),
-          div([eyebrow("REVIEW PLAN"), plan_panel(Some(session))]),
-        ],
-      )
-    })
-    .unwrap_or(div("")),
+    match model.review_prepare_reply {
+      Some(reply) =>
+        div(
+          style=[
+            "display:grid", "gap:6px", "padding:11px", "background:#07101f",
+            "border:1px solid #2e6f71", "border-radius:11px",
+          ],
+          [
+            eyebrow("MOONCHAT BUNDLE"),
+            code(
+              style=["color:#8fdccc", "overflow-wrap:anywhere"],
+              reply.bundle_ref,
+            ),
+            small(
+              style=["color:#a8b9cf", "overflow-wrap:anywhere"],
+              reply.operation_ref + " · review " + reply.review_id,
+            ),
+          ],
+        )
+      None =>
+        match workflow.bind(value => value.bundle_ref) {
+          Some(bundle_ref) =>
+            div(
+              style=[
+                "display:grid", "gap:6px", "padding:11px", "background:#07101f",
+                "border:1px solid #2e6f71", "border-radius:11px",
+              ],
+              [
+                eyebrow("DURABLE PORTABLE BUNDLE"),
+                code(
+                  style=["color:#8fdccc", "overflow-wrap:anywhere"],
+                  bundle_ref,
+                ),
+                small(
+                  style=["color:#a8b9cf"],
+                  workflow
+                  .bind(value => value.moonchat_operation_ref)
+                  .unwrap_or("Waiting for MoonChat operation binding"),
+                ),
+              ],
+            )
+          None => @html.nothing
+        }
+    },
+    match workflow.bind(value => value.bookkeeper_submission_ref) {
+      Some(submission_ref) =>
+        div(
+          style=[
+            "display:grid", "gap:6px", "padding:11px", "background:#07101f",
+            "border:1px solid #2e6f71", "border-radius:11px",
+          ],
+          [
+            eyebrow("READY FOR MOONBOOK"),
+            code(
+              style=["color:#8fdccc", "overflow-wrap:anywhere"],
+              submission_ref,
+            ),
+            small(
+              style=["color:#a8b9cf"],
+              workflow
+              .bind(value => value.bookkeeper_operation_ref)
+              .unwrap_or("MoonBook operation not published"),
+            ),
+            small(
+              style=["color:#f4cb72", "line-height:1.45"],
+              "Open MoonBook's existing Rabbita Bookkeeper queue to review the deliverable. This MoonFind view cannot accept or activate it.",
+            ),
+          ],
+        )
+      None => @html.nothing
+    },
   ])
 }
 
@@ -577,7 +810,15 @@ fn qa_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
           style=["color:#79dccb", "font-size:11px", "overflow-wrap:anywhere"],
           session.session.session_key,
         )
-      None => action_button("Prepare Q&A agent", emit(PrepareQa), primary=true)
+      None =>
+        if model.gateway_published {
+          action_button("Prepare Q&A agent", emit(PrepareQa), primary=true)
+        } else {
+          small(
+            style=["color:#f4cb72"],
+            "No reachable MoonClaw gateway was published; the retained agent is unavailable.",
+          )
+        }
     },
     field_label(
       "Question",
@@ -620,10 +861,16 @@ fn qa_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
 }
 
 ///|
-fn evidence_panel() -> @rabbita.Html {
+fn evidence_panel(model : Model) -> @rabbita.Html {
+  let workspace = model.workspace
   section(style=surface() + ["padding:18px"], [
-    eyebrow("DRAFT BOOK"),
-    h2(style=["margin:5px 0"], "Evidence before acceptance"),
+    eyebrow("CURRENT DURABLE RUN"),
+    h2(
+      style=["margin:5px 0"],
+      workspace
+      .map(value => value.watch_title)
+      .unwrap_or("Waiting for the MoonFind host"),
+    ),
     div(
       style=[
         "display:grid", "grid-template-columns:repeat(3,minmax(0,1fr))", "gap:9px",
@@ -633,42 +880,324 @@ fn evidence_panel() -> @rabbita.Html {
         div(
           style=["background:#07101f", "padding:12px", "border-radius:10px"],
           [
-            h3(style=["margin:0", "font-size:24px"], "17/17"),
-            small(style=["color:#8fa4bf"], "available pages used"),
+            h3(
+              style=["margin:0", "font-size:24px"],
+              workspace
+              .map(value => value.paper_count.to_string())
+              .unwrap_or("—"),
+            ),
+            small(style=["color:#8fa4bf"], "point-in-time papers"),
           ],
         ),
         div(
           style=["background:#07101f", "padding:12px", "border-radius:10px"],
           [
-            h3(style=["margin:0", "font-size:24px"], "1"),
-            small(style=["color:#8fa4bf"], "known missing page"),
+            h3(
+              style=["margin:0", "font-size:24px"],
+              workspace
+              .map(value => value.summary_count.to_string())
+              .unwrap_or("—"),
+            ),
+            small(style=["color:#8fa4bf"], "evidence summaries"),
           ],
         ),
         div(
           style=["background:#07101f", "padding:12px", "border-radius:10px"],
           [
-            h3(style=["margin:0", "font-size:24px"], "3"),
-            small(style=["color:#8fa4bf"], "research iterations"),
+            h3(
+              style=["margin:0", "font-size:24px"],
+              workspace
+              .map(value => value.idea_count.to_string())
+              .unwrap_or("—"),
+            ),
+            small(style=["color:#8fa4bf"], "falsifiable ideas"),
           ],
         ),
       ],
     ),
     p(
       style=["color:#a8b9cf", "line-height:1.55"],
-      "Central synthesis: DeepSeek appears to convert compute scarcity into a repeatable efficiency rate, then use openness and restrained economics as distribution and legitimacy mechanisms. Internal fleet, finance, organization, AGI, and Huawei-parity claims remain attributed or speculative.",
+      workspace
+      .map(value => {
+        "Status: \{value.status}. Active stage: \{value.active_stage}. Three-Gap state: \{value.three_gap_state}."
+      })
+      .unwrap_or(
+        "The static demo projection has been retired. Start the MoonBit UI host with a durable run to inspect current evidence.",
+      ),
     ),
     code(
       style=[
         "display:block", "color:#8fdccc", "font-size:11px", "overflow-wrap:anywhere",
         "margin-bottom:10px",
       ],
-      "/Users/kq/Workspace/deepseek-research-book/wiki/synthesis/deepseek-research-report.md",
+      workspace
+      .map(value => "run \{value.run_id} · \{value.query}")
+      .unwrap_or("no durable run loaded"),
     ),
-    a(
-      href="http://127.0.0.1:18123/ui",
-      target=Blank,
-      style=["color:#70dccb", "font-weight:800"],
-      "Open MoonClaw operator",
+    if model.gateway_published && !research_execution_terminal(model) {
+      a(
+        href=model.gateway_base + "/ui",
+        target=Blank,
+        style=["color:#70dccb", "font-weight:800"],
+        "Open MoonClaw operator",
+      )
+    } else {
+      small(
+        style=["color:#8297b4"],
+        if research_execution_terminal(model) {
+          "The terminal run is projected from durable evidence; no live MoonClaw operator is required."
+        } else {
+          "No reachable MoonClaw operator was published."
+        },
+      )
+    },
+  ])
+}
+
+///|
+fn moontown_handoff_panel(
+  emit : @rabbita.Emit[Msg],
+  model : Model,
+) -> @rabbita.Html {
+  let handoff = model.moontown_handoff
+  section(style=surface() + ["padding:18px", "display:grid", "gap:10px"], [
+    div([
+      eyebrow("TYPED CROSS-PRODUCT HANDOFF"),
+      h2(style=["margin:5px 0"], "Challenge in MoonTown"),
+      p(
+        style=["margin:0", "color:#95aac5", "line-height:1.5"],
+        "MoonFind exposes only the versioned run-bound handoff artifact. MoonTown remains a separate product and MoonClaw remains its agent runtime.",
+      ),
+    ]),
+    span(
+      style=[
+        "color:" +
+        handoff
+        .map(value => {
+          if value.state == "ready" ||
+            value.state == "completed" ||
+            value.state == "ingested-pending-review" {
+            "#74e0a7"
+          } else {
+            "#f4cb72"
+          }
+        })
+        .unwrap_or("#8297b4"),
+        "font-weight:800",
+      ],
+      handoff.map(value => value.state.to_upper()).unwrap_or("NOT PUBLISHED"),
+    ),
+    small(
+      style=["color:#a8b9cf", "line-height:1.5"],
+      handoff
+      .map(value => value.detail)
+      .unwrap_or(
+        "The MoonFind host has not published a MoonTown handoff status.",
+      ),
+    ),
+    handoff
+    .bind(value => value.handoff_id)
+    .map(id => {
+      code(
+        style=["color:#8fdccc", "font-size:11px", "overflow-wrap:anywhere"],
+        id,
+      )
+    })
+    .unwrap_or(div("")),
+    match handoff.bind(value => value.open_url) {
+      Some(url) =>
+        a(
+          href=url,
+          target=Blank,
+          style=[
+            "display:inline-flex", "align-items:center", "justify-content:center",
+            "min-height:44px", "padding:10px 15px", "background:#67d5c4", "color:#07101f",
+            "border-radius:11px", "font-weight:800", "text-decoration:none",
+          ],
+          "Open typed handoff in MoonTown",
+        )
+      None =>
+        small(
+          style=["color:#f4cb72"],
+          "Open remains unavailable until the handoff validates and the configured MoonTown host responds.",
+        )
+    },
+    if handoff
+      .map(value => {
+        value.state != "not-ready" && value.state != "awaiting-materialization"
+      })
+      .unwrap_or(false) {
+      action_button(
+        "Refresh returned result",
+        emit(RefreshMoonTownStatus),
+        primary=false,
+      )
+    } else {
+      @html.nothing
+    },
+  ])
+}
+
+///|
+fn moonflow_receiver_panel(
+  emit : @rabbita.Emit[Msg],
+  model : Model,
+) -> @rabbita.Html {
+  if !moonflow_launch_present(
+    model.moonflow_run_id,
+    model.moonflow_handoff_token,
+  ) {
+    return @html.nothing
+  }
+  let intake = model.moonflow_intake
+  let status = model.moonflow_receiver_status
+  section(style=surface() + ["padding:18px", "display:grid", "gap:10px"], [
+    div([
+      eyebrow("MOONFLOW RECEIVER"),
+      h2(style=["margin:5px 0"], "Run-bound product handoff"),
+      p(
+        style=["margin:0", "color:#95aac5", "line-height:1.5"],
+        "This view reads the exact generic MoonFlow intake and status from the MoonDesk origin. The token is correlation, never authority.",
+      ),
+    ]),
+    code(
+      style=["color:#8fdccc", "font-size:11px", "overflow-wrap:anywhere"],
+      "run \{model.moonflow_run_id} · handoff \{model.moonflow_handoff_token}",
+    ),
+    match model.moonflow_receiver_error {
+      Some(error) =>
+        small(
+          style=["color:#ff9e9e", "line-height:1.45"],
+          "Receiver problem: " + error,
+        )
+      None => @html.nothing
+    },
+    match intake {
+      Some(handoff) =>
+        div(
+          style=[
+            "display:grid", "gap:6px", "padding:11px", "background:#07101f",
+            "border:1px solid #273a58", "border-radius:11px",
+          ],
+          [
+            eyebrow("VERIFIED INTAKE"),
+            strong(
+              style=["color:#74e0a7"],
+              handoff.payload.run.operation,
+            ),
+            small(
+              style=["color:#a8b9cf", "overflow-wrap:anywhere"],
+              "work item \{handoff.payload.run.work_item_id} · declaration \{handoff.payload.run.declaration_id}",
+            ),
+            small(
+              style=["color:#a8b9cf"],
+              "authority requested: " +
+              handoff.payload.authority.requested_authority,
+            ),
+            small(
+              style=["color:#a8b9cf"],
+              "outputs: " +
+              handoff.payload.contracts.output_contracts.join(", "),
+            ),
+            if handoff.payload.review.acceptance_criteria.is_empty() {
+              small(style=["color:#8297b4"], "No acceptance criteria declared.")
+            } else {
+              ul(
+                style=["margin:0", "padding-left:18px", "color:#a8b9cf"],
+                handoff.payload.review.acceptance_criteria.map(criterion => {
+                  li(criterion)
+                }),
+              )
+            },
+          ],
+        )
+      None =>
+        small(
+          style=["color:#f4cb72"],
+          "Waiting for MoonDesk to return the verified handoff payload.",
+        )
+    },
+    match status {
+      Some(receiver) =>
+        div(
+          style=[
+            "display:flex", "gap:9px", "align-items:center", "justify-content:space-between",
+            "flex-wrap:wrap",
+          ],
+          [
+            span(
+              style=[
+                "color:" +
+                (if receiver.status == "accepted" {
+                  "#74e0a7"
+                } else if receiver.status == "denied" {
+                  "#ff9e9e"
+                } else {
+                  "#f4cb72"
+                }),
+                "font-weight:800",
+              ],
+              "RECEIVER " + receiver.status.to_upper() +
+              " · WORK " +
+              receiver.work_item_status.to_upper(),
+            ),
+            a(
+              href=receiver.return_path,
+              style=["color:#70dccb", "font-weight:800"],
+              "Return to Flow",
+            ),
+          ],
+        )
+      None =>
+        small(
+          style=["color:#8297b4"],
+          "Receiver status has not loaded.",
+        )
+    },
+    if status
+      .map(receiver => receiver.status == "pending")
+      .unwrap_or(false) &&
+      model.review_workflow
+      .map(workflow => {
+        workflow.state is ("awaiting-moonchat" | "ready-for-bookkeeper")
+      })
+      .unwrap_or(false) {
+      div(
+        style=[
+          "padding:11px", "background:#2b2516", "border:1px solid #7e6931",
+          "border-radius:11px", "display:grid", "gap:5px",
+        ],
+        [
+          strong(
+            style=["color:#74e0a7"],
+            "Review bundle is ready to return",
+          ),
+          small(
+            style=["color:#ddcfaa", "line-height:1.5"],
+            "The trusted MoonFind host will revalidate this exact intake, bind a durable local-workspace authority receipt, compute the aggregate digest from persisted bytes, and cover every declared acceptance criterion. MoonBook acceptance remains a later, separate human gate.",
+          ),
+          action_button(
+            "Return reviewed bundle to Flow",
+            emit(SettleMoonFlowReceipt),
+            primary=true,
+          ),
+        ],
+      )
+    } else {
+      @html.nothing
+    },
+    match model.moonflow_receipt_reply {
+      Some(reply) =>
+        small(
+          style=["color:#8fdccc", "overflow-wrap:anywhere"],
+          "Prepared immutable receiver receipt · " + reply.receipt_path,
+        )
+      None => @html.nothing
+    },
+    action_button(
+      "Refresh MoonFlow receiver",
+      emit(RefreshMoonFlowReceiver),
+      primary=false,
     ),
   ])
 }
@@ -736,11 +1265,13 @@ fn view(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
               eyebrow("MOONFIND / LOCAL CORPUS RESEARCH"),
               h1(
                 style=["margin:5px 0 4px", "font-size:clamp(27px,4vw,44px)"],
-                "DeepSeek evidence studio",
+                model.workspace
+                .map(workspace => workspace.title)
+                .unwrap_or("MoonFind research studio"),
               ),
               p(
                 style=["margin:0", "color:#9cb0cd", "max-width:72ch"],
-                "From private screenshots to a cross-validated MoonBook report, an explicit review gate, and a retained cited Q&A agent.",
+                "Current durable evidence, exact MoonClaw execution, typed MoonTown challenge, and named-human MoonBook review in one fail-closed operator path.",
               ),
             ]),
             div(style=["display:grid", "gap:8px", "justify-items:end"], [
@@ -789,7 +1320,9 @@ fn view(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
                 eyebrow("END-TO-END CONTRACT"),
                 workflow_steps(model),
               ]),
-              evidence_panel(),
+              evidence_panel(model),
+              moontown_handoff_panel(emit, model),
+              moonflow_receiver_panel(emit, model),
               robotics_graph_panel(),
               model.research_session
               .map(session => {

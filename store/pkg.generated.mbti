@@ -1,12 +1,26 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "vectie/moonfind/store"
 
+import {
+  "vectie/moonfind/integration",
+}
+
 // Values
+pub async fn append_execution_record(String, @integration.ResearchExecutionRecordV1) -> String
+
+pub fn digest_declared_artifact_bytes(Array[(String, Bytes)]) -> String raise
+
 pub fn digest_json(Json) -> String
+
+pub fn digest_text(String) -> String
 
 pub async fn ensure_run_directory(String, String) -> String
 
+pub fn execution_journal_path(String, String) -> String raise
+
 pub async fn read_json(String) -> Json
+
+pub async fn read_latest_execution_record(String, String) -> @integration.ResearchExecutionRecordV1?
 
 pub fn run_directory(String, String) -> String raise
 

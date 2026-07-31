@@ -36,16 +36,32 @@
       "authority": "workspace-mutation"
     },
     {
-      "id": "review",
+      "id": "prepare-review",
       "operation_ref": "moonfind/research.review@0.1.0",
       "authority": "workspace-mutation",
-      "named_human_required": true
+      "named_human_required": true,
+      "result": "moonchat/conversation-review-bundle@1.0.0",
+      "rule": "MoonFind materializes the exact named-human decision; it cannot accept the run directly."
+    },
+    {
+      "id": "record-review",
+      "operation_ref": "moonchat/conversation.review.record@0.1.0",
+      "authority": "workspace-mutation",
+      "named_human_required": true,
+      "result": "moonchat/conversation-review-record@1.0.0"
+    },
+    {
+      "id": "accept-reviewed-synthesis",
+      "operation_ref": "moonfind/bookkeeper.deliverable-handoff@0.1.0",
+      "authority": "workspace-mutation",
+      "rule": "MoonFind accepts only an exact MoonChat accepted-knowledge record and prepares the generic MoonBook submission."
     },
     {
       "id": "learn",
-      "operation_ref": "moonbook/bookkeeper.outcome.close@0.1.0",
+      "operation_ref": "moonbook/bookkeeper.outcome.submit@0.1.0",
       "authority": "workspace-mutation",
-      "named_human_required": true
+      "named_human_required": true,
+      "recovery": "replay the same submission after each MoonBook review; never self-approve or activate"
     }
   ]
 }

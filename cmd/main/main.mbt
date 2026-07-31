@@ -2,6 +2,7 @@
 fn usage() -> Unit {
   println(
     "Moonfind usage:\n" +
+    "  moonfind prepare-fixture <workspace> <fixtures-directory>\n" +
     "  moonfind run-fixture <workspace> <fixtures-directory>\n" +
     "  moonfind prepare-live <workspace> <run-id>\n" +
     "  moonfind record-fulltext <workspace> <run-id> <full-text-evidence.json>\n" +
@@ -488,7 +489,7 @@ async fn review_run(
 }
 
 ///|
-async fn run_fixture(workspace : String, fixtures : String) -> Unit {
+async fn prepare_fixture(workspace : String, fixtures : String) -> String {
   let now = 1000L
   let feed = @store.read_json(fixtures + "/feed.json")
   guard feed is Object(fields) && fields.get("atom") is Some(String(atom)) else {
@@ -503,9 +504,15 @@ async fn run_fixture(workspace : String, fixtures : String) -> Unit {
   )
   persist_pending(workspace, run)
   complete_run(workspace, run.run_id, fixtures + "/analysis-result.json")
+  run.run_id
+}
+
+///|
+async fn run_fixture(workspace : String, fixtures : String) -> Unit {
+  let run_id = prepare_fixture(workspace, fixtures)
   review_run(
     workspace,
-    run.run_id,
+    run_id,
     fixtures + "/human-review.json",
     require_moontown_receipt=false,
   )
@@ -533,6 +540,8 @@ async fn export_ui(
 ///|
 async fn main {
   match @env.args()[1:] {
+    ["prepare-fixture", workspace, fixtures] =>
+      ignore(prepare_fixture(workspace, fixtures))
     ["run-fixture", workspace, fixtures] => run_fixture(workspace, fixtures)
     ["prepare-live", workspace, run_id] => prepare_live(workspace, run_id)
     ["record-fulltext", workspace, run_id, evidence] =>

@@ -1,14 +1,3 @@
-///|
-test "default request preserves corpus and authority boundaries" {
-  let request = default_request("/private/deepseek", "/workspace/book")
-  assert_eq(request.contains("/private/deepseek"), true)
-  assert_eq(request.contains("/workspace/book"), true)
-  assert_eq(request.contains("Keep page 1 explicitly missing"), true)
-  assert_eq(request.contains("Never self-approve"), true)
-  assert_eq(request.contains("MoonClaw is the only model runtime"), true)
-}
-
-///|
 test "run status normalization maps gateway states to review phases" {
   assert_eq(phase_from_run_status("\"Succeeded\"") == Completed, true)
   assert_eq(phase_from_run_status(" WaitingForInput ") == NeedsReview, true)
@@ -20,13 +9,13 @@ test "run status normalization maps gateway states to review phases" {
 test "initial model remains pending and targets the governed workspace" {
   let model = initial_model()
   assert_eq(model.phase == Ready, true)
-  assert_eq(model.source_dir, "/Users/kq/Downloads/deepseek")
+  assert_eq(model.gateway_published, false)
   assert_eq(model.book_dir, "/Users/kq/Workspace/deepseek-research-book")
   assert_eq(model.reviewer_name, "")
   assert_eq(model.review_outcome, "")
   assert_eq(model.review_scope, "")
-  assert_eq(model.review_session is None, true)
   assert_eq(model.review_phase == ReviewIdle, true)
+  assert_eq(model.review_prepare_reply is None, true)
   assert_eq(model.qa_session is None, true)
   assert_eq(model.qa_ready, false)
 }
@@ -34,17 +23,136 @@ test "initial model remains pending and targets the governed workspace" {
 ///|
 test "workspace snapshot carries both persisted UI session keys" {
   let snapshot : WorkspaceSnapshot = @json.from_json({
+    "contract_id": "moonfind.ui-workspace.v1",
     "product_id": "moonfind",
+    "generated_at": "2026-07-31T00:00:00Z",
     "book_workspace": "/workspace/book",
+    "workspace": {
+      "product_id": "moonfind",
+      "title": "Research",
+      "run_id": "run-1",
+      "status": "awaiting-agent-analysis",
+      "watch_title": "Humanoid research",
+      "query": "humanoid",
+      "paper_count": 2,
+      "summary_count": 0,
+      "idea_count": 0,
+      "question_count": 0,
+      "accepted_idea_count": 0,
+      "active_stage": "MoonClaw analysis",
+      "validation_issues": [],
+      "bookkeeper_route": "moonbook.bookkeeper",
+      "three_gap_state": "waiting-for-accepted-outcome",
+    },
     "research_cowork_session_key": "cowork:research",
     "qa_cowork_session_key": "cowork:qa",
     "qa_agent_status": "grounded_verified",
+    "moonclaw_gateway_base": "http://127.0.0.1:19000",
+    "host_status": "ready",
+    "host_blockers": [],
+    "moontown_handoff": {
+      "contract_id": "moonfind.moontown-handoff-status.v1",
+      "run_id": "run-1",
+      "state": "not-ready",
+      "handoff_contract": "moontown.civic.communication.handoff.v1",
+      "detail": "not ready",
+    },
+    "review_workflow": {
+      "contract_id": "moonfind.review-workflow-status.v1",
+      "run_id": "run-1",
+      "state": "not-ready",
+      "detail": "MoonTown synthesis must complete before review.",
+    },
   })
   assert_eq(snapshot.product_id, "moonfind")
   assert_eq(snapshot.book_workspace, "/workspace/book")
   assert_true(snapshot.research_cowork_session_key is Some("cowork:research"))
   assert_true(snapshot.qa_cowork_session_key is Some("cowork:qa"))
   assert_eq(snapshot.qa_agent_status, "grounded_verified")
+  assert_eq(snapshot.contract_id, "moonfind.ui-workspace.v1")
+  assert_eq(snapshot.workspace.run_id, "run-1")
+  assert_eq(
+    gateway_base_from_snapshot(snapshot, "http://127.0.0.1:4313"),
+    "http://127.0.0.1:19000",
+  )
+  assert_eq(has_published_gateway(snapshot), true)
+}
+
+///|
+test "terminal durable execution skips refresh and opens named review cleanly" {
+  let snapshot : WorkspaceSnapshot = @json.from_json({
+    "contract_id": "moonfind.ui-workspace.v1",
+    "product_id": "moonfind",
+    "generated_at": "2026-07-31T00:00:06Z",
+    "book_workspace": "/workspace/book",
+    "workspace": {
+      "product_id": "moonfind",
+      "title": "Research",
+      "run_id": "run-1",
+      "status": "human-review",
+      "watch_title": "Humanoid research",
+      "query": "humanoid",
+      "paper_count": 3,
+      "summary_count": 3,
+      "idea_count": 1,
+      "question_count": 2,
+      "accepted_idea_count": 0,
+      "active_stage": "Named human review",
+      "validation_issues": [],
+      "bookkeeper_route": "moonbook.bookkeeper",
+      "three_gap_state": "waiting-for-accepted-outcome",
+    },
+    "research_cowork_session_key": "cowork:completed",
+    "qa_agent_status": "not-published",
+    "research_execution": {
+      "contract_id": "moonfind.research-execution-record.v1",
+      "revision": 6,
+      "run_id": "run-1",
+      "operation_ref": "moonfind/research.prepare-analysis@0.1.0",
+      "request_id": "request-1",
+      "attempt_id": "attempt-1",
+      "idempotency_key": "moonfind/run-1/attempt-1",
+      "state": "needs-review",
+      "invocation": Json::empty_object(),
+      "error_kind": "",
+      "requires_review": true,
+      "next_action": "named-human-review",
+      "updated_at": "2026-07-31T00:00:06Z",
+    },
+    "host_status": "ready",
+    "host_blockers": [],
+    "moontown_handoff": {
+      "contract_id": "moonfind.moontown-handoff-status.v1",
+      "run_id": "run-1",
+      "state": "ready",
+      "handoff_contract": "moontown.civic.communication.handoff.v1",
+      "handoff_id": "handoff-1",
+      "detail": "ready",
+    },
+    "review_workflow": {
+      "contract_id": "moonfind.review-workflow-status.v1",
+      "run_id": "run-1",
+      "state": "ready-for-human-review",
+      "prepare_url": "/api/v1/review/prepare",
+      "detail": "Record the named-human decision.",
+    },
+  })
+  assert_eq(execution_needs_session_refresh(snapshot.research_execution), false)
+  let (_, loaded) = update(
+    _ => @rabbita.none,
+    WorkspaceLoaded(Ok(snapshot)),
+    initial_model(),
+  )
+  assert_eq(loaded.phase == Completed, true)
+  assert_eq(loaded.gateway_published, false)
+  assert_eq(loaded.error is None, true)
+  assert_eq(loaded.research_session is None, true)
+  assert_true(
+    loaded.notice
+    is Some(
+      "MoonClaw execution is durably complete and ready for named-human review."
+    ),
+  )
 }
 
 ///|
@@ -71,51 +179,36 @@ test "post-run review requires identity outcome rationale and explicit approval 
 }
 
 ///|
-test "review decision packet preserves ownership and bounded authority" {
-  let request = review_decision_request(
-    "/workspace/book", "kq", "approve_subset", "C01, C02", "Approve only these claims.",
+test "Three-Gap inputs and review scope remain bounded" {
+  let model = {
+    ..initial_model(),
+    review_scope: "idea-1, idea_2\nidea-1",
+    information_gap_severity: 3,
+    information_gap_summary: "",
+  }
+  assert_eq(review_scope_ids(model.review_scope), ["idea-1", "idea_2"])
+  assert_eq(
+    review_gap_issues(model).contains(
+      "Information gap needs a concrete summary when present.",
+    ),
+    true,
   )
-  assert_eq(request.contains("MoonBook workspace: /workspace/book"), true)
-  assert_eq(request.contains("Named reviewer: kq"), true)
-  assert_eq(request.contains("Decision outcome: approve_subset"), true)
-  assert_eq(request.contains("Decision scope: C01, C02"), true)
-  assert_eq(request.contains("Never broaden approve_subset"), true)
-  assert_eq(request.contains("MoonBook owns the review decision"), true)
+  assert_eq(safe_review_scope_id("../escape"), false)
+  assert_eq(review_gap_severity("9", 0), 5)
+  assert_eq(review_gap_severity("-2", 1), 0)
+  assert_eq(review_gap_severity("not-a-number", 2), 2)
 }
 
 ///|
-test "completed decision runs map independently from research phase" {
-  let model = initial_model()
-  let session : CoworkSessionDetail = {
-    session: {
-      session_key: "cowork:review",
-      session_id: "review",
-      title: "MoonBook review",
-      updated_at: 0,
-      state: "active",
-      last_message_preview: None,
-      channel: None,
-      cwd: Some(model.book_dir),
-      model_override: Some(model.model_name),
-      provider_override: None,
-      has_plan_mode: false,
-      linked_proposal_id: Some("proposal:review"),
-      linked_run_id: Some("run:review"),
-    },
-    messages: [],
-    plan_preview: Some("Review plan"),
-    linked_proposal: None,
-    linked_run: Some({
-      id: "run:review",
-      job_id: "job:review",
-      status: "Succeeded",
-      summary: None,
-      error: None,
-      current_step_id: None,
-      workspace_dir: Some(model.book_dir),
-    }),
-  }
-  assert_eq(review_phase_from_session(session) == ReviewCompleted, true)
+test "MoonFlow launch and receiver identities fail closed" {
+  let token = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  assert_eq(valid_moonflow_launch("run-1", token), true)
+  assert_eq(valid_moonflow_launch("../run", token), false)
+  assert_eq(valid_moonflow_launch("run-1", "short"), false)
+  assert_eq(
+    moonflow_receiver_base("run-1", token),
+    "/api/moonflow/runs/run-1/handoffs/" + token,
+  )
 }
 
 ///|

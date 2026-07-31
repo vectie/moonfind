@@ -1,4 +1,16 @@
 ///|
+extern "js" fn product_api_url(path : String) -> String =
+  #| (path) => {
+  #|   const route = String(path || "").startsWith("/")
+  #|     ? String(path)
+  #|     : `/${String(path || "")}`;
+  #|   const match = globalThis.location?.pathname?.match(
+  #|     /^\/pack-apps\/([^/]+)\//
+  #|   );
+  #|   return match ? `/pack-apps/${match[1]}${route}` : route;
+  #| }
+
+///|
 fn decode_session(
   result : Result[CoworkSessionPayload, Error],
 ) -> Result[CoworkSessionDetail, String] {
@@ -10,17 +22,74 @@ fn decode_session(
 
 ///|
 fn decode_execution(
-  result : Result[ResearchExecutionPayload, Error],
-) -> Result[ResearchExecutionProjection, String] {
+  result : Result[CapabilityOperationReply, Error],
+) -> Result[CapabilityOperationReply, String] {
   match result {
-    Ok(payload) => Ok(payload.execution)
+    Ok(payload) => Ok(payload)
+    Err(error) => Err("\{error}")
+  }
+}
+
+///|
+fn decode_review_prepare(
+  result : Result[Json, Error],
+) -> Result[ReviewPrepareReply, String] {
+  match result {
+    Ok(payload) => {
+      if payload
+        is {
+          "error": {
+            "contract_id": String("moonfind.ui-host-error.v1"),
+            "message": String(message),
+            ..
+          },
+          ..
+        } {
+        return Err(message)
+      }
+      let reply : ReviewPrepareReply = @json.from_json(payload) catch {
+        error =>
+          return Err("MoonFind returned an invalid review response: \{error}")
+      }
+      Ok(reply)
+    }
+    Err(error) => Err("\{error}")
+  }
+}
+
+///|
+fn decode_moonflow_intake(
+  result : Result[MoonFlowReceiverHandoff, Error],
+) -> Result[MoonFlowReceiverHandoff, String] {
+  match result {
+    Ok(payload) => Ok(payload)
+    Err(error) => Err("\{error}")
+  }
+}
+
+///|
+fn decode_moonflow_status(
+  result : Result[MoonFlowReceiverStatus, Error],
+) -> Result[MoonFlowReceiverStatus, String] {
+  match result {
+    Ok(payload) => Ok(payload)
+    Err(error) => Err("\{error}")
+  }
+}
+
+///|
+fn decode_moonflow_receipt_reply(
+  result : Result[MoonFlowReviewReceiptReply, Error],
+) -> Result[MoonFlowReviewReceiptReply, String] {
+  match result {
+    Ok(payload) => Ok(payload)
     Err(error) => Err("\{error}")
   }
 }
 
 ///|
 fn load_workspace_snapshot(emit : @rabbita.Emit[Msg]) -> @rabbita.Cmd {
-  @http.get("/moonfind-workspace.json").expect_json(
+  @http.get(product_api_url("/api/v1/workspace")).expect_json(
     emit.map(result => {
       WorkspaceLoaded(
         match result {
@@ -33,12 +102,122 @@ fn load_workspace_snapshot(emit : @rabbita.Emit[Msg]) -> @rabbita.Cmd {
 }
 
 ///|
+fn prepare_portable_review(
+  emit : @rabbita.Emit[Msg],
+  url : String,
+  model : Model,
+) -> @rabbita.Cmd {
+  let scope_ids = review_scope_ids(model.review_scope)
+  let accepted_idea_ids = if model.review_outcome == "approve_subset" {
+    scope_ids
+  } else {
+    []
+  }
+  let rejected_idea_ids = if model.review_outcome == "approve_subset" {
+    []
+  } else {
+    scope_ids
+  }
+  let payload : Json = {
+    "contract_id": "moonfind.review-prepare-request.v1",
+    "reviewer_name": model.reviewer_name.trim(),
+    "outcome": model.review_outcome,
+    "accepted_idea_ids": accepted_idea_ids,
+    "rejected_idea_ids": rejected_idea_ids,
+    "rationale": model.review_message.trim(),
+    "information_gap": {
+      "present": model.information_gap_severity > 0,
+      "severity": model.information_gap_severity,
+      "summary": model.information_gap_summary.trim(),
+    },
+    "recognition_gap": {
+      "present": model.recognition_gap_severity > 0,
+      "severity": model.recognition_gap_severity,
+      "summary": model.recognition_gap_summary.trim(),
+    },
+    "decisiveness_gap": {
+      "present": model.decisiveness_gap_severity > 0,
+      "severity": model.decisiveness_gap_severity,
+      "summary": model.decisiveness_gap_summary.trim(),
+    },
+  }
+  @http.post(product_api_url(url))
+  .with_json(payload)
+  .expect_json(emit.map(result => ReviewPrepared(decode_review_prepare(result))))
+}
+
+///|
+fn load_moonflow_receiver(
+  emit : @rabbita.Emit[Msg],
+  run_id : String,
+  token : String,
+) -> @rabbita.Cmd {
+  if !moonflow_launch_present(run_id, token) {
+    return @rabbita.none
+  }
+  if !valid_moonflow_launch(run_id, token) {
+    return emit(
+      MoonFlowIntakeLoaded(
+        Err(
+          "MoonFlow launch requires one safe run ID and a 64-character lowercase hexadecimal handoff token.",
+        ),
+      ),
+    )
+  }
+  let endpoint = moonflow_receiver_base(run_id, token)
+  @rabbita.batch([
+    @http.get(endpoint).expect_json(
+      emit.map(result => {
+        MoonFlowIntakeLoaded(decode_moonflow_intake(result))
+      }),
+    ),
+    @http.get(endpoint + "/status").expect_json(
+      emit.map(result => {
+        MoonFlowStatusLoaded(decode_moonflow_status(result))
+      }),
+    ),
+  ])
+}
+
+///|
+fn prepare_moonflow_receiver_receipt(
+  emit : @rabbita.Emit[Msg],
+  handoff : MoonFlowReceiverHandoff,
+) -> @rabbita.Cmd {
+  let payload : Json = {
+    "contract_id": "moonfind.moonflow-review-receipt-request.v1",
+    "intake": handoff.to_json(),
+  }
+  @http.post(product_api_url("/api/v1/review/moonflow-receipt"))
+  .with_json(payload)
+  .expect_json(
+    emit.map(result => {
+      MoonFlowReceiptPrepared(decode_moonflow_receipt_reply(result))
+    }),
+  )
+}
+
+///|
+fn post_moonflow_receiver_receipt(
+  emit : @rabbita.Emit[Msg],
+  reply : MoonFlowReviewReceiptReply,
+) -> @rabbita.Cmd {
+  @http.post(reply.receipt_path)
+  .with_json(reply.receiver_receipt)
+  .expect_json(
+    emit.map(result => {
+      MoonFlowReceiptPosted(decode_moonflow_status(result))
+    }),
+  )
+}
+
+///|
 fn invoke_research_capability(
   emit : @rabbita.Emit[Msg],
   url : String,
   execution : ResearchExecutionProjection,
 ) -> @rabbita.Cmd {
-  @http.post(url)
+  @http.post(product_api_url(url))
   .with_json(execution.invocation)
   .expect_json(
     emit.map(result => CapabilitySubmitted(decode_execution(result))),
@@ -96,10 +275,8 @@ fn checkpoint_research_execution(
   let checkpoint : Json = {
     "contract_id": "moonfind.moonclaw-session-checkpoint-request.v1",
     "session_key": session.session.session_key,
-    "session_status": session.session.state,
-    "run": session.linked_run,
   }
-  @http.post(url)
+  @http.post(product_api_url(url))
   .with_json(checkpoint)
   .expect_json(
     emit.map(result => ExecutionCheckpointed(decode_execution(result))),
@@ -149,106 +326,6 @@ fn reconnect_qa_session(
 ) -> @rabbita.Cmd {
   @http.get("\{gateway_base}/v1/cowork/sessions/\{session_key}").expect_json(
     emit.map(result => QaReconnected(decode_session(result))),
-  )
-}
-
-///|
-fn resume_review(
-  emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  session : CoworkSessionDetail,
-  run_id : String,
-  reviewer_name : String,
-  review_message : String,
-) -> @rabbita.Cmd {
-  @http.post(
-    "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/runs/\{run_id}/resume",
-  )
-  .with_json({
-    "content": "Named-human reviewer: \{reviewer_name}\n\n\{review_message}",
-  })
-  .expect_json(emit.map(result => ReviewResumed(decode_session(result))))
-}
-
-///|
-fn create_review_session(
-  emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  book_dir : String,
-) -> @rabbita.Cmd {
-  @http.post("\{gateway_base}/v1/cowork/sessions")
-  .with_json({ "cwd": book_dir, "title": "Moonfind MoonBook review" })
-  .expect_json(emit.map(result => ReviewSessionCreated(decode_session(result))))
-}
-
-///|
-fn configure_review_session(
-  emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  session : CoworkSessionDetail,
-  book_dir : String,
-  model_name : String,
-) -> @rabbita.Cmd {
-  @http.post(
-    "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/config",
-  )
-  .with_json({
-    "title": "Moonfind MoonBook review",
-    "cwd": book_dir,
-    "model": model_name,
-  })
-  .expect_json(emit.map(result => ReviewConfigured(decode_session(result))))
-}
-
-///|
-fn plan_review(
-  emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  session : CoworkSessionDetail,
-  book_dir : String,
-  request_text : String,
-) -> @rabbita.Cmd {
-  @http.post(
-    "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/plan",
-  )
-  .with_json({ "request_text": request_text, "cwd": book_dir })
-  .expect_json(emit.map(result => ReviewPlanned(decode_session(result))))
-}
-
-///|
-fn promote_review(
-  emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  session : CoworkSessionDetail,
-  book_dir : String,
-) -> @rabbita.Cmd {
-  @http.post(
-    "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/promote",
-  )
-  .with_json({ "guidance": "", "cwd": book_dir })
-  .expect_json(emit.map(result => ReviewPromoted(decode_session(result))))
-}
-
-///|
-fn confirm_review(
-  emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  session : CoworkSessionDetail,
-  proposal_id : String,
-) -> @rabbita.Cmd {
-  @http.post(
-    "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/proposals/\{proposal_id}/confirm",
-  ).expect_json(emit.map(result => ReviewConfirmed(decode_session(result))))
-}
-
-///|
-fn refresh_review_session(
-  emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  session_key : String,
-) -> @rabbita.Cmd {
-  @http.get("\{gateway_base}/v1/cowork/sessions/\{session_key}").expect_json(
-    emit.map(result => ReviewRefreshed(decode_session(result))),
   )
 }
 

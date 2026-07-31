@@ -17,6 +17,12 @@ The Rabbita operator path is intentionally two-part:
    `moonfind/research-run@1.0.0` input,
    `moonfind/moonclaw-research-command@1.0.0` output, authority, evidence
    digest, request ID, attempt ID, and idempotency key.
+   The input reference is the workspace-relative
+   `.moonsuite/products/moonfind/runs/<run-id>/run.json`. Its digest uses
+   MoonClaw's exact byte convention: SHA-256 each persisted file, render
+   `<ref>|<sha256:digest>`, join identities with a newline, then SHA-256 the
+   aggregate. JSON is parsed from those same bytes; it is never re-serialized
+   to invent the invocation digest.
 3. Before submission, the host appends the `prepared` and `submitting`
    revisions to
    `.moonsuite/products/moonfind/runs/<run-id>/capability-execution.jsonl`.
@@ -44,6 +50,63 @@ The Rabbita operator path is intentionally two-part:
 The browser discovers submit, reconcile, and checkpoint URLs from the
 MoonFind workspace snapshot. Absence of any required port is an explicit UI
 blocker, not a fallback to a direct model call.
+
+## Pack-owned deterministic adapter
+
+MoonClaw reaches MoonFind's installed `research.prepare-analysis` operation
+through a pack-owned loopback adapter. This adapter is not another agent
+runtime: it cannot call a model or provider. It accepts MoonClaw's exact
+`PackToolExecutionRequest`, verifies the installed binding and immutable
+attempt against the durable `run.json`, and materializes only the governed
+`moonclaw.mooncode.v1` command.
+
+Start it beside the workspace:
+
+```bash
+MOONFIND_WORKSPACE="$HOME/Research" \
+MOONFIND_PACK_ADAPTER_PORT=4314 \
+moon run cmd/pack_adapter_host
+```
+
+Its only mutation endpoints are:
+
+```text
+POST http://127.0.0.1:4314/v1/pack-tool/submit
+POST http://127.0.0.1:4314/v1/pack-tool/reconcile
+```
+
+Configure the corresponding exact route in MoonClaw's host-owned
+`.moonsuite/products/moonclaw/capability-http-policy.json`:
+
+```json
+{
+  "route_id": "moonfind-prepare-analysis",
+  "operation_ref": "moonfind/research.prepare-analysis@0.1.0",
+  "adapter_id": "moonfind-pack-local-v1",
+  "transport": "moonclaw.pack-tool-http.v1",
+  "submit_url": "http://127.0.0.1:4314/v1/pack-tool/submit",
+  "reconcile_url": "http://127.0.0.1:4314/v1/pack-tool/reconcile",
+  "base_url": null,
+  "estimated_cost_micros": 0,
+  "provider_route_ref": null
+}
+```
+
+The MoonFind UI host still points to MoonClaw, not directly to this adapter:
+
+```bash
+MOONCLAW_CAPABILITY_SUBMIT_URL=http://127.0.0.1:18123/v1/capability/submit
+MOONCLAW_CAPABILITY_RECONCILE_URL=http://127.0.0.1:18123/v1/capability/reconcile
+```
+
+Before writing command evidence, the adapter persists the complete immutable
+request and planned output below
+`.moonsuite/products/moonfind/pack-tool-attempts/<idempotency-digest>/`.
+Submission replay returns the stored result. Reconciliation never creates a
+missing attempt; it either resumes the same deterministic local materialization
+or returns `unknown`. Evidence is restricted to the exact
+`records/moonclaw-commands/<idempotency-digest>.json` path and symbolic-link
+escapes are rejected.
 
 ## Restart states
 

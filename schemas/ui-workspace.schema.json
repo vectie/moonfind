@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "moonfind/ui-workspace@1.0.0",
+  "title": "MoonFind trusted host workspace",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "product_id",
+    "generated_at",
+    "book_workspace",
+    "workspace",
+    "qa_agent_status",
+    "host_status",
+    "host_blockers",
+    "moontown_handoff",
+    "review_workflow"
+  ],
+  "properties": {
+    "contract_id": { "const": "moonfind.ui-workspace.v1" },
+    "product_id": { "const": "moonfind" },
+    "generated_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "book_workspace": { "type": "string", "minLength": 1 },
+    "workspace": {
+      "type": "object",
+      "required": ["product_id", "run_id", "status", "active_stage"],
+      "properties": {
+        "product_id": { "const": "moonfind" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "status": { "type": "string", "minLength": 1 },
+        "active_stage": { "type": "string", "minLength": 1 }
+      }
+    },
+    "research_cowork_session_key": { "type": ["string", "null"] },
+    "qa_cowork_session_key": { "type": ["string", "null"] },
+    "qa_agent_status": { "type": "string", "minLength": 1 },
+    "research_execution": {
+      "anyOf": [
+        { "$ref": "research-execution-record.schema.json" },
+        { "type": "null" }
+      ]
+    },
+    "capability_submit_url": { "type": ["string", "null"] },
+    "capability_reconcile_url": { "type": ["string", "null"] },
+    "capability_checkpoint_url": { "type": ["string", "null"] },
+    "moonclaw_gateway_base": { "type": ["string", "null"] },
+    "host_status": { "enum": ["ready", "blocked"] },
+    "host_blockers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "moontown_handoff": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_id",
+        "run_id",
+        "state",
+        "handoff_contract",
+        "detail"
+      ],
+      "properties": {
+        "contract_id": { "const": "moonfind.moontown-handoff-status.v1" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "state": {
+          "enum": [
+            "not-ready",
+            "awaiting-materialization",
+            "ready",
+            "completed",
+            "result-incomplete",
+            "ingested-pending-review",
+            "blocked",
+            "rejected"
+          ]
+        },
+        "handoff_contract": {
+          "const": "moontown.civic.communication.handoff.v1"
+        },
+        "handoff_id": { "type": ["string", "null"] },
+        "handoff_url": { "type": ["string", "null"] },
+        "open_url": { "type": ["string", "null"] },
+        "receipt_contract": { "type": ["string", "null"] },
+        "receipt_status": { "type": ["string", "null"] },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    },
+    "review_workflow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_id",
+        "run_id",
+        "state",
+        "detail"
+      ],
+      "properties": {
+        "contract_id": { "const": "moonfind.review-workflow-status.v1" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "state": {
+          "enum": [
+            "not-ready",
+            "ready-for-human-review",
+            "awaiting-moonchat",
+            "ready-for-bookkeeper"
+          ]
+        },
+        "prepare_url": { "type": ["string", "null"] },
+        "moonchat_ingest_url": { "type": ["string", "null"] },
+        "moonchat_operation_ref": { "type": ["string", "null"] },
+        "bundle_ref": { "type": ["string", "null"] },
+        "record_ref": { "type": ["string", "null"] },
+        "bookkeeper_operation_ref": { "type": ["string", "null"] },
+        "bookkeeper_submission_ref": { "type": ["string", "null"] },
+        "detail": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

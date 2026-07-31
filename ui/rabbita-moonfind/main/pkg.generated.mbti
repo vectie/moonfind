@@ -11,6 +11,8 @@ import {
 // Errors
 
 // Types and methods
+type CapabilityOperationReply derive(@debug.Debug, @json.FromJson)
+
 type CapabilityReceiptProjection derive(@debug.Debug, @json.FromJson)
 
 type CoworkMessage derive(@debug.Debug, @json.FromJson)
@@ -25,11 +27,13 @@ type CoworkSessionPayload derive(@debug.Debug, @json.FromJson)
 
 type CoworkSessionSummary derive(@debug.Debug, @json.FromJson)
 
+type DurableResearchWorkspace derive(@debug.Debug, @json.FromJson)
+
 type Model
 
-type Msg
+type MoonTownHandoffStatus derive(@debug.Debug, @json.FromJson)
 
-type ResearchExecutionPayload derive(@debug.Debug, @json.FromJson)
+type Msg
 
 type ResearchExecutionProjection derive(@debug.Debug, @json.FromJson)
 

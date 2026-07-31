@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "moonfind/cross-product-review-decision@1.0.0",
+  "title": "MoonFind cross-product review decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "review_id",
+    "reviewer_id",
+    "reviewer_name",
+    "outcome",
+    "accepted_idea_ids",
+    "rejected_idea_ids",
+    "rationale",
+    "reviewed_at_utc",
+    "reviewed_at_epoch",
+    "information_gap_present",
+    "information_gap_severity",
+    "information_gap_summary",
+    "recognition_gap_present",
+    "recognition_gap_severity",
+    "recognition_gap_summary",
+    "decisiveness_gap_present",
+    "decisiveness_gap_severity",
+    "decisiveness_gap_summary"
+  ],
+  "properties": {
+    "review_id": { "$ref": "#/$defs/stableId" },
+    "reviewer_id": { "$ref": "#/$defs/stableId" },
+    "reviewer_name": { "type": "string", "minLength": 1 },
+    "outcome": { "enum": ["approve", "defer", "reject"] },
+    "accepted_idea_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/stableId" }
+    },
+    "rejected_idea_ids": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": { "$ref": "#/$defs/stableId" }
+    },
+    "rationale": { "type": "string", "minLength": 1 },
+    "reviewed_at_utc": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$"
+    },
+    "reviewed_at_epoch": { "type": "integer", "minimum": 0 },
+    "information_gap_present": { "type": "boolean" },
+    "information_gap_severity": { "type": "integer", "minimum": 0, "maximum": 5 },
+    "information_gap_summary": { "type": "string", "minLength": 1 },
+    "recognition_gap_present": { "type": "boolean" },
+    "recognition_gap_severity": { "type": "integer", "minimum": 0, "maximum": 5 },
+    "recognition_gap_summary": { "type": "string", "minLength": 1 },
+    "decisiveness_gap_present": { "type": "boolean" },
+    "decisiveness_gap_severity": { "type": "integer", "minimum": 0, "maximum": 5 },
+    "decisiveness_gap_summary": { "type": "string", "minLength": 1 }
+  },
+  "$defs": {
+    "stableId": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9._-]+$"
+    }
+  }
+}

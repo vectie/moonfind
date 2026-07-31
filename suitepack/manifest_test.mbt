@@ -49,6 +49,12 @@ test "manifest declares review-gated read-only Q&A grounding" {
 test "manifest exposes a MoonDesk-hostable application route" {
   let value = manifest()
   assert_true(
+    value.schemas.any(fn(contract) {
+      contract.id == "ui-workspace" &&
+      contract.path == "schemas/ui-workspace.schema.json"
+    }),
+  )
+  assert_true(
     value.app_entrypoints.any(fn(entrypoint) {
       entrypoint.id == "research-studio" &&
       entrypoint.path == "/apps/moonfind/research"

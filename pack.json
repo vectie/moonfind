@@ -25,10 +25,12 @@
     {"id": "capability-graph-projection", "version": "1.0.0", "path": "schemas/capability-graph-projection.schema.json"},
     {"id": "research-analysis-result", "version": "1.0.0", "path": "schemas/research-analysis-result.schema.json"},
     {"id": "human-research-review", "version": "1.0.0", "path": "schemas/human-research-review.schema.json"},
+    {"id": "cross-product-review-decision", "version": "1.0.0", "path": "schemas/cross-product-review-decision.schema.json"},
     {"id": "moontown-research-scenario", "version": "1.0.0", "path": "schemas/moontown-research-scenario.schema.json"},
     {"id": "bookkeeper-deliverable-candidate", "version": "1.0.0", "path": "schemas/bookkeeper-deliverable-candidate.schema.json"},
     {"id": "capability-observation", "version": "1.0.0", "path": "schemas/capability-observation.schema.json"},
-    {"id": "read-only-qa-grounding", "version": "1.0.0", "path": "schemas/read-only-qa-grounding.schema.json"}
+    {"id": "read-only-qa-grounding", "version": "1.0.0", "path": "schemas/read-only-qa-grounding.schema.json"},
+    {"id": "ui-workspace", "version": "1.0.0", "path": "schemas/ui-workspace.schema.json"}
   ],
   "tools": [
     {

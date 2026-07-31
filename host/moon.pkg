@@ -1,0 +1,16 @@
+import {
+  "moonbitlang/async",
+  "moonbitlang/async/fs",
+  "moonbitlang/async/http",
+  "moonbitlang/core/encoding/utf8",
+  "moonbitlang/core/json",
+  "moonbitlang/x/time",
+  "vectie/moonfind/app",
+  "vectie/moonfind/closed_loop",
+  "vectie/moonfind/integration",
+  "vectie/moonfind/moontown",
+  "vectie/moonfind/research",
+  "vectie/moonfind/store",
+}
+
+supported_targets = "native"

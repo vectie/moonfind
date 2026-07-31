@@ -11,3 +11,7 @@
   cross-product graph projection.
 - [DeepSeek research journey](DEEPSEEK_RESEARCH_JOURNEY.md) and
   [completion audit](DEEPSEEK_COMPLETION_AUDIT.md) — dated workflow evidence.
+- [UI-to-UI use cases](qualification/UI_TO_UI_USE_CASES.md) and the
+  [cross-product research loop](qualification/CROSS_PRODUCT_RESEARCH_LOOP.md) —
+  reproducible MoonFind → MoonTown → MoonChat → MoonBook operator
+  qualification, including governed negative paths.

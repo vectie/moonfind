@@ -52,6 +52,19 @@ The run is written below `.moonsuite/products/moonfind/runs/<run-id>/` with:
 - a MoonFlow capability observation;
 - a Rabbita workspace projection.
 
+For UI-to-UI qualification, stop before the legacy fixture applies its direct
+terminal review:
+
+```bash
+MF_QUAL="$(mktemp -d /tmp/moonfind-ui-qualification.XXXXXX)"
+moon run cmd/main -- prepare-fixture "$MF_QUAL/suite" fixtures
+```
+
+This leaves `humanoid-cross-paper-demo` at `human-review`, with a typed
+MoonTown handoff and no `human-review.json`. Follow the
+[UI-to-UI guide](docs/qualification/UI_TO_UI_USE_CASES.md) to exercise the
+governed MoonTown, MoonChat, and MoonBook path.
+
 ## Use live arXiv intake
 
 ```bash
