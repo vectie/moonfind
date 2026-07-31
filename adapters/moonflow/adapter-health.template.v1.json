@@ -1,0 +1,14 @@
+{
+  "contract_id": "moonflow.adapter-health.v1",
+  "adapter_id": "moonfind-pack-local-v1",
+  "product_id": "moonfind",
+  "pack_id": "moonfind",
+  "pack_version": "0.1.0",
+  "protocol": "moonflow.adapter.v2",
+  "status": "unavailable",
+  "checked_at": "2026-07-31T00:00:00Z",
+  "valid_until": "2026-07-31T00:00:00Z",
+  "operation_refs": [],
+  "evidence_ref": "adapters/moonflow/health-evidence.v1.json",
+  "evidence_digest": "sha256:5afc32059a942d1a3d42340645d4e1742291e559e8e6632506ae60a2c3e77057"
+}

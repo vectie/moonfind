@@ -1,0 +1,70 @@
+{
+  "contract_id": "moonflow.adapter-declaration.v1",
+  "adapter_id": "moonfind-pack-local-v1",
+  "product_id": "moonfind",
+  "pack_id": "moonfind",
+  "pack_version": "0.1.0",
+  "protocol": "moonflow.adapter.v2",
+  "operations": [
+    {
+      "operation_id": "papers.acquire-arxiv",
+      "claim_ceiling": "research-evidence",
+      "supports_cancel": true,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "research.account-local-corpus",
+      "claim_ceiling": "research-evidence",
+      "supports_cancel": false,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "papers.record-isolated-fulltext",
+      "claim_ceiling": "research-evidence",
+      "supports_cancel": false,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "research.prepare-analysis",
+      "claim_ceiling": "execution-result",
+      "supports_cancel": true,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "research.cross-paper-synthesize",
+      "claim_ceiling": "research-evidence",
+      "supports_cancel": false,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "research.challenge-local-corpus",
+      "claim_ceiling": "research-evidence",
+      "supports_cancel": false,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "research.review",
+      "claim_ceiling": "accepted-knowledge",
+      "supports_cancel": false,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "bookkeeper.deliverable-handoff",
+      "claim_ceiling": "accepted-knowledge",
+      "supports_cancel": false,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "book.prepare-read-only-qa-grounding",
+      "claim_ceiling": "research-evidence",
+      "supports_cancel": false,
+      "supports_reconcile": true
+    },
+    {
+      "operation_id": "moonflow.capability-observe",
+      "claim_ceiling": "accepted-knowledge",
+      "supports_cancel": false,
+      "supports_reconcile": true
+    }
+  ]
+}

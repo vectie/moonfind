@@ -1,0 +1,26 @@
+{
+  "contract": "mooncast.approved-reusable-asset.v1",
+  "reference": {},
+  "plan": null,
+  "variant_id": null,
+  "provider_job_id": null,
+  "provider_artifact_id": null,
+  "output_digest": null,
+  "modality": "text",
+  "intent": null,
+  "rights_refs": [
+    "fixture-rights_refs"
+  ],
+  "qc_finding_ids": [
+    "fixture-qc_finding_ids",
+    "fixture-qc_finding_ids",
+    "fixture-qc_finding_ids",
+    "fixture-qc_finding_ids",
+    "fixture-qc_finding_ids"
+  ],
+  "approval_actor": "fixture-approval_actor",
+  "approval_role": "fixture-approval_role",
+  "approval_digest": null,
+  "publication_authority": false,
+  "immutable": true
+}

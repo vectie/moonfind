@@ -1,0 +1,7 @@
+{
+  "expected_project_revision": 0,
+  "expected_execution_revision": 1,
+  "expected_execution_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "actor_id": "fixture-actor_id",
+  "human_confirmed": true
+}

@@ -1,0 +1,12 @@
+{
+  "contract": "mooncast.model-routing-plan.v1",
+  "record_id": "fixture-record_id",
+  "version": 1,
+  "content": {
+    "routes": [],
+    "currency": "CNY",
+    "total_ceiling_cny": 0
+  },
+  "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "created_at": "2026-07-31T00:00:00Z"
+}

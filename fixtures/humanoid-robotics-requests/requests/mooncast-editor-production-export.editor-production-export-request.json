@@ -1,0 +1,20 @@
+{
+  "job_id": "fixture-job_id",
+  "request_id": "fixture-request_id",
+  "expected_editor_revision": 0,
+  "spec": {
+    "width": 1,
+    "height": 1,
+    "fps": {
+      "numerator": 1,
+      "denominator": 1
+    },
+    "container": "mp4",
+    "video_codec": "h264",
+    "audio_codec": "aac",
+    "subtitle_mode": "embedded-and-sidecar",
+    "ai_label_mode": "retain-visible",
+    "retain_sources": true,
+    "cost_ceiling": "fixture-cost_ceiling"
+  }
+}

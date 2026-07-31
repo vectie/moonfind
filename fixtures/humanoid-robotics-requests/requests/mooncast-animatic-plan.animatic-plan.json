@@ -1,0 +1,39 @@
+{
+  "contract": "mooncast.animatic-plan.v1",
+  "reference": null,
+  "project_id": null,
+  "project_revision": null,
+  "bible": null,
+  "script": null,
+  "storyboard": null,
+  "panels": [
+    {
+      "panel_id": null,
+      "scene_id": null,
+      "shot_id": null,
+      "order": null,
+      "duration_ms": 1,
+      "caption": "fixture-caption",
+      "visual_asset_ids": [
+        null
+      ],
+      "transition": "cut"
+    }
+  ],
+  "approved_assets": [
+    null
+  ],
+  "temporary_voice_asset_ids": [
+    null
+  ],
+  "temporary_music_asset_ids": [
+    null
+  ],
+  "caption_language": null,
+  "provider": null,
+  "model": null,
+  "cost_ceiling_cny": 0,
+  "retry_limit": 1,
+  "process_authority": false,
+  "publication_authority": false
+}

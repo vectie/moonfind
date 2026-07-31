@@ -1,0 +1,135 @@
+{
+  "contract": "mooncast.production-project.v2",
+  "id": "fixture-id",
+  "stage": "fixture-stage",
+  "gates": {},
+  "episodes": [],
+  "shots": [],
+  "brief": {
+    "contract": "mooncast.creative-artifact.v1",
+    "artifact_id": "fixture-artifact_id",
+    "artifact_type": "brief",
+    "version": 1,
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "draft",
+    "content": {},
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "rights": {
+    "contract": "mooncast.creative-artifact.v1",
+    "artifact_id": "fixture-artifact_id",
+    "artifact_type": "brief",
+    "version": 1,
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "draft",
+    "content": {},
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "bible": {
+    "contract": "mooncast.creative-artifact.v1",
+    "artifact_id": "fixture-artifact_id",
+    "artifact_type": "brief",
+    "version": 1,
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "draft",
+    "content": {},
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "script": {
+    "contract": "mooncast.creative-artifact.v1",
+    "artifact_id": "fixture-artifact_id",
+    "artifact_type": "brief",
+    "version": 1,
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "draft",
+    "content": {},
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "claims_ledger": {
+    "contract": "mooncast.creative-artifact.v1",
+    "artifact_id": "fixture-artifact_id",
+    "artifact_type": "brief",
+    "version": 1,
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "draft",
+    "content": {},
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "storyboard": {
+    "contract": "mooncast.creative-artifact.v1",
+    "artifact_id": "fixture-artifact_id",
+    "artifact_type": "brief",
+    "version": 1,
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "draft",
+    "content": {},
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "animatic": {
+    "contract": "mooncast.creative-artifact.v1",
+    "artifact_id": "fixture-artifact_id",
+    "artifact_type": "brief",
+    "version": 1,
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "status": "draft",
+    "content": {},
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "creative_history": {},
+  "creative_decisions": [],
+  "client_revision_rounds": {},
+  "provider_route": {
+    "id": "fixture-id",
+    "provider": "fixture-provider",
+    "model": "fixture-model",
+    "fallbacks": [],
+    "authorized": false
+  },
+  "budget": {},
+  "assets": [],
+  "reviews": {},
+  "analytics": [],
+  "economics": {},
+  "model_routing_plan": {
+    "contract": "mooncast.model-routing-plan.v1",
+    "record_id": "fixture-record_id",
+    "version": 1,
+    "content": {
+      "routes": [],
+      "currency": "CNY",
+      "total_ceiling_cny": 0
+    },
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "model_routing_history": [],
+  "model_routing_decisions": [],
+  "generation_attempts": {},
+  "shot_qc_findings": {},
+  "shot_qc_decisions": {},
+  "master_lineage": [],
+  "master_decisions": [],
+  "delivery_package": {
+    "contract": "mooncast.delivery-package.v3",
+    "record_id": "fixture-record_id",
+    "version": 1,
+    "content": {
+      "project_id": null,
+      "master_digest": null,
+      "formats": null,
+      "destinations": null,
+      "asset_lineage_digest": null,
+      "provenance_included": null,
+      "rights_ledger_digest": null,
+      "created_by": null
+    },
+    "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "created_at": "2026-07-31T00:00:00Z"
+  },
+  "delivery_package_history": [],
+  "delivery_milestone_acceptances": [],
+  "publication_authorizations": [],
+  "publication_receipts": [],
+  "performance_reviews": [],
+  "governance_invalidations": []
+}

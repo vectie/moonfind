@@ -1,0 +1,14 @@
+{
+  "expected_project_revision": 1,
+  "expected_master_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "build_id": "delivery-build-aaaaaaaaaaaaaaaaaaaaaaaa",
+  "expected_build_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "expected_build_record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "client_name": "fixture-client_name",
+  "brand_name": "fixture-brand_name",
+  "brand_accent": "fixture-brand_accent",
+  "expires_at": "2026-07-31T00:00:00Z",
+  "human_confirmed": true,
+  "actor": "fixture-actor",
+  "actor_role": "fixture-actor_role"
+}

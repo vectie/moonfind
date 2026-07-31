@@ -32,7 +32,7 @@ pub fn manifest() -> @pack.MoonPackManifest {
     display_name: "Moonfind Evidence-Backed AutoResearch",
     product_id: "moonfind",
     kind: DomainPack,
-    required_runtime_extensions: ["moonclaw", "moontown"],
+    required_runtime_extensions: ["moonclaw", "moontown", "moonbook"],
     book_templates: [
       @pack.contract_ref(
         "moonfind-research-book", "1.0.0", "book/research-book.md",
@@ -40,21 +40,33 @@ pub fn manifest() -> @pack.MoonPackManifest {
     ],
     schemas: [
       schema("research-watch"),
+      schema("local-input-coverage"),
       schema("paper-record"),
       schema("full-text-evidence"),
       schema("provider-use-decision"),
       schema("recovery-snapshot"),
       schema("research-run"),
+      schema("moonclaw-research-command"),
+      schema("research-execution-record"),
+      schema("capability-graph-projection"),
       schema("research-analysis-result"),
       schema("human-research-review"),
       schema("moontown-research-scenario"),
       schema("bookkeeper-deliverable-candidate"),
       schema("capability-observation"),
+      schema("read-only-qa-grounding"),
     ],
     tools: [
       tool("papers.acquire-arxiv", "research-watch", "paper-record", Observe, [
         "raw/arxiv", "records/papers",
       ]),
+      tool(
+        "research.account-local-corpus",
+        "local-input-coverage",
+        "local-input-coverage",
+        WorkspaceMutation,
+        ["raw/imports", "raw/extracted", "records/local-input-coverage"],
+      ),
       tool(
         "papers.record-isolated-fulltext",
         "full-text-evidence",
@@ -67,7 +79,7 @@ pub fn manifest() -> @pack.MoonPackManifest {
       tool(
         "research.prepare-analysis",
         "research-run",
-        "research-run",
+        "moonclaw-research-command",
         SandboxExecution,
         ["records/moonclaw-commands"],
       ),
@@ -77,6 +89,13 @@ pub fn manifest() -> @pack.MoonPackManifest {
         "moontown-research-scenario",
         SandboxExecution,
         ["records/moontown-scenarios", "records/model-ideas"],
+      ),
+      tool(
+        "research.challenge-local-corpus",
+        "local-input-coverage",
+        "moontown-research-scenario",
+        SandboxExecution,
+        ["records/moontown-scenarios", "records/local-corpus-challenges"],
       ),
       tool(
         "research.review",
@@ -95,6 +114,14 @@ pub fn manifest() -> @pack.MoonPackManifest {
         review_required=true,
       ),
       tool(
+        "book.prepare-read-only-qa-grounding",
+        "research-run",
+        "read-only-qa-grounding",
+        SandboxExecution,
+        ["records/qa-grounding"],
+        review_required=true,
+      ),
+      tool(
         "moonflow.capability-observe",
         "research-run",
         "capability-observation",
@@ -105,10 +132,10 @@ pub fn manifest() -> @pack.MoonPackManifest {
     ],
     workflows: [
       @pack.contract_ref(
-        "humanoid-research", "1.0.0", "workflows/humanoid-research.v1.json",
+        "humanoid-research", "2.0.0", "workflows/humanoid-research.v1.json",
       ),
       @pack.contract_ref(
-        "humanoid-robotics-suite", "1.0.0", "workflows/humanoid-robotics-suite.v1.json",
+        "humanoid-robotics-suite-desired", "3.0.0", "workflows/humanoid-robotics-suite.v1.json",
       ),
     ],
     skills: [
@@ -137,6 +164,12 @@ pub fn manifest() -> @pack.MoonPackManifest {
       @pack.contract_ref(
         "licensed-fulltext-policy", "1.0.0", "providers/licensed-fulltext-policy.json",
       ),
+      @pack.contract_ref(
+        "moonflow-adapter-declaration", "1.0.0", "adapters/moonflow/adapter-declaration.v1.json",
+      ),
+      @pack.contract_ref(
+        "moonflow-adapter-health-template", "1.0.0", "adapters/moonflow/adapter-health.template.v1.json",
+      ),
     ],
     schedules: [
       @pack.schedule_declaration(
@@ -145,7 +178,7 @@ pub fn manifest() -> @pack.MoonPackManifest {
     ],
     app_entrypoints: [
       @pack.app_entrypoint(
-        "research-studio", "ui/rabbita-moonfind", "research-operator",
+        "research-studio", "/apps/moonfind/research", "research-operator",
       ),
     ],
     migrations: [],

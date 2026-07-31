@@ -1,0 +1,27 @@
+{
+  "contract": "mooncast.final-deliverable-evidence.v1",
+  "record": {
+    "record_id": "fixture-record_id",
+    "record_version": "1.0.0",
+    "record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "provenance_ref": "fixture-provenance_ref"
+  },
+  "project_id": "fixture-project_id",
+  "episode_id": "fixture-episode_id",
+  "export_job_id": "fixture-export_job_id",
+  "editor_output_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "render_plan_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "lineage_evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "duration_seconds": 180,
+  "source_refs": [
+    {
+      "record_id": "fixture-record_id",
+      "record_version": "1.0.0",
+      "record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "provenance_ref": "fixture-provenance_ref"
+    }
+  ],
+  "publication_authority": false,
+  "external_effect_authorized": false,
+  "prepared_at": "2026-07-31T00:00:00Z"
+}

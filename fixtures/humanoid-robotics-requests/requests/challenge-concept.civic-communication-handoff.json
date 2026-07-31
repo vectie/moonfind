@@ -1,0 +1,58 @@
+{
+  "contract_version": "moontown.civic.communication.handoff.v1",
+  "handoff_id": "fixture-handoff_id",
+  "producer": "fixture-producer",
+  "producer_run_id": "fixture-producer_run_id",
+  "scenario": {
+    "id": "fixture-id",
+    "title": "fixture-title",
+    "building_id": "fixture-building_id",
+    "building_book_id": "fixture-building_book_id",
+    "domain_label": "fixture-domain_label",
+    "topic": "fixture-topic",
+    "cadence": "fixture-cadence",
+    "skill_name": "fixture-skill_name",
+    "skill_description": "fixture-skill_description",
+    "protocol_channel": "fixture-protocol_channel",
+    "reduction_kind": "fixture-reduction_kind",
+    "output_channel": "fixture-output_channel",
+    "review_gate": "fixture-review_gate",
+    "review_owner": "fixture-review_owner",
+    "review_reason": "fixture-review_reason",
+    "backlog_path": "fixture-backlog_path",
+    "synthesis_path": "fixture-synthesis_path",
+    "metrics_path": "fixture-metrics_path",
+    "review_path": "fixture-review_path",
+    "returned_ideas_path": "fixture-returned_ideas_path",
+    "participant_contract_path": "fixture-participant_contract_path",
+    "quality_rules": [
+      "fixture-quality_rules"
+    ],
+    "skill_rules": [
+      "fixture-skill_rules"
+    ],
+    "participants": [
+      {
+        "book_id": "fixture-book_id",
+        "title": "fixture-title",
+        "focus_area": "fixture-focus_area",
+        "perspective": "fixture-perspective",
+        "cadence": "fixture-cadence",
+        "current_question": "fixture-current_question",
+        "contribution": "fixture-contribution",
+        "next_artifact": "fixture-next_artifact"
+      },
+      {
+        "book_id": "fixture-book_id",
+        "title": "fixture-title",
+        "focus_area": "fixture-focus_area",
+        "perspective": "fixture-perspective",
+        "cadence": "fixture-cadence",
+        "current_question": "fixture-current_question",
+        "contribution": "fixture-contribution",
+        "next_artifact": "fixture-next_artifact"
+      }
+    ],
+    "ideas": []
+  }
+}

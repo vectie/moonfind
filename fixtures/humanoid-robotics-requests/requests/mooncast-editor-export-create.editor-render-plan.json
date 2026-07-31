@@ -1,0 +1,32 @@
+{
+  "contract": "mooncast.editor-render-plan.v1",
+  "project_id": "fixture-project_id",
+  "timeline_id": "fixture-timeline_id",
+  "project_revision": 0,
+  "timeline_revision": 0,
+  "timebase": {
+    "ticks_per_second": 1
+  },
+  "output": {
+    "preset": "horizontal-1080p",
+    "orientation": "horizontal",
+    "width": 1,
+    "height": 1,
+    "fps": {
+      "numerator": 1,
+      "denominator": 1
+    },
+    "background": "fixture-background"
+  },
+  "range": {
+    "start_tick": 0,
+    "duration_ticks": 1
+  },
+  "quality": "original",
+  "tracks": [],
+  "transitions": [],
+  "findings": [],
+  "ready": false,
+  "publication_authority": false,
+  "plan_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+}

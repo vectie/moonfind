@@ -1,0 +1,42 @@
+{
+  "contract": "mooncast.editor-production-intent.v1",
+  "project_id": "fixture-project_id",
+  "expected_production_revision": 0,
+  "expected_editor_revision": 0,
+  "ticks_per_second": 1,
+  "budget_ceiling": {
+    "amount": 0,
+    "currency": "CNY"
+  },
+  "current_client_revision_rounds": 0,
+  "max_client_revision_rounds": 0,
+  "take_selections": [],
+  "placements": [],
+  "track_role_map": {
+    "video": "fixture-video",
+    "dialogue": "fixture-dialogue",
+    "voice": "fixture-voice",
+    "music": "fixture-music",
+    "SFX": "fixture-SFX",
+    "subtitle": "fixture-subtitle",
+    "title": "fixture-title",
+    "effect": "fixture-effect",
+    "AI-label": "fixture-AI-label"
+  },
+  "annotations": [],
+  "review_comments": [],
+  "delivery_intents": [
+    {
+      "delivery_id": "fixture-delivery_id",
+      "orientation": "horizontal",
+      "width": 1,
+      "height": 1
+    },
+    {
+      "delivery_id": "fixture-delivery_id",
+      "orientation": "vertical",
+      "width": 1,
+      "height": 1
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "contract_id": "moonproj.project-plan-request.v1",
+  "operation_ref": "moonproj/project.plan.prepare@0.1.0",
+  "plan_request_id": "fixture-plan_request_id",
+  "project": {
+    "project_id": "fixture-project_id",
+    "principal_id": "fixture-principal_id",
+    "code": "fixture-code",
+    "name": "fixture-name"
+  },
+  "prepared_by": "fixture-prepared_by",
+  "prepared_at": "2026-07-31T00:00:00Z",
+  "owners": [
+    {
+      "owner_id": "fixture-owner_id",
+      "display_name": "fixture-display_name",
+      "role": "fixture-role"
+    }
+  ],
+  "budget_envelope": {
+    "currency": "CNY",
+    "limit_minor": 0,
+    "contingency_minor": 0
+  },
+  "tasks": [
+    {
+      "task_id": "fixture-task_id",
+      "name": "fixture-name",
+      "owner_id": "fixture-owner_id",
+      "milestone_id": "fixture-milestone_id",
+      "planned_cost_minor": 0,
+      "dependencies": [],
+      "acceptance_gate_ids": [
+        "fixture-acceptance_gate_ids"
+      ],
+      "source_evidence_refs": [
+        "fixture-source_evidence_refs"
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "milestone_id": "fixture-milestone_id",
+      "name": "fixture-name",
+      "owner_id": "fixture-owner_id",
+      "target_date": "fixture-target_date",
+      "task_ids": [
+        "fixture-task_ids"
+      ],
+      "acceptance_gate_ids": [
+        "fixture-acceptance_gate_ids"
+      ]
+    }
+  ],
+  "risks": [],
+  "acceptance_gates": [
+    {
+      "gate_id": "fixture-gate_id",
+      "name": "fixture-name",
+      "owner_id": "fixture-owner_id",
+      "scope_type": "project",
+      "scope_id": "fixture-scope_id",
+      "criteria": [
+        "fixture-criteria"
+      ],
+      "required_evidence": [
+        "fixture-required_evidence"
+      ]
+    }
+  ],
+  "source_evidence": [
+    {
+      "artifact_ref": "fixture-artifact_ref",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "observed_at": "2026-07-31T00:00:00Z",
+      "kind": "fixture-kind"
+    }
+  ]
+}

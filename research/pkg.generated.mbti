@@ -9,11 +9,17 @@ import {
 // Values
 pub fn complete_research_run(ResearchRun, ResearchAnalysisResult, Int64) -> ResearchRun raise
 
+pub fn local_input_coverage_contract_version() -> String
+
 pub fn research_contract_version() -> String
 
 pub fn start_research_run(String, ResearchWatch, Array[PaperRecord], Int64) -> ResearchRun raise
 
+pub fn summarize_local_input_coverage(LocalInputCoverageLedger) -> LocalInputCoverageSummary
+
 pub fn validate_analysis_result(ResearchRun, ResearchAnalysisResult) -> Array[String]
+
+pub fn validate_local_input_coverage(LocalInputCoverageLedger) -> Array[String]
 
 pub fn validate_watch(ResearchWatch) -> Array[String]
 
@@ -30,6 +36,52 @@ pub(all) struct HumanResearchReview {
   rejected_idea_ids : Array[String]
   notes : String
   reviewed_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct LocalInputCoverageLedger {
+  contract_version : String
+  ledger_id : String
+  source_label : String
+  expected_input_count : Int
+  inputs : Array[LocalInputRecord]
+  known_missing_inputs : Array[String]
+  created_at : Int64
+  updated_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct LocalInputCoverageSummary {
+  expected_input_count : Int
+  accounted_input_count : Int
+  used_input_count : Int
+  duplicate_input_count : Int
+  blocked_input_count : Int
+  accounting_complete : Bool
+  research_ready : Bool
+  issues : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct LocalInputRecord {
+  input_id : String
+  relative_path : String
+  source_digest : String
+  byte_length : Int64
+  media_type : String
+  sequence_number : Int
+  status : LocalInputStatus
+  extraction_artifact : String?
+  evidence_anchors : Array[String]
+  provenance_ref : String
+  duplicate_of : String?
+  failure_reason : String?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) enum LocalInputStatus {
+  Ingested
+  Extracted
+  Used
+  Duplicate
+  Unsupported
+  Failed
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct PaperClaim {

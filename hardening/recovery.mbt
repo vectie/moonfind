@@ -64,3 +64,13 @@ pub fn recovery_snapshot(
     recorded_at,
   }
 }
+
+///|
+/// Extend the legacy stage reconstruction with the exact capability/Cowork
+/// recovery state. This delegates to the append-only execution contract and
+/// never treats a prepared command as completed analysis.
+pub fn research_execution_recovery_action(
+  record : @integration.ResearchExecutionRecordV1,
+) -> String {
+  @integration.restart_action(record)
+}

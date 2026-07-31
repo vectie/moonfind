@@ -9,9 +9,17 @@ import {
 }
 
 // Values
+pub fn book_qa_command_responsibility_issues(MoonClawResearchCommand) -> Array[String]
+
+pub fn local_corpus_command_responsibility_issues(MoonClawResearchCommand) -> Array[String]
+
+pub fn prepare_book_qa_command(String, String, String, String, Array[String], String) -> MoonClawResearchCommand raise
+
 pub fn prepare_humanoid_analysis_command(@research.ResearchRun, String, String) -> MoonClawResearchCommand raise
 
 pub fn prepare_humanoid_analysis_command_with_evidence(@research.ResearchRun, String, String, Array[@hardening.FullTextEvidence]) -> MoonClawResearchCommand raise
+
+pub fn prepare_local_corpus_analysis_command(@research.LocalInputCoverageLedger, String, String, String, String) -> MoonClawResearchCommand raise
 
 pub fn research_command_responsibility_issues(MoonClawResearchCommand) -> Array[String]
 

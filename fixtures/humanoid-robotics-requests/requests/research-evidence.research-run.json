@@ -1,0 +1,7 @@
+{
+  "contract_version": "moonfind.research.v1",
+  "run_id": "fixture-run_id",
+  "status": "fixture-status",
+  "papers": [],
+  "human_review_status": "fixture-human_review_status"
+}

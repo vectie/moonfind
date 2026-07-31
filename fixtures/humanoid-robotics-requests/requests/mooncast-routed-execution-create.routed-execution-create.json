@@ -1,0 +1,8 @@
+{
+  "expected_project_revision": 1,
+  "expected_routing_plan_version": 1,
+  "expected_routing_plan_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "actor_id": "fixture-actor_id",
+  "network_authority": true,
+  "publication_authority": false
+}

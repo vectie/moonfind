@@ -1,0 +1,13 @@
+{
+  "contract_id": "moonmold.spatial-operation-request.v1",
+  "request_id": "fixture-request_id",
+  "idempotency_key": "fixture-idempotency_key",
+  "project_id": "fixture-project_id",
+  "model_id": "fixture-model_id",
+  "expected_parent_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "authority": "Observe",
+  "operation": {
+    "method": "scene.create-model",
+    "params": {}
+  }
+}

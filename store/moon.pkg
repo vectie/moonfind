@@ -1,8 +1,10 @@
 import {
+  "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/json",
   "moonbitlang/x/crypto",
+  "vectie/moonfind/integration",
 }
 
 supported_targets = "native"

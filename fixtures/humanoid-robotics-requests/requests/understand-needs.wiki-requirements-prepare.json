@@ -1,0 +1,30 @@
+{
+  "contract_version": "moonbook.wiki.requirements_prepare.v1",
+  "request": {
+    "record_id": "fixture-record_id",
+    "record_version": "1.0.0",
+    "record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "book_id": "fixture-book_id",
+  "goal": "fixture-goal",
+  "owner_route": "fixture-owner_route",
+  "recorded_at": 0,
+  "evidence_refs": [
+    {
+      "reference_id": "fixture-reference_id",
+      "reference_version": "1.0.0",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "provenance_ref": "fixture-provenance_ref"
+    }
+  ],
+  "statements": [
+    {
+      "statement_id": "fixture-statement_id",
+      "kind": "fact",
+      "text": "fixture-text",
+      "evidence_refs": [
+        "fixture-evidence_refs"
+      ]
+    }
+  ]
+}

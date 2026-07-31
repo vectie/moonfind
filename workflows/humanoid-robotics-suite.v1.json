@@ -1,220 +1,1499 @@
 {
-  "contract_id": "moonsuite.work-model.v1",
-  "graph_id": "moonfind-humanoid-robotics-suite-v1",
+  "contract_id": "moonfind.desired-capability-graph.v2",
+  "graph_id": "moonfind-humanoid-robotics-suite-v3",
   "book_id": "moonfind-humanoid-robotics",
-  "declaration_revision": "suite-v1",
-  "source_digest": "sha256:55ad83b204660e728a2eb35544b60bf4ac542a61b55e01926f4bc41b5bf628cc",
-  "recorded_at": "2026-07-20T00:00:00Z",
-  "items": [
+  "declaration_revision": "desired-v3-exact-capabilities",
+  "source_digest": "sha256:a1a628f19bf3cf8e1f56344122160a105e512569c3f9f97388c67178304e4c89",
+  "support_topology": {
+    "execution_engine": "moonflow",
+    "policy_and_catalog": "moongate",
+    "shared_contracts": "moonlib",
+    "libraries": [
+      "moonedit",
+      "moonleaf"
+    ],
+    "rule": "support products are not executable graph stages and do not receive domain work"
+  },
+  "intentional_exclusions": [
     {
-      "work_item_id": "understand-needs",
-      "declaration_id": "robotics-understand-needs-v1",
-      "product_id": "moonwiki",
-      "requested_authority": "cognitive-maintenance",
-      "acceptance_criteria": ["requirements cite owner intent and unresolved questions"],
-      "operation": "requirements.synthesize",
-      "input_contracts": ["moonbook.intent.v1"],
-      "output_contracts": ["moonsuite.robotics-requirements.v1"],
-      "required_claim": "research-evidence",
-      "input_artifacts": ["wiki/index.md"],
-      "timeout_ms": 120000,
+      "product_id": "moonfish",
+      "reason": "finance domain is separate from the robotics book"
+    },
+    {
+      "capability": "physical robot command",
+      "reason": "readiness observation plus named MoonChat authority is the terminal boundary"
+    },
+    {
+      "capability": "publication",
+      "reason": "MoonCast delivery stops at accepted immutable evidence; publication needs separate authorization"
+    }
+  ],
+  "stages": [
+    {
+      "stage_id": "understand-needs",
+      "declaration_id": "understand-needs-v3",
+      "product_id": "moonbook",
+      "desired_operation_ref": "moonbook/wiki.requirements.prepare@0.1.0",
+      "desired_tool_hint": "wiki.requirements.prepare",
+      "execution_role": "wiki",
+      "execution_config": {
+        "workspace_kind": "moonbook",
+        "owner_intent_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonbook/wiki-requirements-prepare@1.0.0",
+      "output_schema_ref": "moonbook/wiki-requirements-packet@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "owner intent, constraints, acceptance tests, unknowns, and conflicting requirements are cited"
+      ],
+      "input_artifacts": [
+        "requests/understand-needs.wiki-requirements-prepare.json"
+      ],
+      "timeout_ms": 180000,
       "depends_on": []
     },
     {
-      "work_item_id": "research-evidence",
-      "declaration_id": "robotics-research-evidence-v1",
-      "product_id": "moonfind",
-      "requested_authority": "sandbox-execution",
-      "acceptance_criteria": ["full text is licensed, isolated, cited, and reviewable"],
-      "operation": "research.cross-paper-synthesize",
-      "input_contracts": ["moonsuite.robotics-requirements.v1"],
-      "output_contracts": ["moonfind.research.v1"],
-      "required_claim": "research-evidence",
-      "input_artifacts": ["records/requirements.json"],
-      "timeout_ms": 900000,
-      "depends_on": ["understand-needs"]
-    },
-    {
-      "work_item_id": "challenge-concept",
-      "declaration_id": "robotics-challenge-concept-v1",
-      "product_id": "moontown",
-      "requested_authority": "cognitive-maintenance",
-      "acceptance_criteria": ["independent participant books and one reviewable synthesis exist"],
-      "operation": "civic.research-salon",
-      "input_contracts": ["moonfind.research.v1"],
-      "output_contracts": ["moontown.civic.communication.receipt.v1"],
-      "required_claim": "accepted-knowledge",
-      "input_artifacts": ["records/moontown-handoff.json"],
-      "timeout_ms": 600000,
-      "depends_on": ["research-evidence"]
-    },
-    {
-      "work_item_id": "stakeholder-review",
-      "declaration_id": "robotics-stakeholder-review-v1",
+      "stage_id": "owner-requirements-review",
+      "declaration_id": "owner-requirements-review-v3",
       "product_id": "moonchat",
-      "requested_authority": "cognitive-maintenance",
-      "acceptance_criteria": ["stakeholder questions, objections, and decisions are captured with named ownership"],
-      "operation": "conversation.review-concept",
-      "input_contracts": ["moontown.civic.communication.receipt.v1"],
-      "output_contracts": ["moonchat.review-record.v1"],
+      "desired_operation_ref": "moonchat/conversation.review.record@0.1.0",
+      "desired_tool_hint": "conversation.review.record",
+      "execution_config": {
+        "review_kind": "owner-requirements",
+        "named_decider_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonchat/conversation-review-bundle@1.0.0",
+      "output_schema_ref": "moonchat/conversation-review-record@1.0.0",
       "required_claim": "accepted-knowledge",
-      "input_artifacts": ["records/synthesis.json"],
+      "acceptance_criteria": [
+        "the named owner accepts, rejects, or returns every unresolved requirement"
+      ],
+      "input_artifacts": [
+        "requests/owner-requirements-review.conversation-review-bundle.json"
+      ],
       "timeout_ms": 180000,
-      "depends_on": ["challenge-concept"]
+      "depends_on": [
+        "understand-needs"
+      ]
     },
     {
-      "work_item_id": "plan-project",
-      "declaration_id": "robotics-project-plan-v1",
+      "stage_id": "requirements-agent-check",
+      "declaration_id": "requirements-agent-check-v3",
+      "product_id": "moonclaw",
+      "desired_operation_ref": "moonclaw/agent.goal.execute@0.1.5",
+      "desired_tool_hint": "agent.goal.execute",
+      "execution_role": "wiki",
+      "execution_config": {
+        "model": "gpt-5.6-sol",
+        "runtime": "moonclaw",
+        "completion_authority": "named-human-review"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonclaw/agent-goal-execution-request@1.0.0",
+      "output_schema_ref": "moonclaw/agent-goal-execution-receipt@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "MoonClaw runs the wiki role with gpt-5.6-sol and records requirement gaps without self-approval"
+      ],
+      "input_artifacts": [
+        "requests/requirements-agent-check.agent-goal-execution-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "owner-requirements-review"
+      ]
+    },
+    {
+      "stage_id": "research-evidence",
+      "declaration_id": "research-evidence-v3",
+      "product_id": "moonfind",
+      "desired_operation_ref": "moonfind/research.cross-paper-synthesize@0.1.0",
+      "desired_tool_hint": "research.cross-paper-synthesize",
+      "requested_authority": "sandbox-execution",
+      "input_schema_ref": "moonfind/research-run@1.0.0",
+      "output_schema_ref": "moonfind/moontown-research-scenario@1.0.0",
+      "required_claim": "research-evidence",
+      "acceptance_criteria": [
+        "full-text evidence is isolated, cited, cross-paper, and reviewable"
+      ],
+      "input_artifacts": [
+        "requests/research-evidence.research-run.json"
+      ],
+      "timeout_ms": 900000,
+      "depends_on": [
+        "requirements-agent-check"
+      ]
+    },
+    {
+      "stage_id": "challenge-concept",
+      "declaration_id": "challenge-concept-v3",
+      "product_id": "moontown",
+      "desired_operation_ref": "moontown/civic.communication.synthesize@0.1.0",
+      "desired_tool_hint": "civic.communication.synthesize",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moontown/civic-communication-handoff@1.0.0",
+      "output_schema_ref": "moontown/civic-synthesis-result@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "independent participant books and one pending-review synthesis exist; the synthesis is not accepted knowledge"
+      ],
+      "input_artifacts": [
+        "requests/challenge-concept.civic-communication-handoff.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "research-evidence"
+      ]
+    },
+    {
+      "stage_id": "stakeholder-review",
+      "declaration_id": "stakeholder-review-v3",
+      "product_id": "moonchat",
+      "desired_operation_ref": "moonchat/conversation.review.record@0.1.0",
+      "desired_tool_hint": "conversation.review.record",
+      "execution_config": {
+        "review_kind": "stakeholder-synthesis",
+        "named_decider_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonchat/conversation-review-bundle@1.0.0",
+      "output_schema_ref": "moonchat/conversation-review-record@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "questions, objections, alternatives, and named decisions are durable"
+      ],
+      "input_artifacts": [
+        "requests/stakeholder-review.conversation-review-bundle.json"
+      ],
+      "timeout_ms": 180000,
+      "depends_on": [
+        "challenge-concept"
+      ]
+    },
+    {
+      "stage_id": "plan-project",
+      "declaration_id": "plan-project-v3",
       "product_id": "moonproj",
+      "desired_operation_ref": "moonproj/project.plan.prepare@0.1.0",
+      "desired_tool_hint": "project.plan.prepare",
       "requested_authority": "workspace-mutation",
-      "acceptance_criteria": ["milestones, interfaces, budgets, risks, and acceptance gates are explicit"],
-      "operation": "project.plan",
-      "input_contracts": ["moontown.civic.communication.receipt.v1", "moonchat.review-record.v1"],
-      "output_contracts": ["moonproj.project-plan.v1"],
+      "input_schema_ref": "moonproj/project-plan-request@1.0.0",
+      "output_schema_ref": "moonproj/project-plan-artifact@1.0.0",
       "required_claim": "digital-artifact",
-      "input_artifacts": ["records/synthesis.json"],
-      "timeout_ms": 180000,
-      "depends_on": ["challenge-concept", "stakeholder-review"]
+      "acceptance_criteria": [
+        "milestones, interfaces, budgets, risks, evidence gates, and owners are explicit"
+      ],
+      "input_artifacts": [
+        "requests/plan-project.project-plan-request.json"
+      ],
+      "timeout_ms": 300000,
+      "depends_on": [
+        "stakeholder-review"
+      ]
     },
     {
-      "work_item_id": "build-control-software",
-      "declaration_id": "robotics-control-software-v1",
-      "product_id": "mooncode",
+      "stage_id": "build-control-software",
+      "declaration_id": "build-control-software-v3",
+      "product_id": "moonclaw",
+      "desired_operation_ref": "moonclaw/agent.goal.execute@0.1.5",
+      "desired_tool_hint": "agent.goal.execute",
+      "execution_role": "mooncode",
+      "execution_config": {
+        "model": "gpt-5.6-sol",
+        "runtime": "moonclaw",
+        "completion_authority": "external-review"
+      },
       "requested_authority": "workspace-mutation",
-      "acceptance_criteria": ["software builds and satisfies project-owned interface checks"],
-      "operation": "software.build",
-      "input_contracts": ["moonproj.project-plan.v1"],
-      "output_contracts": ["mooncode.software-deliverable.v1"],
+      "input_schema_ref": "moonclaw/agent-goal-execution-request@1.0.0",
+      "output_schema_ref": "moonclaw/agent-goal-execution-receipt@1.0.0",
       "required_claim": "digital-artifact",
-      "input_artifacts": ["project/software-plan.json"],
+      "acceptance_criteria": [
+        "MoonClaw runs MoonCode with gpt-5.6-sol; software builds and satisfies project-owned interfaces"
+      ],
+      "input_artifacts": [
+        "requests/build-control-software.agent-goal-execution-request.json"
+      ],
       "timeout_ms": 1800000,
-      "depends_on": ["plan-project"]
+      "depends_on": [
+        "plan-project"
+      ]
     },
     {
-      "work_item_id": "build-edge-console",
-      "declaration_id": "robotics-edge-console-v1",
-      "product_id": "moonmini",
-      "requested_authority": "workspace-mutation",
-      "acceptance_criteria": ["operator console exposes bounded controls, telemetry, and emergency state without hidden authority"],
-      "operation": "application.build-edge-console",
-      "input_contracts": ["mooncode.software-deliverable.v1", "moonproj.project-plan.v1"],
-      "output_contracts": ["moonmini.operator-console.v1"],
-      "required_claim": "digital-artifact",
-      "input_artifacts": ["artifacts/software.json", "project/operator-interface.json"],
-      "timeout_ms": 900000,
-      "depends_on": ["build-control-software"]
-    },
-    {
-      "work_item_id": "design-physical-assets",
-      "declaration_id": "robotics-physical-assets-v1",
+      "stage_id": "design-physical-assets",
+      "declaration_id": "design-physical-assets-v3",
       "product_id": "moonmold",
-      "requested_authority": "sandbox-execution",
-      "acceptance_criteria": ["versioned 3D assets satisfy dimensional and lineage checks"],
-      "operation": "model.create-3d-assets",
-      "input_contracts": ["moonproj.project-plan.v1"],
-      "output_contracts": ["moonmold.asset-bundle.v1"],
+      "desired_operation_ref": "moonmold/spatial.operation.execute@0.2.0",
+      "desired_tool_hint": "spatial.operation.execute",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonmold/spatial-operation-request@1.0.0",
+      "output_schema_ref": "moonmold/spatial-operation-receipt@1.0.0",
       "required_claim": "digital-artifact",
-      "input_artifacts": ["project/mechanical-plan.json"],
+      "acceptance_criteria": [
+        "versioned spatial assets satisfy dimensions, material assumptions, and lineage checks"
+      ],
+      "input_artifacts": [
+        "requests/design-physical-assets.spatial-operation-request.json"
+      ],
       "timeout_ms": 1200000,
-      "depends_on": ["plan-project"]
+      "depends_on": [
+        "plan-project"
+      ]
     },
     {
-      "work_item_id": "integrate-robot",
-      "declaration_id": "robotics-integration-v1",
+      "stage_id": "integrate-robot",
+      "declaration_id": "integrate-robot-v3",
       "product_id": "moonrobo",
-      "requested_authority": "sandbox-execution",
-      "acceptance_criteria": ["digital robot integrates code, geometry, sensors, and control interfaces"],
-      "operation": "robot.integrate-digital-model",
-      "input_contracts": ["mooncode.software-deliverable.v1", "moonmini.operator-console.v1", "moonmold.asset-bundle.v1"],
-      "output_contracts": ["moonsuite.robot-design.v1"],
+      "desired_operation_ref": "moonrobo/robot.integrate-digital-model@0.2.0",
+      "desired_tool_hint": "robot.integrate-digital-model",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonrobo/robot-design@1.0.0",
+      "output_schema_ref": "moonrobo/digital-model-integration-receipt@1.0.0",
       "required_claim": "digital-artifact",
-      "input_artifacts": ["artifacts/software.json", "artifacts/geometry.json"],
+      "acceptance_criteria": [
+        "the digital robot model integrates software and spatial assets without issuing a physical command"
+      ],
+      "input_artifacts": [
+        "requests/integrate-robot.robot-design.json"
+      ],
       "timeout_ms": 900000,
-      "depends_on": ["build-control-software", "build-edge-console", "design-physical-assets"]
+      "depends_on": [
+        "build-control-software",
+        "design-physical-assets"
+      ]
     },
     {
-      "work_item_id": "simulate-missions",
-      "declaration_id": "robotics-simulation-v1",
+      "stage_id": "simulate-missions",
+      "declaration_id": "simulate-missions-v3",
       "product_id": "moonmoon",
+      "desired_operation_ref": "moonmoon/simulation.robot-mission@0.1.0",
+      "desired_tool_hint": "simulation.robot-mission",
       "requested_authority": "sandbox-execution",
-      "acceptance_criteria": ["simulation covers nominal, boundary, and failure scenarios with uncertainty"],
-      "operation": "simulation.robot-mission",
-      "input_contracts": ["moonsuite.robot-design.v1"],
-      "output_contracts": ["moonmoon.robot-mission-result.v1"],
-      "required_claim": "simulation-evidence",
-      "input_artifacts": ["artifacts/robot-design.json"],
+      "input_schema_ref": "moonmoon/robot-mission-run-request@1.0.0",
+      "output_schema_ref": "moonmoon/mission-simulation-receipt@1.0.0",
+      "required_claim": "calibrated-digital-twin",
+      "acceptance_criteria": [
+        "nominal, boundary, recovery, and failure scenarios include uncertainty and replay evidence"
+      ],
+      "input_artifacts": [
+        "requests/simulate-missions.robot-mission-run-request.json"
+      ],
       "timeout_ms": 1800000,
-      "depends_on": ["integrate-robot"]
+      "depends_on": [
+        "integrate-robot"
+      ]
     },
     {
-      "work_item_id": "evaluate-results",
-      "declaration_id": "robotics-evaluation-v1",
-      "product_id": "moonstat",
-      "requested_authority": "sandbox-execution",
-      "acceptance_criteria": ["metrics compare requirements, baselines, uncertainty, and regressions"],
-      "operation": "evaluation.score",
-      "input_contracts": ["moonmoon.robot-mission-result.v1"],
-      "output_contracts": ["moonstat.evaluation-report.v1"],
-      "required_claim": "simulation-evidence",
-      "input_artifacts": ["evidence/simulation.json"],
-      "timeout_ms": 300000,
-      "depends_on": ["simulate-missions"]
-    },
-    {
-      "work_item_id": "review-authority",
-      "declaration_id": "robotics-authority-review-v1",
-      "product_id": "moongate",
+      "stage_id": "readiness-inspect",
+      "declaration_id": "readiness-inspect-v3",
+      "product_id": "moonrobo",
+      "desired_operation_ref": "moonrobo/robot.readiness.inspect@0.2.0",
+      "desired_tool_hint": "robot.readiness.inspect",
       "requested_authority": "observe",
-      "acceptance_criteria": ["physical authority remains denied until a named reviewer approves a bounded envelope"],
-      "operation": "authority.review",
-      "input_contracts": ["moonstat.evaluation-report.v1"],
-      "output_contracts": ["moongate.authority-decision.v1"],
-      "required_claim": "scenario-qualified",
-      "input_artifacts": ["evidence/evaluation.json"],
-      "timeout_ms": 120000,
-      "depends_on": ["evaluate-results"]
-    },
-    {
-      "work_item_id": "visualize-deliverable",
-      "declaration_id": "robotics-visualization-v1",
-      "product_id": "moonvis",
-      "requested_authority": "sandbox-execution",
-      "acceptance_criteria": ["operator can inspect design, simulation, metrics, lineage, and open risks"],
-      "operation": "visualization.compose",
-      "input_contracts": ["moonsuite.robot-design.v1", "moonstat.evaluation-report.v1"],
-      "output_contracts": ["moonvis.review-surface.v1"],
-      "required_claim": "digital-artifact",
-      "input_artifacts": ["artifacts/robot-design.json", "evidence/evaluation.json"],
-      "timeout_ms": 300000,
-      "depends_on": ["integrate-robot", "evaluate-results"]
-    },
-    {
-      "work_item_id": "produce-review-episode",
-      "declaration_id": "robotics-review-episode-v1",
-      "product_id": "mooncast",
-      "requested_authority": "sandbox-execution",
-      "acceptance_criteria": ["review episode explains intended behavior, simulation evidence, limitations, rights, and AI provenance"],
-      "operation": "episode.produce-review-cut",
-      "input_contracts": ["moonmoon.robot-mission-result.v1", "moonvis.review-surface.v1"],
-      "output_contracts": ["mooncast.delivery-master.v1"],
-      "required_claim": "digital-artifact",
-      "input_artifacts": ["evidence/simulation.json", "artifacts/review-surface.json"],
-      "timeout_ms": 1800000,
-      "depends_on": ["simulate-missions", "visualize-deliverable"]
-    },
-    {
-      "work_item_id": "bookkeeper-close-loop",
-      "declaration_id": "robotics-bookkeeper-v1",
-      "product_id": "moonbook",
-      "requested_authority": "cognitive-maintenance",
-      "acceptance_criteria": ["named review records outcome, Three-Gap deltas, reusable ability proposal, and rollback"],
-      "operation": "bookkeeper.close-loop",
-      "input_contracts": ["moongate.authority-decision.v1", "moonvis.review-surface.v1", "mooncast.delivery-master.v1"],
-      "output_contracts": ["moonbook.three-gap-outcome.v1"],
-      "required_claim": "accepted-knowledge",
-      "input_artifacts": ["evidence/authority.json", "artifacts/review-surface.json"],
+      "input_schema_ref": "moonrobo/robobook-ref@1.0.0",
+      "output_schema_ref": "moonrobo/readiness-observation@1.0.0",
+      "required_claim": "observation",
+      "acceptance_criteria": [
+        "readiness observations and blockers are recorded; no physical readiness or command is claimed"
+      ],
+      "input_artifacts": [
+        "requests/readiness-inspect.robobook-ref.json"
+      ],
       "timeout_ms": 180000,
-      "depends_on": ["review-authority", "visualize-deliverable", "produce-review-episode"]
+      "depends_on": [
+        "simulate-missions"
+      ]
+    },
+    {
+      "stage_id": "visualize-deliverable",
+      "declaration_id": "visualize-deliverable-v3",
+      "product_id": "moonvis",
+      "desired_operation_ref": "moonvis/visual.asset-bundle.resolve@0.1.0",
+      "desired_tool_hint": "visual.asset-bundle.resolve",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonvis/visual-asset-bundle-request@1.0.0",
+      "output_schema_ref": "moonvis/visual-asset-bundle-manifest@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "design, simulation, provenance, readiness gaps, and open risks are inspectable"
+      ],
+      "input_artifacts": [
+        "requests/visualize-deliverable.visual-asset-bundle-request.json"
+      ],
+      "timeout_ms": 300000,
+      "depends_on": [
+        "readiness-inspect"
+      ]
+    },
+    {
+      "stage_id": "mooncast-project-create",
+      "declaration_id": "mooncast-project-create-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/project.create@0.2.0",
+      "desired_tool_hint": "project.create",
+      "execution_config": {
+        "format": "robotics-review-episode",
+        "publication": false
+      },
+      "requested_authority": "sandbox-execution",
+      "input_schema_ref": "mooncast/creative-brief@1.0.0",
+      "output_schema_ref": "mooncast/production-project@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-project-create produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-project-create.creative-brief.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "stakeholder-review",
+        "plan-project",
+        "visualize-deliverable"
+      ]
+    },
+    {
+      "stage_id": "mooncast-brief-revise",
+      "declaration_id": "mooncast-brief-revise-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.revise@0.2.0",
+      "desired_tool_hint": "creative.artifact.revise",
+      "execution_config": {
+        "artifact_kind": "brief"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-artifact@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-brief-revise produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-brief-revise.creative-revision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-project-create"
+      ]
+    },
+    {
+      "stage_id": "mooncast-brief-decide",
+      "declaration_id": "mooncast-brief-decide-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.decide@0.2.0",
+      "desired_tool_hint": "creative.artifact.decide",
+      "execution_config": {
+        "artifact_kind": "brief",
+        "named_decider_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-decision@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-brief-decide produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-brief-decide.creative-decision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-brief-revise"
+      ]
+    },
+    {
+      "stage_id": "mooncast-advance-g0",
+      "declaration_id": "mooncast-advance-g0-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/project.advance@0.2.0",
+      "desired_tool_hint": "project.advance",
+      "execution_config": {
+        "gate": "G0-qualified-scenario"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "output_schema_ref": "mooncast/production-project@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-advance-g0 produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-advance-g0.gate-decision.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-brief-decide"
+      ]
+    },
+    {
+      "stage_id": "mooncast-rights-revise",
+      "declaration_id": "mooncast-rights-revise-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.revise@0.2.0",
+      "desired_tool_hint": "creative.artifact.revise",
+      "execution_config": {
+        "artifact_kind": "rights-ledger"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-artifact@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-rights-revise produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-rights-revise.creative-revision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-advance-g0"
+      ]
+    },
+    {
+      "stage_id": "mooncast-rights-decide",
+      "declaration_id": "mooncast-rights-decide-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.decide@0.2.0",
+      "desired_tool_hint": "creative.artifact.decide",
+      "execution_config": {
+        "artifact_kind": "rights-ledger",
+        "named_decider_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-decision@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-rights-decide produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-rights-decide.creative-decision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-rights-revise"
+      ]
+    },
+    {
+      "stage_id": "mooncast-advance-g1",
+      "declaration_id": "mooncast-advance-g1-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/project.advance@0.2.0",
+      "desired_tool_hint": "project.advance",
+      "execution_config": {
+        "gate": "G1-rights-and-data-use"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "output_schema_ref": "mooncast/production-project@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-advance-g1 produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-advance-g1.gate-decision.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-rights-decide"
+      ]
+    },
+    {
+      "stage_id": "mooncast-bible-revise",
+      "declaration_id": "mooncast-bible-revise-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.revise@0.2.0",
+      "desired_tool_hint": "creative.artifact.revise",
+      "execution_config": {
+        "artifact_kind": "ip-bible"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-artifact@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-bible-revise produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-bible-revise.creative-revision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-advance-g1"
+      ]
+    },
+    {
+      "stage_id": "mooncast-bible-decide",
+      "declaration_id": "mooncast-bible-decide-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.decide@0.2.0",
+      "desired_tool_hint": "creative.artifact.decide",
+      "execution_config": {
+        "artifact_kind": "ip-bible",
+        "named_decider_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-decision@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-bible-decide produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-bible-decide.creative-decision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-bible-revise"
+      ]
+    },
+    {
+      "stage_id": "mooncast-script-revise",
+      "declaration_id": "mooncast-script-revise-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.revise@0.2.0",
+      "desired_tool_hint": "creative.artifact.revise",
+      "execution_config": {
+        "artifact_kind": "script"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-artifact@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-script-revise produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-script-revise.creative-revision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-bible-decide"
+      ]
+    },
+    {
+      "stage_id": "mooncast-script-decide",
+      "declaration_id": "mooncast-script-decide-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.decide@0.2.0",
+      "desired_tool_hint": "creative.artifact.decide",
+      "execution_config": {
+        "artifact_kind": "script",
+        "named_decider_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-decision@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-script-decide produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-script-decide.creative-decision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-script-revise"
+      ]
+    },
+    {
+      "stage_id": "mooncast-advance-g2",
+      "declaration_id": "mooncast-advance-g2-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/project.advance@0.2.0",
+      "desired_tool_hint": "project.advance",
+      "execution_config": {
+        "gate": "G2-bible-and-script"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "output_schema_ref": "mooncast/production-project@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-advance-g2 produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-advance-g2.gate-decision.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-script-decide"
+      ]
+    },
+    {
+      "stage_id": "mooncast-storyboard-revise",
+      "declaration_id": "mooncast-storyboard-revise-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.revise@0.2.0",
+      "desired_tool_hint": "creative.artifact.revise",
+      "execution_config": {
+        "artifact_kind": "storyboard"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-artifact@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-storyboard-revise produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-storyboard-revise.creative-revision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-advance-g2"
+      ]
+    },
+    {
+      "stage_id": "mooncast-storyboard-decide",
+      "declaration_id": "mooncast-storyboard-decide-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/creative.artifact.decide@0.2.0",
+      "desired_tool_hint": "creative.artifact.decide",
+      "execution_config": {
+        "artifact_kind": "storyboard",
+        "named_decider_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "output_schema_ref": "mooncast/creative-decision@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-storyboard-decide produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-storyboard-decide.creative-decision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-storyboard-revise"
+      ]
+    },
+    {
+      "stage_id": "mooncast-animatic-plan",
+      "declaration_id": "mooncast-animatic-plan-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/animatic.plan.record@0.2.0",
+      "desired_tool_hint": "animatic.plan.record",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/animatic-plan@1.0.0",
+      "output_schema_ref": "mooncast/animatic-plan@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-animatic-plan produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-animatic-plan.animatic-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-storyboard-decide"
+      ]
+    },
+    {
+      "stage_id": "mooncast-animatic-render",
+      "declaration_id": "mooncast-animatic-render-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/animatic.render@0.2.0",
+      "desired_tool_hint": "animatic.render",
+      "requested_authority": "sandbox-execution",
+      "input_schema_ref": "mooncast/animatic-plan@1.0.0",
+      "output_schema_ref": "mooncast/rendered-animatic@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-animatic-render produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-animatic-render.animatic-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-animatic-plan"
+      ]
+    },
+    {
+      "stage_id": "mooncast-animatic-approve",
+      "declaration_id": "mooncast-animatic-approve-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/animatic.approve@0.2.0",
+      "desired_tool_hint": "animatic.approve",
+      "execution_config": {
+        "named_decider_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/rendered-animatic@1.0.0",
+      "output_schema_ref": "mooncast/rendered-animatic-approval@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-animatic-approve produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-animatic-approve.rendered-animatic.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-animatic-render"
+      ]
+    },
+    {
+      "stage_id": "mooncast-advance-g3",
+      "declaration_id": "mooncast-advance-g3-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/project.advance@0.2.0",
+      "desired_tool_hint": "project.advance",
+      "execution_config": {
+        "gate": "G3-animatic-and-budget"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "output_schema_ref": "mooncast/production-project@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-advance-g3 produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-advance-g3.gate-decision.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-animatic-approve"
+      ]
+    },
+    {
+      "stage_id": "mooncast-asset-plan",
+      "declaration_id": "mooncast-asset-plan-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/asset-factory.plan.record@0.2.0",
+      "desired_tool_hint": "asset-factory.plan.record",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/asset-factory-plan@1.0.0",
+      "output_schema_ref": "mooncast/asset-factory-plan@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-asset-plan produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-asset-plan.asset-factory-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-advance-g3"
+      ]
+    },
+    {
+      "stage_id": "mooncast-asset-generate",
+      "declaration_id": "mooncast-asset-generate-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/asset-factory.generate@0.2.0",
+      "desired_tool_hint": "asset-factory.generate",
+      "execution_config": {
+        "provider_grant_required": true,
+        "publication": false
+      },
+      "requested_authority": "external-effect",
+      "input_schema_ref": "mooncast/asset-factory-plan@1.0.0",
+      "output_schema_ref": "mooncast/asset-generation-variant@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-asset-generate produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-asset-generate.asset-factory-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-asset-plan"
+      ]
+    },
+    {
+      "stage_id": "mooncast-asset-review",
+      "declaration_id": "mooncast-asset-review-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/asset-factory.review@0.2.0",
+      "desired_tool_hint": "asset-factory.review",
+      "execution_config": {
+        "rights_and_continuity_review": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/asset-qc-finding@1.0.0",
+      "output_schema_ref": "mooncast/approved-reusable-asset@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-asset-review produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-asset-review.asset-qc-finding.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-asset-generate"
+      ]
+    },
+    {
+      "stage_id": "mooncast-asset-bind-shots",
+      "declaration_id": "mooncast-asset-bind-shots-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/asset-factory.bind-shots@0.2.0",
+      "desired_tool_hint": "asset-factory.bind-shots",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/approved-reusable-asset@1.0.0",
+      "output_schema_ref": "mooncast/shot-asset-binding@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-asset-bind-shots produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-asset-bind-shots.approved-reusable-asset.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-asset-review"
+      ]
+    },
+    {
+      "stage_id": "mooncast-routing-revise",
+      "declaration_id": "mooncast-routing-revise-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/model-routing.plan.revise@0.2.0",
+      "desired_tool_hint": "model-routing.plan.revise",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/model-routing-plan@1.0.0",
+      "output_schema_ref": "mooncast/model-routing-plan@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-routing-revise produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-routing-revise.model-routing-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-asset-bind-shots"
+      ]
+    },
+    {
+      "stage_id": "mooncast-routing-producer-decide",
+      "declaration_id": "mooncast-routing-producer-decide-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/model-routing.plan.decide@0.2.0",
+      "desired_tool_hint": "model-routing.plan.decide",
+      "execution_config": {
+        "decision_role": "producer"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/model-routing-plan@1.0.0",
+      "output_schema_ref": "mooncast/model-routing-decision@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-routing-producer-decide produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-routing-producer-decide.model-routing-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-routing-revise"
+      ]
+    },
+    {
+      "stage_id": "mooncast-routing-finance-decide",
+      "declaration_id": "mooncast-routing-finance-decide-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/model-routing.plan.decide@0.2.0",
+      "desired_tool_hint": "model-routing.plan.decide",
+      "execution_config": {
+        "decision_role": "finance"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/model-routing-plan@1.0.0",
+      "output_schema_ref": "mooncast/model-routing-decision@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-routing-finance-decide produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-routing-finance-decide.model-routing-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-routing-revise"
+      ]
+    },
+    {
+      "stage_id": "mooncast-routed-execution-create",
+      "declaration_id": "mooncast-routed-execution-create-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/routed-execution.create@0.2.0",
+      "desired_tool_hint": "routed-execution.create",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/routed-execution-create@1.0.0",
+      "output_schema_ref": "mooncast/routed-execution@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-routed-execution-create produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-routed-execution-create.routed-execution-create.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-routing-producer-decide",
+        "mooncast-routing-finance-decide"
+      ]
+    },
+    {
+      "stage_id": "mooncast-production-run",
+      "declaration_id": "mooncast-production-run-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/production-coordinator.run-pending@0.2.0",
+      "desired_tool_hint": "production-coordinator.run-pending",
+      "execution_config": {
+        "provider_grant_required": true,
+        "publication": false,
+        "restart_recovery": true
+      },
+      "requested_authority": "external-effect",
+      "input_schema_ref": "mooncast/production-coordinator-run-request@1.0.0",
+      "output_schema_ref": "mooncast/production-coordinator-run-result@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-production-run produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-production-run.production-coordinator-run-request.json"
+      ],
+      "timeout_ms": 3600000,
+      "depends_on": [
+        "mooncast-routed-execution-create"
+      ]
+    },
+    {
+      "stage_id": "mooncast-production-confirm-qc",
+      "declaration_id": "mooncast-production-confirm-qc-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/production-coordinator.confirm-qc@0.2.0",
+      "desired_tool_hint": "production-coordinator.confirm-qc",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/production-coordinator-qc-request@1.0.0",
+      "output_schema_ref": "mooncast/production-coordinator-qc-result@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-production-confirm-qc produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-production-confirm-qc.production-coordinator-qc-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-production-run"
+      ]
+    },
+    {
+      "stage_id": "mooncast-advance-g4",
+      "declaration_id": "mooncast-advance-g4-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/project.advance@0.2.0",
+      "desired_tool_hint": "project.advance",
+      "execution_config": {
+        "gate": "G4-shot-qc"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "output_schema_ref": "mooncast/production-project@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-advance-g4 produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-advance-g4.gate-decision.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-production-confirm-qc"
+      ]
+    },
+    {
+      "stage_id": "mooncast-editor-import",
+      "declaration_id": "mooncast-editor-import-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/editor.production.import@0.2.0",
+      "desired_tool_hint": "editor.production.import",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/editor-production-intent@1.0.0",
+      "output_schema_ref": "mooncast/editor-production-import@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-editor-import produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-editor-import.editor-production-intent.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-advance-g4"
+      ]
+    },
+    {
+      "stage_id": "mooncast-editor-narrative-cut",
+      "declaration_id": "mooncast-editor-narrative-cut-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/editor.command.apply@0.2.0",
+      "desired_tool_hint": "editor.command.apply",
+      "execution_config": {
+        "edit_pass": "narrative"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/editor-edit-command@1.0.0",
+      "output_schema_ref": "mooncast/editor-project@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-editor-narrative-cut produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-editor-narrative-cut.editor-edit-command.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-import"
+      ]
+    },
+    {
+      "stage_id": "mooncast-editor-compliance-cut",
+      "declaration_id": "mooncast-editor-compliance-cut-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/editor.command.apply@0.2.0",
+      "desired_tool_hint": "editor.command.apply",
+      "execution_config": {
+        "edit_pass": "continuity-rights-labels"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/editor-edit-command@1.0.0",
+      "output_schema_ref": "mooncast/editor-project@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-editor-compliance-cut produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-editor-compliance-cut.editor-edit-command.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-narrative-cut"
+      ]
+    },
+    {
+      "stage_id": "mooncast-editor-preview-plan",
+      "declaration_id": "mooncast-editor-preview-plan-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/editor.preview.plan@0.2.0",
+      "desired_tool_hint": "editor.preview.plan",
+      "requested_authority": "sandbox-execution",
+      "input_schema_ref": "mooncast/editor-project@1.0.0",
+      "output_schema_ref": "mooncast/editor-render-plan@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-editor-preview-plan produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-editor-preview-plan.editor-project.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-compliance-cut"
+      ]
+    },
+    {
+      "stage_id": "mooncast-editor-preview-start",
+      "declaration_id": "mooncast-editor-preview-start-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/editor.preview.start@0.2.0",
+      "desired_tool_hint": "editor.preview.start",
+      "requested_authority": "sandbox-execution",
+      "input_schema_ref": "mooncast/editor-render-plan@1.0.0",
+      "output_schema_ref": "mooncast/editor-preview-session@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-editor-preview-start produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-editor-preview-start.editor-render-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-preview-plan"
+      ]
+    },
+    {
+      "stage_id": "mooncast-editor-export-create",
+      "declaration_id": "mooncast-editor-export-create-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/editor.export.create@0.2.0",
+      "desired_tool_hint": "editor.export.create",
+      "requested_authority": "sandbox-execution",
+      "input_schema_ref": "mooncast/editor-render-plan@1.0.0",
+      "output_schema_ref": "mooncast/editor-export-job@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-editor-export-create produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-editor-export-create.editor-render-plan.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-preview-start"
+      ]
+    },
+    {
+      "stage_id": "mooncast-editor-production-export",
+      "declaration_id": "mooncast-editor-production-export-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/editor.production.export@0.2.0",
+      "desired_tool_hint": "editor.production.export",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/editor-production-export-request@1.0.0",
+      "output_schema_ref": "mooncast/editor-export@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-editor-production-export produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-editor-production-export.editor-production-export-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-export-create"
+      ]
+    },
+    {
+      "stage_id": "mooncast-editor-master-promote",
+      "declaration_id": "mooncast-editor-master-promote-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/editor.master.promote@0.2.0",
+      "desired_tool_hint": "editor.master.promote",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/editor-master-promotion@1.0.0",
+      "output_schema_ref": "mooncast/master-provenance@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-editor-master-promote produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-editor-master-promote.editor-master-promotion.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-production-export"
+      ]
+    },
+    {
+      "stage_id": "mooncast-technical-review",
+      "declaration_id": "mooncast-technical-review-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/production.review@0.2.0",
+      "desired_tool_hint": "production.review",
+      "execution_config": {
+        "review_role": "technical"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/master-provenance@1.0.0",
+      "output_schema_ref": "mooncast/review-decision@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-technical-review produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-technical-review.master-provenance.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-master-promote"
+      ]
+    },
+    {
+      "stage_id": "mooncast-creative-review",
+      "declaration_id": "mooncast-creative-review-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/production.review@0.2.0",
+      "desired_tool_hint": "production.review",
+      "execution_config": {
+        "review_role": "creative-director"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/master-provenance@1.0.0",
+      "output_schema_ref": "mooncast/review-decision@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-creative-review produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-creative-review.master-provenance.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-master-promote"
+      ]
+    },
+    {
+      "stage_id": "mooncast-rights-review",
+      "declaration_id": "mooncast-rights-review-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/production.review@0.2.0",
+      "desired_tool_hint": "production.review",
+      "execution_config": {
+        "review_role": "rights-compliance"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/master-provenance@1.0.0",
+      "output_schema_ref": "mooncast/review-decision@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-rights-review produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-rights-review.master-provenance.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-editor-master-promote"
+      ]
+    },
+    {
+      "stage_id": "mooncast-advance-g5",
+      "declaration_id": "mooncast-advance-g5-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/project.advance@0.2.0",
+      "desired_tool_hint": "project.advance",
+      "execution_config": {
+        "gate": "G5-final-human-acceptance"
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "output_schema_ref": "mooncast/production-project@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-advance-g5 produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-advance-g5.gate-decision.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-technical-review",
+        "mooncast-creative-review",
+        "mooncast-rights-review"
+      ]
+    },
+    {
+      "stage_id": "mooncast-delivery-prepare",
+      "declaration_id": "mooncast-delivery-prepare-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/delivery.prepare@0.2.0",
+      "desired_tool_hint": "delivery.prepare",
+      "requested_authority": "sandbox-execution",
+      "input_schema_ref": "mooncast/production-project@1.0.0",
+      "output_schema_ref": "mooncast/delivery-package-v2@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-delivery-prepare produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-delivery-prepare.production-project.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-advance-g5"
+      ]
+    },
+    {
+      "stage_id": "mooncast-delivery-build-plan",
+      "declaration_id": "mooncast-delivery-build-plan-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/delivery-build.plan@0.2.0",
+      "desired_tool_hint": "delivery-build.plan",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/delivery-build-request@1.0.0",
+      "output_schema_ref": "mooncast/delivery-build@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-delivery-build-plan produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-delivery-build-plan.delivery-build-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-delivery-prepare"
+      ]
+    },
+    {
+      "stage_id": "mooncast-delivery-build-execute",
+      "declaration_id": "mooncast-delivery-build-execute-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/delivery-build.execute@0.2.0",
+      "desired_tool_hint": "delivery-build.execute",
+      "requested_authority": "sandbox-execution",
+      "input_schema_ref": "mooncast/delivery-build-action@1.0.0",
+      "output_schema_ref": "mooncast/delivery-build@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "mooncast-delivery-build-execute produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-delivery-build-execute.delivery-build-action.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-delivery-build-plan"
+      ]
+    },
+    {
+      "stage_id": "mooncast-delivery-build-accept",
+      "declaration_id": "mooncast-delivery-build-accept-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/delivery-build.accept@0.2.0",
+      "desired_tool_hint": "delivery-build.accept",
+      "execution_config": {
+        "named_acceptor_required": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/delivery-build-acceptance@1.0.0",
+      "output_schema_ref": "mooncast/delivery-milestone-acceptance@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-delivery-build-accept produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-delivery-build-accept.delivery-build-acceptance.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-delivery-build-execute"
+      ]
+    },
+    {
+      "stage_id": "mooncast-client-portal-create",
+      "declaration_id": "mooncast-client-portal-create-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/client-portal.create@0.2.0",
+      "desired_tool_hint": "client-portal.create",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/client-portal-create@1.0.0",
+      "output_schema_ref": "mooncast/client-portal@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "mooncast-client-portal-create produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-client-portal-create.client-portal-create.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-delivery-build-accept"
+      ]
+    },
+    {
+      "stage_id": "mooncast-client-portal-decide",
+      "declaration_id": "mooncast-client-portal-decide-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/client-portal.decide@0.2.0",
+      "desired_tool_hint": "client-portal.decide",
+      "execution_config": {
+        "named_client_decider_required": true,
+        "publication_authority": false
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/client-decision-request@1.0.0",
+      "output_schema_ref": "mooncast/client-decision-receipt@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "mooncast-client-portal-decide produces immutable, reviewable evidence"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-client-portal-decide.client-decision-request.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-client-portal-create"
+      ]
+    },
+    {
+      "stage_id": "mooncast-final-deliverable-evidence",
+      "declaration_id": "mooncast-final-deliverable-evidence-v3",
+      "product_id": "mooncast",
+      "desired_operation_ref": "mooncast/handoff.final-deliverable.evidence@0.2.0",
+      "desired_tool_hint": "handoff.final-deliverable.evidence",
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "mooncast/final-deliverable-evidence@1.0.0",
+      "output_schema_ref": "mooncast/final-deliverable-evidence@1.0.0",
+      "required_claim": "execution-result",
+      "acceptance_criteria": [
+        "immutable build, client decision, master provenance, rights, and delivery evidence are bound without publication"
+      ],
+      "input_artifacts": [
+        "requests/mooncast-final-deliverable-evidence.final-deliverable-evidence.json"
+      ],
+      "timeout_ms": 600000,
+      "depends_on": [
+        "mooncast-client-portal-decide"
+      ]
+    },
+    {
+      "stage_id": "final-authority-decision",
+      "declaration_id": "final-authority-decision-v3",
+      "product_id": "moonchat",
+      "desired_operation_ref": "moonchat/conversation.review.record@0.1.0",
+      "desired_tool_hint": "conversation.review.record",
+      "execution_config": {
+        "review_kind": "final-robotics-authority",
+        "named_decider_required": true,
+        "physical_command": false
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonchat/conversation-review-bundle@1.0.0",
+      "output_schema_ref": "moonchat/conversation-review-record@1.0.0",
+      "required_claim": "accepted-knowledge",
+      "acceptance_criteria": [
+        "a named authority accepts the digital deliverable or records blockers; no physical command or readiness claim is created"
+      ],
+      "input_artifacts": [
+        "requests/final-authority-decision.conversation-review-bundle.json"
+      ],
+      "timeout_ms": 300000,
+      "depends_on": [
+        "readiness-inspect",
+        "simulate-missions",
+        "mooncast-final-deliverable-evidence"
+      ]
+    },
+    {
+      "stage_id": "bookkeeper-close-loop",
+      "declaration_id": "bookkeeper-close-loop-v3",
+      "product_id": "moonbook",
+      "desired_operation_ref": "moonbook/bookkeeper.outcome.close@0.1.0",
+      "desired_tool_hint": "bookkeeper.outcome.close",
+      "execution_role": "bookkeeper",
+      "execution_config": {
+        "three_gap_assessments": 1,
+        "self_approval_forbidden": true,
+        "ability_update_requires_review": true
+      },
+      "requested_authority": "workspace-mutation",
+      "input_schema_ref": "moonbook/bookkeeper-product-outcome-closure@1.0.0",
+      "output_schema_ref": "moonbook/bookkeeper-product-outcome-closure-receipt@1.0.0",
+      "required_claim": "digital-artifact",
+      "acceptance_criteria": [
+        "the Bookkeeper binds outcome evidence, one Three-Gap assessment, economics, and a reviewed ability proposal"
+      ],
+      "input_artifacts": [
+        "requests/bookkeeper-close-loop.bookkeeper-product-outcome-closure.json"
+      ],
+      "timeout_ms": 180000,
+      "depends_on": [
+        "final-authority-decision",
+        "mooncast-final-deliverable-evidence"
+      ]
     }
   ]
 }

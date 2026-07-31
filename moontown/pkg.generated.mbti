@@ -12,6 +12,10 @@ pub fn cross_paper_handoff(@research.ResearchRun) -> TownResearchHandoff raise
 
 pub fn cross_paper_scenario(@research.ResearchRun) -> TownResearchScenario raise
 
+pub fn local_corpus_challenge_scenario(@research.LocalInputCoverageLedger, String, String) -> TownResearchScenario raise
+
+pub fn local_corpus_handoff(@research.LocalInputCoverageLedger, String, String) -> TownResearchHandoff raise
+
 pub fn town_handoff_contract_version() -> String
 
 pub fn town_handoff_id(String) -> String

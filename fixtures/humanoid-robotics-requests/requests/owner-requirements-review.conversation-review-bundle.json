@@ -1,0 +1,46 @@
+{
+  "contract_id": "moonchat.conversation-review-bundle.v1",
+  "review_id": "fixture-review_id",
+  "source_artifact_ref": "fixture-source_artifact_ref",
+  "source_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "source_revision_id": "1",
+  "previous_bundle_ref": "fixture-previous_bundle_ref",
+  "previous_bundle_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "conversation": {
+    "contract_id": "moonsuite-conversation.v1",
+    "protocol": "fixture-protocol",
+    "product_id": "fixture-product_id",
+    "conversation_id": "fixture-conversation_id"
+  },
+  "participants": [
+    {
+      "participant_id": "fixture-participant_id",
+      "display_name": "fixture-display_name",
+      "participant_kind": "human"
+    }
+  ],
+  "entries": [
+    {
+      "entry_id": "fixture-entry_id",
+      "entry_kind": "question",
+      "author_participant_id": "fixture-author_participant_id",
+      "turn": {
+        "turn_id": "fixture-turn_id",
+        "client_turn_id": "fixture-client_turn_id",
+        "command_id": "fixture-command_id"
+      },
+      "body": "fixture-body",
+      "evidence_refs": []
+    }
+  ],
+  "required_decisions": [
+    {
+      "decision_id": "fixture-decision_id",
+      "subject_entry_id": "fixture-subject_entry_id",
+      "reviewer_participant_id": "fixture-reviewer_participant_id",
+      "prompt": "fixture-prompt"
+    }
+  ],
+  "decision_receipts": [],
+  "recorded_at": "2026-07-31T00:00:00Z"
+}

@@ -1,0 +1,13 @@
+{
+  "contract": "mooncast.asset-qc-finding.v1",
+  "finding_id": "fixture-finding_id",
+  "variant_id": "fixture-variant_id",
+  "dimension": "technical",
+  "status": "pass",
+  "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "reviewer": "fixture-reviewer",
+  "reviewer_role": "fixture-reviewer_role",
+  "reviewed_at": "2026-07-31T00:00:00Z",
+  "human_confirmed": true,
+  "immutable": true
+}

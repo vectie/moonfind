@@ -1,0 +1,6 @@
+{
+  "job_id": "fixture-job_id",
+  "expected_project_revision": 1,
+  "actor": "fixture-actor",
+  "authority_ref": "fixture-authority_ref"
+}

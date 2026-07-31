@@ -4,6 +4,7 @@ package "vectie/moonfind/hardening"
 import {
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
+  "vectie/moonfind/integration",
 }
 
 // Values
@@ -16,6 +17,8 @@ pub fn provider_policy_contract() -> String
 pub fn quarantine_document(DocumentIsolationReceipt, String) -> DocumentIsolationReceipt
 
 pub fn recovery_snapshot(String, String, Bool, Bool, Bool, Bool, Bool, Bool, Bool, Int64) -> RecoverySnapshot raise
+
+pub fn research_execution_recovery_action(@integration.ResearchExecutionRecordV1) -> String
 
 pub fn validate_full_text_evidence(FullTextEvidence) -> Array[String]
 

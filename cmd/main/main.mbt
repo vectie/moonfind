@@ -7,7 +7,7 @@ fn usage() -> Unit {
     "  moonfind record-fulltext <workspace> <run-id> <full-text-evidence.json>\n" +
     "  moonfind validate-provider <provider-policy.json> <use-request.json>\n" +
     "  moonfind resume <workspace> <run-id>\n" +
-    "  moonfind publish-robotics-graph <moonbook-root>\n" +
+    "  moonfind publish-robotics-graph <moonbook-root> <request-bundle-root> <capability-catalog.json> <evaluated-at>\n" +
     "  moonfind complete <workspace> <run-id> <analysis-result.json>\n" +
     "  moonfind record-moontown <workspace> <run-id> <execution-receipt.json>\n" +
     "  moonfind ingest-moontown <workspace> <run-id> <execution-receipt.json> <reducer-output.json>\n" +
@@ -141,8 +141,19 @@ async fn recovery_status(
 }
 
 ///|
-async fn publish_robotics_graph(book_root : String) -> Unit {
-  guard !book_root.is_blank() else { fail("MoonBook root is required") }
+async fn publish_robotics_graph(
+  book_root : String,
+  request_bundle_root : String,
+  capability_catalog_path : String,
+  evaluated_at : String,
+) -> Unit {
+  guard !book_root.is_blank() &&
+    !request_bundle_root.is_blank() &&
+    !capability_catalog_path.is_blank() else {
+    fail(
+      "MoonBook root, robotics request bundle, and capability catalog are required",
+    )
+  }
   let source = "workflows/humanoid-robotics-suite.v1.json"
   guard @fs.exists(source) else {
     fail("Run this command from the Moonfind repository root")
@@ -152,9 +163,6 @@ async fn publish_robotics_graph(book_root : String) -> Unit {
   } else {
     book_root + "/flow"
   }
-  if !@fs.exists(flow_root) {
-    @fs.mkdir(flow_root, permission=0o755, recursive=true)
-  }
   let book_parts = book_root
     .replace(old="\\", new="/")
     .split("/")
@@ -162,28 +170,115 @@ async fn publish_robotics_graph(book_root : String) -> Unit {
     .collect()
   guard !book_parts.is_empty() else { fail("MoonBook root is invalid") }
   let book_id = book_parts[book_parts.length() - 1].to_owned()
-  let graph_id = "moonfind-" + book_id + "-humanoid-robotics-suite-v1"
-  let digest_seed : Json = {
-    "template_graph_id": "moonfind-humanoid-robotics-suite-v1",
-    "book_id": book_id,
-    "declaration_revision": "suite-v1",
+  let template : @integration.DesiredCapabilityGraphV2 = @json.from_json(
+    @store.read_json(source),
+  )
+  guard @fs.exists(capability_catalog_path) else {
+    fail("capability catalog does not exist")
   }
-  let rendered = @fs.read_file(source)
-    .text()
-    .replace(
-      old="\"graph_id\": \"moonfind-humanoid-robotics-suite-v1\"",
-      new="\"graph_id\": \"" + graph_id + "\"",
+  let catalog_json = @store.read_json(capability_catalog_path)
+  let catalog : @integration.CapabilityCatalogV1 = @json.from_json(catalog_json)
+  let catalog_rendered = catalog_json.stringify(indent=2)
+  let materialization_path = if request_bundle_root.has_suffix("/") {
+    request_bundle_root + "request-materialization.json"
+  } else {
+    request_bundle_root + "/request-materialization.json"
+  }
+  guard @fs.exists(materialization_path) else {
+    fail("robotics request bundle has no request-materialization.json")
+  }
+  let materialization : @integration.RoboticsRequestMaterializationV1 = @json.from_json(
+    @store.read_json(materialization_path),
+  )
+  let payloads : Array[@integration.RoboticsRequestPayloadV1] = []
+  for entry in materialization.entries {
+    let request_path = if request_bundle_root.has_suffix("/") {
+      request_bundle_root + entry.artifact_ref
+    } else {
+      request_bundle_root + "/" + entry.artifact_ref
+    }
+    guard @fs.exists(request_path) else {
+      fail("robotics request artifact is missing: \{entry.artifact_ref}")
+    }
+    let payload = @store.read_json(request_path)
+    payloads.push({
+      artifact_ref: entry.artifact_ref,
+      payload_digest: @store.digest_json(payload),
+      payload,
+    })
+  }
+  let request_issues = @integration.validate_robotics_request_materialization(
+    template, materialization, payloads,
+  )
+  guard request_issues.is_empty() else {
+    fail(
+      "robotics request materialization rejected: " + request_issues.join("; "),
     )
-    .replace(
-      old="\"book_id\": \"moonfind-humanoid-robotics\"",
-      new="\"book_id\": \"" + book_id + "\"",
+  }
+  let digest_seed : Json = {
+    "template_graph_id": template.graph_id,
+    "template_book_id": template.book_id,
+    "template_source_digest": template.source_digest,
+    "target_book_id": book_id,
+    "declaration_revision": template.declaration_revision,
+  }
+  let bound = @integration.bind_desired_graph_to_book(
+    template,
+    book_id,
+    @store.digest_json(digest_seed),
+  )
+  let projection = @integration.project_desired_graph(
+    bound, catalog, evaluated_at,
+  )
+  let work_graph = @integration.require_importable_graph(projection)
+  let rendered = work_graph.stringify(indent=2)
+  let desired_rendered = bound.to_json().stringify(indent=2)
+  let published_materialization = {
+    ..materialization,
+    graph_id: bound.graph_id,
+    graph_source_digest: bound.source_digest,
+  }
+  if !@fs.exists(flow_root) {
+    @fs.mkdir(flow_root, permission=0o755, recursive=true)
+  }
+  let requests_root = flow_root + "/requests"
+  if !@fs.exists(requests_root) {
+    @fs.mkdir(requests_root, permission=0o755, recursive=true)
+  }
+  for payload in payloads {
+    let target = flow_root + "/" + payload.artifact_ref
+    @fs.write_file(
+      target,
+      payload.payload.stringify(indent=2),
+      create_mode=CreateOrTruncate,
+      permission=0o600,
     )
-    .replace(
-      old="sha256:55ad83b204660e728a2eb35544b60bf4ac542a61b55e01926f4bc41b5bf628cc",
-      new=@store.digest_json(digest_seed),
-    )
+  }
+  @fs.write_file(
+    flow_root + "/request-materialization.json",
+    published_materialization.to_json().stringify(indent=2),
+    create_mode=CreateOrTruncate,
+    permission=0o600,
+  )
+  @fs.write_file(
+    flow_root + "/capability-catalog.json",
+    catalog_rendered,
+    create_mode=CreateOrTruncate,
+    permission=0o600,
+  )
   let output = flow_root + "/work-graph.json"
-  @fs.write_file(output, rendered, create=0o644, truncate=true)
+  @fs.write_file(
+    flow_root + "/desired-graph.json",
+    desired_rendered,
+    create_mode=CreateOrTruncate,
+    permission=0o644,
+  )
+  @fs.write_file(
+    output,
+    rendered,
+    create_mode=CreateOrTruncate,
+    permission=0o644,
+  )
   println(output)
 }
 
@@ -445,7 +540,16 @@ async fn main {
     ["validate-provider", policy, request] => validate_provider(policy, request)
     ["resume", workspace, run_id] =>
       recovery_status(workspace, run_id, repair=true)
-    ["publish-robotics-graph", book_root] => publish_robotics_graph(book_root)
+    [
+      "publish-robotics-graph",
+      book_root,
+      request_bundle_root,
+      capability_catalog_path,
+      evaluated_at,
+    ] =>
+      publish_robotics_graph(
+        book_root, request_bundle_root, capability_catalog_path, evaluated_at,
+      )
     ["complete", workspace, run_id, analysis] =>
       complete_run(workspace, run_id, analysis)
     ["record-moontown", workspace, run_id, receipt] =>

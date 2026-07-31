@@ -1,0 +1,7 @@
+{
+  "contract_id": "moonvis.visual-asset-bundle-request.v1",
+  "request_id": "fixture-request_id",
+  "product_id": "moondesk",
+  "channel": "desktop",
+  "theme": "smoked-spatial-glass-dark"
+}

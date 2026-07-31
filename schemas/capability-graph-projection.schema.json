@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "moonfind/capability-graph-projection@1.0.0",
+  "title": "MoonFind Capability Graph Projection",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id",
+    "graph_id",
+    "catalog_id",
+    "evaluated_at",
+    "fully_conformant",
+    "bindings",
+    "gaps"
+  ],
+  "properties": {
+    "contract_id": { "const": "moonfind.capability-graph-projection.v1" },
+    "graph_id": { "type": "string", "minLength": 1 },
+    "catalog_id": { "type": "string", "minLength": 1 },
+    "evaluated_at": { "type": "string", "format": "date-time" },
+    "fully_conformant": { "type": "boolean" },
+    "bindings": { "type": "array", "items": { "type": "object" } },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage_id", "code", "detail", "suggestions"],
+        "properties": {
+          "stage_id": { "type": "string" },
+          "code": { "type": "string", "minLength": 1 },
+          "detail": { "type": "string", "minLength": 1 },
+          "suggestions": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "importable_graph": { "type": ["object", "null"] }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "fully_conformant": { "const": false } }
+      },
+      "then": {
+        "properties": { "importable_graph": { "type": "null" } }
+      }
+    }
+  ]
+}

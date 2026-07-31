@@ -1,0 +1,16 @@
+{
+  "contract_id": "moonclaw.agent-goal-execution-request.v1",
+  "session_id": "fixture-session_id",
+  "goal_id": "fixture-goal_id",
+  "workspace_root": "fixture-workspace_root",
+  "objective": "fixture-objective",
+  "criteria": [
+    {
+      "id": "fixture-id",
+      "criterion": "fixture-criterion"
+    }
+  ],
+  "role": "fixture-role",
+  "profile": {},
+  "config": {}
+}

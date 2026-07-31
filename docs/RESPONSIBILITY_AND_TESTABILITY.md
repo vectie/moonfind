@@ -13,6 +13,7 @@ activation, or experiment execution.
 | Paper/provider rights | Reviewed provider policy | Fail closed on use, model-input, commercial, retention, redistribution, or expiry mismatch. |
 | Hostile PDF extraction | Isolated extractor | Admit only digest-bound, network-disabled, bounded evidence receipts. |
 | Model analysis | MoonClaw | Send a typed `gpt-5.6-sol` prompt packet; retain Moonfind ownership. |
+| Capability execution | MoonClaw generic installed-pack seam | Persist request/attempt/idempotency state, reconcile unknown results, then submit the exact command through Cowork. |
 | Cross-paper deliberation | Moontown | Send/ingest typed run-bound handoff and reducer receipt. |
 | Research acceptance | Named human | Validate exact idea IDs and authority receipt. |
 | Durable learning | MoonBook Bookkeeper | Submit a candidate; never accept or classify its own outcome. |
@@ -28,6 +29,12 @@ activation, or experiment execution.
 - `recovery_snapshot` is covered as a pure state-to-next-action function, so a
   restart cannot invent completed analysis, Moontown, review, or Bookkeeper
   stages.
+- `ResearchExecutionRecordV1` is an append-only projection across capability
+  submission and the subsequent Cowork run. A successful capability receipt
+  is only `command-ready`; only the persisted Cowork result can become
+  `needs-review`.
+- `project_desired_graph` produces catalog-derived gaps and no importable
+  MoonFlow graph until every desired stage has an exact healthy binding.
 
 Research result validation remains separate from provider transport, human
 review, Moontown execution, and downstream experiments. Fixture synthesis

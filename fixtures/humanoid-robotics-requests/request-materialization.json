@@ -1,0 +1,1387 @@
+{
+  "contract_id": "moonfind.robotics-request-materialization.v1",
+  "graph_id": "moonfind-humanoid-robotics-suite-v3",
+  "graph_source_digest": "sha256:a1a628f19bf3cf8e1f56344122160a105e512569c3f9f97388c67178304e4c89",
+  "fixture_only": true,
+  "fixture_notice": "Synthetic schema-valid robotics scenario requests. Projection and adapter preflight only; not production provider, publication, or physical-command authority.",
+  "generated_at": "2026-07-31T00:00:00Z",
+  "validation_engine": "JSON Schema 2020-12 / Ajv 8.17.1; editor command selected union branch 0",
+  "complete": true,
+  "unresolved_fields": [],
+  "entries": [
+    {
+      "stage_id": "understand-needs",
+      "artifact_ref": "requests/understand-needs.wiki-requirements-prepare.json",
+      "input_schema_ref": "moonbook/wiki-requirements-prepare@1.0.0",
+      "schema_source_ref": "moonbook/schemas/wiki-requirements-prepare.schema.json",
+      "schema_digest": "sha256:439ca7465411d87aa2faf2e467f9a1e5f8558cee70bde9f050eff2ea3d58c73f",
+      "payload_digest": "sha256:9fe36a55431dc0790417274e6638518d7c0d184930032ff3aecc015cd76ef75d",
+      "required_top_level_fields": [
+        "contract_version",
+        "request",
+        "book_id",
+        "goal",
+        "owner_route",
+        "recorded_at",
+        "evidence_refs",
+        "statements"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "owner-requirements-review",
+      "artifact_ref": "requests/owner-requirements-review.conversation-review-bundle.json",
+      "input_schema_ref": "moonchat/conversation-review-bundle@1.0.0",
+      "schema_source_ref": "moonchat/schemas/conversation-review-bundle.schema.json",
+      "schema_digest": "sha256:d38a9cad361ab364e25e1330ccf8b61d6f042d762d871d4061626b10456c436b",
+      "payload_digest": "sha256:f793986ca5f6c6d98c6a0e941aee6198130d59a32c7c88d0cc40cf2dca342a7b",
+      "required_top_level_fields": [
+        "contract_id",
+        "review_id",
+        "source_artifact_ref",
+        "source_digest",
+        "source_revision_id",
+        "previous_bundle_ref",
+        "previous_bundle_digest",
+        "conversation",
+        "participants",
+        "entries",
+        "required_decisions",
+        "decision_receipts",
+        "recorded_at"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonchat.conversation-review-bundle.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "requirements-agent-check",
+      "artifact_ref": "requests/requirements-agent-check.agent-goal-execution-request.json",
+      "input_schema_ref": "moonclaw/agent-goal-execution-request@1.0.0",
+      "schema_source_ref": "moonclaw/schemas/agent-goal-execution-request.schema.json",
+      "schema_digest": "sha256:da6189bb858ec009174937a40ed064eec62ed3f4561247f9f3cd96a7b30965f6",
+      "payload_digest": "sha256:d920be0e001fd4fe5a0506ddaa0f1f10eb7a351a8fc78c2746102b15b34451db",
+      "required_top_level_fields": [
+        "contract_id",
+        "session_id",
+        "goal_id",
+        "workspace_root",
+        "objective",
+        "criteria",
+        "role",
+        "profile",
+        "config"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonclaw.agent-goal-execution-request.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "research-evidence",
+      "artifact_ref": "requests/research-evidence.research-run.json",
+      "input_schema_ref": "moonfind/research-run@1.0.0",
+      "schema_source_ref": "moonfind/schemas/research-run.schema.json",
+      "schema_digest": "sha256:abb0cd0312f8dd0cab87c3c2cf5603bb3caf8d231b9a060615ee94951ca11630",
+      "payload_digest": "sha256:79cac75597764ae7e2fa675867d451fa53d0b5dbadff4fcb55f09bd373481aaa",
+      "required_top_level_fields": [
+        "contract_version",
+        "run_id",
+        "status",
+        "papers",
+        "human_review_status"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "challenge-concept",
+      "artifact_ref": "requests/challenge-concept.civic-communication-handoff.json",
+      "input_schema_ref": "moontown/civic-communication-handoff@1.0.0",
+      "schema_source_ref": "moontown/schemas/civic-communication-handoff.schema.json",
+      "schema_digest": "sha256:018994b353502de4c24cded989d791fdcd39d782016b6caf9830d137047bed67",
+      "payload_digest": "sha256:7e3236c5c19329a07fe7947bad89ea0cc3764dce0060c03e689b51321c89b08f",
+      "required_top_level_fields": [
+        "contract_version",
+        "handoff_id",
+        "producer",
+        "producer_run_id",
+        "scenario"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "stakeholder-review",
+      "artifact_ref": "requests/stakeholder-review.conversation-review-bundle.json",
+      "input_schema_ref": "moonchat/conversation-review-bundle@1.0.0",
+      "schema_source_ref": "moonchat/schemas/conversation-review-bundle.schema.json",
+      "schema_digest": "sha256:d38a9cad361ab364e25e1330ccf8b61d6f042d762d871d4061626b10456c436b",
+      "payload_digest": "sha256:f793986ca5f6c6d98c6a0e941aee6198130d59a32c7c88d0cc40cf2dca342a7b",
+      "required_top_level_fields": [
+        "contract_id",
+        "review_id",
+        "source_artifact_ref",
+        "source_digest",
+        "source_revision_id",
+        "previous_bundle_ref",
+        "previous_bundle_digest",
+        "conversation",
+        "participants",
+        "entries",
+        "required_decisions",
+        "decision_receipts",
+        "recorded_at"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonchat.conversation-review-bundle.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "plan-project",
+      "artifact_ref": "requests/plan-project.project-plan-request.json",
+      "input_schema_ref": "moonproj/project-plan-request@1.0.0",
+      "schema_source_ref": "moonproj/schemas/project-plan-request.schema.json",
+      "schema_digest": "sha256:062db557d5c62ccc233b7a55c78aaaec45c20881602f4ab4f523662e8840763b",
+      "payload_digest": "sha256:8bf447abf0a9e34de902cf16762f209cedce2a43a7a1cd53759599e9bb1f188b",
+      "required_top_level_fields": [
+        "contract_id",
+        "operation_ref",
+        "plan_request_id",
+        "project",
+        "prepared_by",
+        "prepared_at",
+        "owners",
+        "budget_envelope",
+        "tasks",
+        "milestones",
+        "risks",
+        "acceptance_gates",
+        "source_evidence"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonproj.project-plan-request.v1",
+        "operation_ref": "moonproj/project.plan.prepare@0.1.0"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "build-control-software",
+      "artifact_ref": "requests/build-control-software.agent-goal-execution-request.json",
+      "input_schema_ref": "moonclaw/agent-goal-execution-request@1.0.0",
+      "schema_source_ref": "moonclaw/schemas/agent-goal-execution-request.schema.json",
+      "schema_digest": "sha256:da6189bb858ec009174937a40ed064eec62ed3f4561247f9f3cd96a7b30965f6",
+      "payload_digest": "sha256:d920be0e001fd4fe5a0506ddaa0f1f10eb7a351a8fc78c2746102b15b34451db",
+      "required_top_level_fields": [
+        "contract_id",
+        "session_id",
+        "goal_id",
+        "workspace_root",
+        "objective",
+        "criteria",
+        "role",
+        "profile",
+        "config"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonclaw.agent-goal-execution-request.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "design-physical-assets",
+      "artifact_ref": "requests/design-physical-assets.spatial-operation-request.json",
+      "input_schema_ref": "moonmold/spatial-operation-request@1.0.0",
+      "schema_source_ref": "moonmold/schemas/spatial-operation-request.schema.json",
+      "schema_digest": "sha256:0263602c10a80380d29a5aa39dd7d7c1df8b7c8ee2b6a98cbc04931ea5458521",
+      "payload_digest": "sha256:31fc451041171e9051f2149bf63fb12c5ccfc02e83fb8fa3c269b91db645b01d",
+      "required_top_level_fields": [
+        "contract_id",
+        "request_id",
+        "idempotency_key",
+        "project_id",
+        "model_id",
+        "expected_parent_digest",
+        "authority",
+        "operation"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonmold.spatial-operation-request.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "integrate-robot",
+      "artifact_ref": "requests/integrate-robot.robot-design.json",
+      "input_schema_ref": "moonrobo/robot-design@1.0.0",
+      "schema_source_ref": "moonrobo/schemas/robot-design.schema.json",
+      "schema_digest": "sha256:130612359feee1afa822fe4b1a3d975fe0d6cd83fbac20b3a113985cd023543a",
+      "payload_digest": "sha256:57ebefe0a999fa9687c5e1fa1a646a2fe9a4b5f11c0665cf2ad5a6090ab93785",
+      "required_top_level_fields": [
+        "contract_id",
+        "design_id",
+        "revision",
+        "mission",
+        "task_loop",
+        "mechanisms",
+        "validation",
+        "constraints"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonsuite.robot-design.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "simulate-missions",
+      "artifact_ref": "requests/simulate-missions.robot-mission-run-request.json",
+      "input_schema_ref": "moonmoon/robot-mission-run-request@1.0.0",
+      "schema_source_ref": "moonmoon/schemas/robot-mission-run-request.schema.json",
+      "schema_digest": "sha256:874f03817d11f6474c3c6327b6a1047dce6c2a358eb641c0fe3d279fa6204c0d",
+      "payload_digest": "sha256:eddc8d28455284588bc9891ab90fecded63895c1f751ab5d0b1737cad30d965d",
+      "required_top_level_fields": [
+        "contract_id",
+        "session_id",
+        "moonrobo_integration_receipt_ref",
+        "mission_design_ref",
+        "dataset_evidence"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonmoon.robot-mission-run-request.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "readiness-inspect",
+      "artifact_ref": "requests/readiness-inspect.robobook-ref.json",
+      "input_schema_ref": "moonrobo/robobook-ref@1.0.0",
+      "schema_source_ref": "moonrobo/schemas/robobook-ref.schema.json",
+      "schema_digest": "sha256:25f0710d413a30a4384f837b3d77acdff83254fb135e7a34afefcb4057cda3f7",
+      "payload_digest": "sha256:b40dd4d7f202f4a1759abb2bbc49d07840476d28c47fa3fa6aae8274208755c5",
+      "required_top_level_fields": [
+        "contract_id",
+        "robobook_ref"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonrobo.robobook-ref.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "visualize-deliverable",
+      "artifact_ref": "requests/visualize-deliverable.visual-asset-bundle-request.json",
+      "input_schema_ref": "moonvis/visual-asset-bundle-request@1.0.0",
+      "schema_source_ref": "moonvis/schemas/visual-asset-bundle-request.schema.json",
+      "schema_digest": "sha256:63db3307710dc896490f15d88b29a835625018d521bf7eb71a4516645f0794dd",
+      "payload_digest": "sha256:7d93421da4db9d303fee272d4e51958b0c5674cad14250fa4191102188364c88",
+      "required_top_level_fields": [
+        "contract_id",
+        "request_id",
+        "product_id",
+        "channel",
+        "theme"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonvis.visual-asset-bundle-request.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-project-create",
+      "artifact_ref": "requests/mooncast-project-create.creative-brief.json",
+      "input_schema_ref": "mooncast/creative-brief@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-brief.schema.json",
+      "schema_digest": "sha256:d13a95e21d8a3070aef71b7fbb3811e42980d1c349defdaa0618e33b3fc8ee5b",
+      "payload_digest": "sha256:7a95804ab1c45efe83abc7c352f8aa6d1049f4ba4b9d45c29327657fb30ab76c",
+      "required_top_level_fields": [
+        "campaign_id",
+        "objective",
+        "audience",
+        "channels",
+        "deliverables",
+        "rights_constraints"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-brief-revise",
+      "artifact_ref": "requests/mooncast-brief-revise.creative-revision-request.json",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-revision-request.schema.json",
+      "schema_digest": "sha256:30b0c3a22bb21e78e62957005a8aecce78d55fc9ff10e322a04f46364ddcc127",
+      "payload_digest": "sha256:6555a1aabede1493757c485dd8bb6eec78c6f406886ddae5db7425a7e2ee62b8",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "content"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-brief-decide",
+      "artifact_ref": "requests/mooncast-brief-decide.creative-decision-request.json",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-decision-request.schema.json",
+      "schema_digest": "sha256:d0b4816d86f1d1c35fb78d828654d4ad6e01829ecad80ecc180d75908dde358a",
+      "payload_digest": "sha256:a4c607228aa2132aec1f8ca249c998938b15cc0097bf7f5eb183f83690901dde",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "actor_role",
+        "human_confirmed",
+        "decision"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-advance-g0",
+      "artifact_ref": "requests/mooncast-advance-g0.gate-decision.json",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "schema_source_ref": "mooncast/schemas/gate-decision.schema.json",
+      "schema_digest": "sha256:b0db9798010d646427ef05ae24d18d2e4ea6347cdcf6a0b4d49ffb8629facc25",
+      "payload_digest": "sha256:5be8fb6971125a4d8aaa2b0d35687939fe537a88884cb7aafe4ddd7f38efcffb",
+      "required_top_level_fields": [
+        "gate",
+        "actor",
+        "evidence_digest",
+        "decided_at"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-rights-revise",
+      "artifact_ref": "requests/mooncast-rights-revise.creative-revision-request.json",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-revision-request.schema.json",
+      "schema_digest": "sha256:30b0c3a22bb21e78e62957005a8aecce78d55fc9ff10e322a04f46364ddcc127",
+      "payload_digest": "sha256:6555a1aabede1493757c485dd8bb6eec78c6f406886ddae5db7425a7e2ee62b8",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "content"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-rights-decide",
+      "artifact_ref": "requests/mooncast-rights-decide.creative-decision-request.json",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-decision-request.schema.json",
+      "schema_digest": "sha256:d0b4816d86f1d1c35fb78d828654d4ad6e01829ecad80ecc180d75908dde358a",
+      "payload_digest": "sha256:a4c607228aa2132aec1f8ca249c998938b15cc0097bf7f5eb183f83690901dde",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "actor_role",
+        "human_confirmed",
+        "decision"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-advance-g1",
+      "artifact_ref": "requests/mooncast-advance-g1.gate-decision.json",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "schema_source_ref": "mooncast/schemas/gate-decision.schema.json",
+      "schema_digest": "sha256:b0db9798010d646427ef05ae24d18d2e4ea6347cdcf6a0b4d49ffb8629facc25",
+      "payload_digest": "sha256:e9ee5032a2342d415cb4b5b08ceaeca73341fe288d42d1b72b666a198b31a585",
+      "required_top_level_fields": [
+        "gate",
+        "actor",
+        "evidence_digest",
+        "decided_at"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-bible-revise",
+      "artifact_ref": "requests/mooncast-bible-revise.creative-revision-request.json",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-revision-request.schema.json",
+      "schema_digest": "sha256:30b0c3a22bb21e78e62957005a8aecce78d55fc9ff10e322a04f46364ddcc127",
+      "payload_digest": "sha256:6555a1aabede1493757c485dd8bb6eec78c6f406886ddae5db7425a7e2ee62b8",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "content"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-bible-decide",
+      "artifact_ref": "requests/mooncast-bible-decide.creative-decision-request.json",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-decision-request.schema.json",
+      "schema_digest": "sha256:d0b4816d86f1d1c35fb78d828654d4ad6e01829ecad80ecc180d75908dde358a",
+      "payload_digest": "sha256:a4c607228aa2132aec1f8ca249c998938b15cc0097bf7f5eb183f83690901dde",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "actor_role",
+        "human_confirmed",
+        "decision"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-script-revise",
+      "artifact_ref": "requests/mooncast-script-revise.creative-revision-request.json",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-revision-request.schema.json",
+      "schema_digest": "sha256:30b0c3a22bb21e78e62957005a8aecce78d55fc9ff10e322a04f46364ddcc127",
+      "payload_digest": "sha256:6555a1aabede1493757c485dd8bb6eec78c6f406886ddae5db7425a7e2ee62b8",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "content"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-script-decide",
+      "artifact_ref": "requests/mooncast-script-decide.creative-decision-request.json",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-decision-request.schema.json",
+      "schema_digest": "sha256:d0b4816d86f1d1c35fb78d828654d4ad6e01829ecad80ecc180d75908dde358a",
+      "payload_digest": "sha256:a4c607228aa2132aec1f8ca249c998938b15cc0097bf7f5eb183f83690901dde",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "actor_role",
+        "human_confirmed",
+        "decision"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-advance-g2",
+      "artifact_ref": "requests/mooncast-advance-g2.gate-decision.json",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "schema_source_ref": "mooncast/schemas/gate-decision.schema.json",
+      "schema_digest": "sha256:b0db9798010d646427ef05ae24d18d2e4ea6347cdcf6a0b4d49ffb8629facc25",
+      "payload_digest": "sha256:1fc16a9bf5681f349d691bf9424998194d5805315bd3c2aea08e2394062c53ab",
+      "required_top_level_fields": [
+        "gate",
+        "actor",
+        "evidence_digest",
+        "decided_at"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-storyboard-revise",
+      "artifact_ref": "requests/mooncast-storyboard-revise.creative-revision-request.json",
+      "input_schema_ref": "mooncast/creative-revision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-revision-request.schema.json",
+      "schema_digest": "sha256:30b0c3a22bb21e78e62957005a8aecce78d55fc9ff10e322a04f46364ddcc127",
+      "payload_digest": "sha256:6555a1aabede1493757c485dd8bb6eec78c6f406886ddae5db7425a7e2ee62b8",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "content"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-storyboard-decide",
+      "artifact_ref": "requests/mooncast-storyboard-decide.creative-decision-request.json",
+      "input_schema_ref": "mooncast/creative-decision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/creative-decision-request.schema.json",
+      "schema_digest": "sha256:d0b4816d86f1d1c35fb78d828654d4ad6e01829ecad80ecc180d75908dde358a",
+      "payload_digest": "sha256:a4c607228aa2132aec1f8ca249c998938b15cc0097bf7f5eb183f83690901dde",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_artifact_version",
+        "expected_artifact_digest",
+        "actor",
+        "actor_role",
+        "human_confirmed",
+        "decision"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-animatic-plan",
+      "artifact_ref": "requests/mooncast-animatic-plan.animatic-plan.json",
+      "input_schema_ref": "mooncast/animatic-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/animatic-plan.schema.json",
+      "schema_digest": "sha256:036cfff06022ec966b9f65b49116eb7a2a0569975fda862ee0710b9b3d8dbb55",
+      "payload_digest": "sha256:9c1c3a1075ae631e2690c98e8b7885784174cc1f5cc566440f2bf9ff0ecf038c",
+      "required_top_level_fields": [
+        "contract",
+        "reference",
+        "project_id",
+        "project_revision",
+        "bible",
+        "script",
+        "storyboard",
+        "panels",
+        "approved_assets",
+        "temporary_voice_asset_ids",
+        "temporary_music_asset_ids",
+        "caption_language",
+        "provider",
+        "model",
+        "cost_ceiling_cny",
+        "retry_limit",
+        "process_authority",
+        "publication_authority"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.animatic-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-animatic-render",
+      "artifact_ref": "requests/mooncast-animatic-render.animatic-plan.json",
+      "input_schema_ref": "mooncast/animatic-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/animatic-plan.schema.json",
+      "schema_digest": "sha256:036cfff06022ec966b9f65b49116eb7a2a0569975fda862ee0710b9b3d8dbb55",
+      "payload_digest": "sha256:9c1c3a1075ae631e2690c98e8b7885784174cc1f5cc566440f2bf9ff0ecf038c",
+      "required_top_level_fields": [
+        "contract",
+        "reference",
+        "project_id",
+        "project_revision",
+        "bible",
+        "script",
+        "storyboard",
+        "panels",
+        "approved_assets",
+        "temporary_voice_asset_ids",
+        "temporary_music_asset_ids",
+        "caption_language",
+        "provider",
+        "model",
+        "cost_ceiling_cny",
+        "retry_limit",
+        "process_authority",
+        "publication_authority"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.animatic-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-animatic-approve",
+      "artifact_ref": "requests/mooncast-animatic-approve.rendered-animatic.json",
+      "input_schema_ref": "mooncast/rendered-animatic@1.0.0",
+      "schema_source_ref": "mooncast/schemas/rendered-animatic.schema.json",
+      "schema_digest": "sha256:322e95f1448d1241ae9dbba742a7cc006e9e830a13f7ba124c77d97ab104d501",
+      "payload_digest": "sha256:ff781cba0c55cb586f7964ff7b798cfb3cbc9c3953f7c097a8b4bb5604caea38",
+      "required_top_level_fields": [
+        "contract",
+        "reference",
+        "plan",
+        "project_id",
+        "bible",
+        "script",
+        "storyboard",
+        "approved_assets",
+        "temporary_voice_asset_ids",
+        "temporary_music_asset_ids",
+        "panel_count",
+        "duration_seconds",
+        "storyboard_sheet_digest",
+        "video_digest",
+        "caption_language",
+        "transitions",
+        "provider",
+        "model",
+        "budget",
+        "provenance_digest",
+        "process_effect_performed",
+        "network_effect_performed",
+        "publication_authority",
+        "immutable"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.rendered-animatic.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-advance-g3",
+      "artifact_ref": "requests/mooncast-advance-g3.gate-decision.json",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "schema_source_ref": "mooncast/schemas/gate-decision.schema.json",
+      "schema_digest": "sha256:b0db9798010d646427ef05ae24d18d2e4ea6347cdcf6a0b4d49ffb8629facc25",
+      "payload_digest": "sha256:6f8d62827aea1af76b9a82388d6c93d8a85d2245004866a1c6c40fe6b8ba0e18",
+      "required_top_level_fields": [
+        "gate",
+        "actor",
+        "evidence_digest",
+        "decided_at"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-asset-plan",
+      "artifact_ref": "requests/mooncast-asset-plan.asset-factory-plan.json",
+      "input_schema_ref": "mooncast/asset-factory-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/asset-factory-plan.schema.json",
+      "schema_digest": "sha256:1aa02eb158c20f454968e8768e8d6988dcc5832498e62f39f0831c30117aa7ed",
+      "payload_digest": "sha256:4e329268e3c2672dedfe20320df51c0eb42286734657857e2d38b3cba6196e2e",
+      "required_top_level_fields": [
+        "contract",
+        "plan",
+        "project_id",
+        "project_revision",
+        "specs",
+        "total_cost_ceiling_cny",
+        "created_at",
+        "publication_authority",
+        "provider_execution_authority"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.asset-factory-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-asset-generate",
+      "artifact_ref": "requests/mooncast-asset-generate.asset-factory-plan.json",
+      "input_schema_ref": "mooncast/asset-factory-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/asset-factory-plan.schema.json",
+      "schema_digest": "sha256:1aa02eb158c20f454968e8768e8d6988dcc5832498e62f39f0831c30117aa7ed",
+      "payload_digest": "sha256:4e329268e3c2672dedfe20320df51c0eb42286734657857e2d38b3cba6196e2e",
+      "required_top_level_fields": [
+        "contract",
+        "plan",
+        "project_id",
+        "project_revision",
+        "specs",
+        "total_cost_ceiling_cny",
+        "created_at",
+        "publication_authority",
+        "provider_execution_authority"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.asset-factory-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-asset-review",
+      "artifact_ref": "requests/mooncast-asset-review.asset-qc-finding.json",
+      "input_schema_ref": "mooncast/asset-qc-finding@1.0.0",
+      "schema_source_ref": "mooncast/schemas/asset-qc-finding.schema.json",
+      "schema_digest": "sha256:3e0cfbac6ad40981a9bcafdcfcfb8a0ca9e4257f317476cb3e37db142cc6ac96",
+      "payload_digest": "sha256:79719399f82fbc5889960a5c52bd2ed01c393c64d61e65f86750a77201acda12",
+      "required_top_level_fields": [
+        "contract",
+        "finding_id",
+        "variant_id",
+        "dimension",
+        "status",
+        "evidence_digest",
+        "reviewer",
+        "reviewer_role",
+        "reviewed_at",
+        "human_confirmed",
+        "immutable"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.asset-qc-finding.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-asset-bind-shots",
+      "artifact_ref": "requests/mooncast-asset-bind-shots.approved-reusable-asset.json",
+      "input_schema_ref": "mooncast/approved-reusable-asset@1.0.0",
+      "schema_source_ref": "mooncast/schemas/approved-reusable-asset.schema.json",
+      "schema_digest": "sha256:26f2e2250af6f941f4668bc9665339154c3fab99d65a9c96b6f2642629909952",
+      "payload_digest": "sha256:41cad52293fa3908b81a853993977769f691c108bb26d2bbb549b25b354a52ac",
+      "required_top_level_fields": [
+        "contract",
+        "reference",
+        "plan",
+        "variant_id",
+        "provider_job_id",
+        "provider_artifact_id",
+        "output_digest",
+        "modality",
+        "intent",
+        "rights_refs",
+        "qc_finding_ids",
+        "approval_actor",
+        "approval_role",
+        "approval_digest",
+        "publication_authority",
+        "immutable"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.approved-reusable-asset.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-routing-revise",
+      "artifact_ref": "requests/mooncast-routing-revise.model-routing-plan.json",
+      "input_schema_ref": "mooncast/model-routing-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/model-routing-plan.schema.json",
+      "schema_digest": "sha256:3f0b4e2a6e66f5f8a87b2184bf087393865de9de41b5b856d697b99ba57c1f00",
+      "payload_digest": "sha256:b460bf8f110d3cbce7ed3bc124d9529bbc326ba11302d22ff3dc93dfd127f2bb",
+      "required_top_level_fields": [
+        "contract",
+        "record_id",
+        "version",
+        "content",
+        "digest",
+        "created_at"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.model-routing-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-routing-producer-decide",
+      "artifact_ref": "requests/mooncast-routing-producer-decide.model-routing-plan.json",
+      "input_schema_ref": "mooncast/model-routing-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/model-routing-plan.schema.json",
+      "schema_digest": "sha256:3f0b4e2a6e66f5f8a87b2184bf087393865de9de41b5b856d697b99ba57c1f00",
+      "payload_digest": "sha256:b460bf8f110d3cbce7ed3bc124d9529bbc326ba11302d22ff3dc93dfd127f2bb",
+      "required_top_level_fields": [
+        "contract",
+        "record_id",
+        "version",
+        "content",
+        "digest",
+        "created_at"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.model-routing-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-routing-finance-decide",
+      "artifact_ref": "requests/mooncast-routing-finance-decide.model-routing-plan.json",
+      "input_schema_ref": "mooncast/model-routing-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/model-routing-plan.schema.json",
+      "schema_digest": "sha256:3f0b4e2a6e66f5f8a87b2184bf087393865de9de41b5b856d697b99ba57c1f00",
+      "payload_digest": "sha256:b460bf8f110d3cbce7ed3bc124d9529bbc326ba11302d22ff3dc93dfd127f2bb",
+      "required_top_level_fields": [
+        "contract",
+        "record_id",
+        "version",
+        "content",
+        "digest",
+        "created_at"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.model-routing-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-routed-execution-create",
+      "artifact_ref": "requests/mooncast-routed-execution-create.routed-execution-create.json",
+      "input_schema_ref": "mooncast/routed-execution-create@1.0.0",
+      "schema_source_ref": "mooncast/schemas/routed-execution-create.schema.json",
+      "schema_digest": "sha256:aa56f92e6db74d64c69a8815edda4c971f925e95e8d5af4b9756917194034112",
+      "payload_digest": "sha256:2cc44d0d49a2b0c907e2139b6c7b47740fb449bad957c02ae51a836b6a431b0e",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_routing_plan_version",
+        "expected_routing_plan_digest",
+        "actor_id",
+        "network_authority",
+        "publication_authority"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-production-run",
+      "artifact_ref": "requests/mooncast-production-run.production-coordinator-run-request.json",
+      "input_schema_ref": "mooncast/production-coordinator-run-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/production-coordinator-run-request.schema.json",
+      "schema_digest": "sha256:ffef5ee518f6f66f65e3dbc4d76db1369a6d409157c76d5779c115549687a48f",
+      "payload_digest": "sha256:311449ab51b4738fe7a274d58f2ed7f4e3a940960355b39bf314c62464c836e7",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_execution_revision",
+        "expected_execution_digest",
+        "actor_id",
+        "human_confirmed"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-production-confirm-qc",
+      "artifact_ref": "requests/mooncast-production-confirm-qc.production-coordinator-qc-request.json",
+      "input_schema_ref": "mooncast/production-coordinator-qc-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/production-coordinator-qc-request.schema.json",
+      "schema_digest": "sha256:a242fada4961b75750ae0ace5d865f67dbc62c4367cdb44b18f51aec7e5e86b1",
+      "payload_digest": "sha256:6a5695742e117837ee57a7aeb1c9225276b4abf27cdefb8595f6760f3287d909",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_routing_plan_version",
+        "expected_routing_plan_digest",
+        "shot_outputs",
+        "evidence_digest",
+        "note",
+        "actor",
+        "actor_role",
+        "human_confirmed"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-advance-g4",
+      "artifact_ref": "requests/mooncast-advance-g4.gate-decision.json",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "schema_source_ref": "mooncast/schemas/gate-decision.schema.json",
+      "schema_digest": "sha256:b0db9798010d646427ef05ae24d18d2e4ea6347cdcf6a0b4d49ffb8629facc25",
+      "payload_digest": "sha256:3dc57f11486e30a03fe2ef4da445a7cf1b21f20379f49b96bdc581168cad7302",
+      "required_top_level_fields": [
+        "gate",
+        "actor",
+        "evidence_digest",
+        "decided_at"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-editor-import",
+      "artifact_ref": "requests/mooncast-editor-import.editor-production-intent.json",
+      "input_schema_ref": "mooncast/editor-production-intent@1.0.0",
+      "schema_source_ref": "mooncast/schemas/editor-production-intent.schema.json",
+      "schema_digest": "sha256:400bdbb5e31ea8389022cf6480dbcdc154a8c68efd9300e9068f6237097251cf",
+      "payload_digest": "sha256:353d9b7c5145a6d357c4e51e3d478bd8df334e39589ed2b8cd084ed98aee79f1",
+      "required_top_level_fields": [
+        "contract",
+        "project_id",
+        "expected_production_revision",
+        "expected_editor_revision",
+        "ticks_per_second",
+        "budget_ceiling",
+        "current_client_revision_rounds",
+        "max_client_revision_rounds",
+        "take_selections",
+        "placements",
+        "track_role_map",
+        "annotations",
+        "review_comments",
+        "delivery_intents"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.editor-production-intent.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-editor-narrative-cut",
+      "artifact_ref": "requests/mooncast-editor-narrative-cut.editor-edit-command.json",
+      "input_schema_ref": "mooncast/editor-edit-command@1.0.0",
+      "schema_source_ref": "mooncast/schemas/editor-edit-command.schema.json",
+      "schema_digest": "sha256:b2d94d7f8d6d7f36ca763041fb165bf3f445ccfad61b0cf5163913ffe316f893",
+      "payload_digest": "sha256:4dedeb6bc7dd13ae47d66b0a3b7a0cf975be5ac044b29b1040d425f2b4424da6",
+      "required_top_level_fields": [
+        "contract",
+        "command_id",
+        "expected_revision",
+        "actor",
+        "type",
+        "payload"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.editor-edit-command.v1"
+      },
+      "validation_scope": "selected-oneOf-branch:0"
+    },
+    {
+      "stage_id": "mooncast-editor-compliance-cut",
+      "artifact_ref": "requests/mooncast-editor-compliance-cut.editor-edit-command.json",
+      "input_schema_ref": "mooncast/editor-edit-command@1.0.0",
+      "schema_source_ref": "mooncast/schemas/editor-edit-command.schema.json",
+      "schema_digest": "sha256:b2d94d7f8d6d7f36ca763041fb165bf3f445ccfad61b0cf5163913ffe316f893",
+      "payload_digest": "sha256:4dedeb6bc7dd13ae47d66b0a3b7a0cf975be5ac044b29b1040d425f2b4424da6",
+      "required_top_level_fields": [
+        "contract",
+        "command_id",
+        "expected_revision",
+        "actor",
+        "type",
+        "payload"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.editor-edit-command.v1"
+      },
+      "validation_scope": "selected-oneOf-branch:0"
+    },
+    {
+      "stage_id": "mooncast-editor-preview-plan",
+      "artifact_ref": "requests/mooncast-editor-preview-plan.editor-project.json",
+      "input_schema_ref": "mooncast/editor-project@1.0.0",
+      "schema_source_ref": "mooncast/schemas/editor-project.schema.json",
+      "schema_digest": "sha256:d2280c9dcb3bcf88c4350fffaba2dd3614ff43a09fd48bd3895128c7a3946a60",
+      "payload_digest": "sha256:f8a4b1d135c9108209a216d00f56fd15e0e8fd4f99f8b947b052f8cee3fe5e01",
+      "required_top_level_fields": [
+        "contract",
+        "project_id",
+        "revision",
+        "identity_graph",
+        "intent_refs",
+        "media_refs",
+        "artifacts",
+        "timeline"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.editor-project.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-editor-preview-start",
+      "artifact_ref": "requests/mooncast-editor-preview-start.editor-render-plan.json",
+      "input_schema_ref": "mooncast/editor-render-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/editor-render-plan.schema.json",
+      "schema_digest": "sha256:fc01b215544bdf9415dba82608eb9234014238eb6946c7aa9df5d8a535a36bd8",
+      "payload_digest": "sha256:4419ee463e7371886c312a9982d613905eb6a7b1e890ae85ae886fe1dedc2193",
+      "required_top_level_fields": [
+        "contract",
+        "project_id",
+        "timeline_id",
+        "project_revision",
+        "timeline_revision",
+        "timebase",
+        "output",
+        "range",
+        "quality",
+        "tracks",
+        "transitions",
+        "findings",
+        "ready",
+        "publication_authority",
+        "plan_digest"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.editor-render-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-editor-export-create",
+      "artifact_ref": "requests/mooncast-editor-export-create.editor-render-plan.json",
+      "input_schema_ref": "mooncast/editor-render-plan@1.0.0",
+      "schema_source_ref": "mooncast/schemas/editor-render-plan.schema.json",
+      "schema_digest": "sha256:fc01b215544bdf9415dba82608eb9234014238eb6946c7aa9df5d8a535a36bd8",
+      "payload_digest": "sha256:4419ee463e7371886c312a9982d613905eb6a7b1e890ae85ae886fe1dedc2193",
+      "required_top_level_fields": [
+        "contract",
+        "project_id",
+        "timeline_id",
+        "project_revision",
+        "timeline_revision",
+        "timebase",
+        "output",
+        "range",
+        "quality",
+        "tracks",
+        "transitions",
+        "findings",
+        "ready",
+        "publication_authority",
+        "plan_digest"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.editor-render-plan.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-editor-production-export",
+      "artifact_ref": "requests/mooncast-editor-production-export.editor-production-export-request.json",
+      "input_schema_ref": "mooncast/editor-production-export-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/editor-production-export-request.schema.json",
+      "schema_digest": "sha256:ad5bb8bdbb8c3d9f3180931760ab77b930c2c46b4393cb7de0c0a5a9433fe201",
+      "payload_digest": "sha256:c987fc0c13964caa044ffe008a7477ddf025e2c9c71e46918fcb94246e191678",
+      "required_top_level_fields": [
+        "job_id",
+        "request_id",
+        "expected_editor_revision",
+        "spec"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-editor-master-promote",
+      "artifact_ref": "requests/mooncast-editor-master-promote.editor-master-promotion.json",
+      "input_schema_ref": "mooncast/editor-master-promotion@1.0.0",
+      "schema_source_ref": "mooncast/schemas/editor-master-promotion.schema.json",
+      "schema_digest": "sha256:6c3364ea30f09624c6afa3666fbc3568120dd17c2668af0b7ac0885e52299822",
+      "payload_digest": "sha256:0a458eed7c42c37f7fb7236ad19dba791a5468a683e61d7d71f5cc5a4862d1d7",
+      "required_top_level_fields": [
+        "job_id",
+        "expected_project_revision",
+        "actor",
+        "authority_ref"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-technical-review",
+      "artifact_ref": "requests/mooncast-technical-review.master-provenance.json",
+      "input_schema_ref": "mooncast/master-provenance@1.0.0",
+      "schema_source_ref": "mooncast/schemas/master-provenance.schema.json",
+      "schema_digest": "sha256:dfaae229322f6dd292e1f2ec1caf87109e75a3b850bf32a5a8c21a79d96e91c3",
+      "payload_digest": "sha256:c50eceb17686456e4429f24e41058957ba6acc113c8eae2ca50f0426440b7839",
+      "required_top_level_fields": [
+        "contract",
+        "master_id",
+        "project_id",
+        "sha256",
+        "video_url",
+        "subtitle_url",
+        "timeline",
+        "media",
+        "labels",
+        "qc",
+        "created_at"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.master-provenance.v2"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-creative-review",
+      "artifact_ref": "requests/mooncast-creative-review.master-provenance.json",
+      "input_schema_ref": "mooncast/master-provenance@1.0.0",
+      "schema_source_ref": "mooncast/schemas/master-provenance.schema.json",
+      "schema_digest": "sha256:dfaae229322f6dd292e1f2ec1caf87109e75a3b850bf32a5a8c21a79d96e91c3",
+      "payload_digest": "sha256:c50eceb17686456e4429f24e41058957ba6acc113c8eae2ca50f0426440b7839",
+      "required_top_level_fields": [
+        "contract",
+        "master_id",
+        "project_id",
+        "sha256",
+        "video_url",
+        "subtitle_url",
+        "timeline",
+        "media",
+        "labels",
+        "qc",
+        "created_at"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.master-provenance.v2"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-rights-review",
+      "artifact_ref": "requests/mooncast-rights-review.master-provenance.json",
+      "input_schema_ref": "mooncast/master-provenance@1.0.0",
+      "schema_source_ref": "mooncast/schemas/master-provenance.schema.json",
+      "schema_digest": "sha256:dfaae229322f6dd292e1f2ec1caf87109e75a3b850bf32a5a8c21a79d96e91c3",
+      "payload_digest": "sha256:c50eceb17686456e4429f24e41058957ba6acc113c8eae2ca50f0426440b7839",
+      "required_top_level_fields": [
+        "contract",
+        "master_id",
+        "project_id",
+        "sha256",
+        "video_url",
+        "subtitle_url",
+        "timeline",
+        "media",
+        "labels",
+        "qc",
+        "created_at"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.master-provenance.v2"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-advance-g5",
+      "artifact_ref": "requests/mooncast-advance-g5.gate-decision.json",
+      "input_schema_ref": "mooncast/gate-decision@1.0.0",
+      "schema_source_ref": "mooncast/schemas/gate-decision.schema.json",
+      "schema_digest": "sha256:b0db9798010d646427ef05ae24d18d2e4ea6347cdcf6a0b4d49ffb8629facc25",
+      "payload_digest": "sha256:63070f59c8af3c11c7fad0b1f5ca4155dff17aee403e8ea5964a031abf44645b",
+      "required_top_level_fields": [
+        "gate",
+        "actor",
+        "evidence_digest",
+        "decided_at"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-delivery-prepare",
+      "artifact_ref": "requests/mooncast-delivery-prepare.production-project.json",
+      "input_schema_ref": "mooncast/production-project@1.0.0",
+      "schema_source_ref": "mooncast/schemas/production-project.schema.json",
+      "schema_digest": "sha256:1387700dc080c2a1794051d34efb45b67e27c21ce415aaf88f26f354452da159",
+      "payload_digest": "sha256:d648841977130c487dec87a3d3c42abc5886815c359bab7efa2b187e323a9915",
+      "required_top_level_fields": [
+        "contract",
+        "id",
+        "stage",
+        "gates",
+        "episodes",
+        "shots",
+        "brief",
+        "rights",
+        "bible",
+        "script",
+        "claims_ledger",
+        "storyboard",
+        "animatic",
+        "creative_history",
+        "creative_decisions",
+        "client_revision_rounds",
+        "provider_route",
+        "budget",
+        "assets",
+        "reviews",
+        "analytics",
+        "economics",
+        "model_routing_plan",
+        "model_routing_history",
+        "model_routing_decisions",
+        "generation_attempts",
+        "shot_qc_findings",
+        "shot_qc_decisions",
+        "master_lineage",
+        "master_decisions",
+        "delivery_package",
+        "delivery_package_history",
+        "delivery_milestone_acceptances",
+        "publication_authorizations",
+        "publication_receipts",
+        "performance_reviews",
+        "governance_invalidations"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.production-project.v2"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-delivery-build-plan",
+      "artifact_ref": "requests/mooncast-delivery-build-plan.delivery-build-request.json",
+      "input_schema_ref": "mooncast/delivery-build-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/delivery-build-request.schema.json",
+      "schema_digest": "sha256:4cc055685a8034553275c1298802016f4cf94f497d8d433bef8a75aaf00113d6",
+      "payload_digest": "sha256:1fd754eed92b32c2a1a631c63a77a0ecdd48d5dbdb9021c37194e09923971f48",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_master_sha256",
+        "expected_delivery_version",
+        "expected_delivery_digest",
+        "profile"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-delivery-build-execute",
+      "artifact_ref": "requests/mooncast-delivery-build-execute.delivery-build-action.json",
+      "input_schema_ref": "mooncast/delivery-build-action@1.0.0",
+      "schema_source_ref": "mooncast/schemas/delivery-build-action.schema.json",
+      "schema_digest": "sha256:3d55c484997e21755cba9821a8d3116349352224d96bef05416228a32bc5e708",
+      "payload_digest": "sha256:1e44e50948cd76d90aebca6540896b4ab522136b546418fadc4f604ffc620245",
+      "required_top_level_fields": [
+        "expected_build_revision",
+        "expected_record_digest"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-delivery-build-accept",
+      "artifact_ref": "requests/mooncast-delivery-build-accept.delivery-build-acceptance.json",
+      "input_schema_ref": "mooncast/delivery-build-acceptance@1.0.0",
+      "schema_source_ref": "mooncast/schemas/delivery-build-acceptance.schema.json",
+      "schema_digest": "sha256:915ce501cb97a1877a417b6f738ea42e90b43dd85507a9f8267d06911f3a46e7",
+      "payload_digest": "sha256:53309052585542eeb8f53d4a23cf36773fd3216e31cc40548ef59b8a50ece714",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_build_digest",
+        "expected_build_record_digest",
+        "human_confirmed",
+        "actor",
+        "actor_role",
+        "decision"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-client-portal-create",
+      "artifact_ref": "requests/mooncast-client-portal-create.client-portal-create.json",
+      "input_schema_ref": "mooncast/client-portal-create@1.0.0",
+      "schema_source_ref": "mooncast/schemas/client-portal-create.schema.json",
+      "schema_digest": "sha256:e791e4e9cfcf9454d2638306abca0390f6d0dd7ac0c1aa03d4ea330f0bd26200",
+      "payload_digest": "sha256:b308e27fd45f3bbc8e516183c40a78ecfba2000331e58f307b5e335d63098f90",
+      "required_top_level_fields": [
+        "expected_project_revision",
+        "expected_master_sha256",
+        "build_id",
+        "expected_build_digest",
+        "expected_build_record_digest",
+        "client_name",
+        "brand_name",
+        "brand_accent",
+        "expires_at",
+        "human_confirmed",
+        "actor",
+        "actor_role"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-client-portal-decide",
+      "artifact_ref": "requests/mooncast-client-portal-decide.client-decision-request.json",
+      "input_schema_ref": "mooncast/client-decision-request@1.0.0",
+      "schema_source_ref": "mooncast/schemas/client-decision-request.schema.json",
+      "schema_digest": "sha256:3cff0b1d89b462e8640f8b184ef9c4bbaa8c5fac7052869695a4bd9db1091af5",
+      "payload_digest": "sha256:b88a878c9e0e0736a8ac0ebbf2423ff5e07ece727d56ca2e092df3f402ab932b",
+      "required_top_level_fields": [
+        "expected_master_sha256",
+        "expected_build_digest",
+        "human_confirmed",
+        "actor",
+        "decision"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "mooncast-final-deliverable-evidence",
+      "artifact_ref": "requests/mooncast-final-deliverable-evidence.final-deliverable-evidence.json",
+      "input_schema_ref": "mooncast/final-deliverable-evidence@1.0.0",
+      "schema_source_ref": "mooncast/schemas/final-deliverable-evidence.schema.json",
+      "schema_digest": "sha256:b63f6954d10e0ed17b57b2a63483871e68c57162db8ddab61d3efce05a989bba",
+      "payload_digest": "sha256:f6a0037ccaf2cbdf5d051131f18cbdc5f90d345bc090b9c38170ccb9cd39354e",
+      "required_top_level_fields": [
+        "contract",
+        "record",
+        "project_id",
+        "episode_id",
+        "export_job_id",
+        "editor_output_digest",
+        "render_plan_digest",
+        "lineage_evidence_digest",
+        "duration_seconds",
+        "source_refs",
+        "publication_authority",
+        "external_effect_authorized",
+        "prepared_at"
+      ],
+      "constant_top_level_fields": {
+        "contract": "mooncast.final-deliverable-evidence.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "final-authority-decision",
+      "artifact_ref": "requests/final-authority-decision.conversation-review-bundle.json",
+      "input_schema_ref": "moonchat/conversation-review-bundle@1.0.0",
+      "schema_source_ref": "moonchat/schemas/conversation-review-bundle.schema.json",
+      "schema_digest": "sha256:d38a9cad361ab364e25e1330ccf8b61d6f042d762d871d4061626b10456c436b",
+      "payload_digest": "sha256:f793986ca5f6c6d98c6a0e941aee6198130d59a32c7c88d0cc40cf2dca342a7b",
+      "required_top_level_fields": [
+        "contract_id",
+        "review_id",
+        "source_artifact_ref",
+        "source_digest",
+        "source_revision_id",
+        "previous_bundle_ref",
+        "previous_bundle_digest",
+        "conversation",
+        "participants",
+        "entries",
+        "required_decisions",
+        "decision_receipts",
+        "recorded_at"
+      ],
+      "constant_top_level_fields": {
+        "contract_id": "moonchat.conversation-review-bundle.v1"
+      },
+      "validation_scope": "complete-schema"
+    },
+    {
+      "stage_id": "bookkeeper-close-loop",
+      "artifact_ref": "requests/bookkeeper-close-loop.bookkeeper-product-outcome-closure.json",
+      "input_schema_ref": "moonbook/bookkeeper-product-outcome-closure@1.0.0",
+      "schema_source_ref": "moonbook/schemas/bookkeeper-product-outcome-closure.schema.json",
+      "schema_digest": "sha256:36130911486786dd124f6fdef07ec4d193bbea5ea7cc566cc18c421ea7c80e7f",
+      "payload_digest": "sha256:42bcd6b500fd49bb5fd140d7dee3481c93d3c7eab99b6b8988247ad073ff5954",
+      "required_top_level_fields": [
+        "contract_version",
+        "request",
+        "source_product",
+        "deliverable",
+        "result",
+        "deliverable_review",
+        "observed_at",
+        "recorded_at",
+        "outcome_summary",
+        "owner_route",
+        "evidence_refs",
+        "information_gap",
+        "recognition_gap",
+        "decisiveness_gap",
+        "capability_id",
+        "capability_version",
+        "capability_change_digest",
+        "capability_summary"
+      ],
+      "constant_top_level_fields": {},
+      "validation_scope": "complete-schema"
+    }
+  ]
+}

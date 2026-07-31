@@ -1,0 +1,16 @@
+{
+  "expected_project_revision": 0,
+  "expected_routing_plan_version": 1,
+  "expected_routing_plan_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "shot_outputs": [
+    {
+      "shot_id": "fixture-shot_id",
+      "output_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    }
+  ],
+  "evidence_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "note": "fixture-note",
+  "actor": "fixture-actor",
+  "actor_role": "fixture-actor_role",
+  "human_confirmed": true
+}

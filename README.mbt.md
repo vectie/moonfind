@@ -1,6 +1,10 @@
-# Moonfind
+# MoonFind
 
-Moonfind is a MoonSuite domain pack for evidence-backed AutoResearch. It tracks research questions, acquires and normalizes papers, asks MoonClaw to create cited summaries and falsifiable ideas, uses Moontown to challenge bridges across paper-books, and routes reviewed outcomes to MoonBook Bookkeeper for Three-Gap learning.
+> **Domain pack · evidence-backed research alpha.** Read the
+> [product contract](docs/PRODUCT_CONTRACT.md) for provider licensing,
+> hostile-document isolation, the closed loop and release gates.
+
+MoonFind is a MoonSuite domain pack for evidence-backed AutoResearch. It tracks research questions, acquires and normalizes papers, asks MoonClaw to create cited summaries and falsifiable ideas, uses MoonTown to challenge bridges across paper-books, and routes reviewed outcomes to MoonBook Bookkeeper for Three-Gap learning.
 
 The first specialization is humanoid robotics model research over arXiv. Domain semantics stay in `humanoid/`; the reusable research graph stays in `research/`. The implementation is MoonBit-native and the application UI is Rabbita. There is no Python runtime or secondary agent runtime.
 
@@ -26,6 +30,8 @@ Moonfind never installs a capability or approves its own output. Model ideas are
 
 See [Responsibility and testability](docs/RESPONSIBILITY_AND_TESTABILITY.md)
 for the executable delegation boundary and layered test model.
+See [Execution and capability truth](docs/EXECUTION_AND_CAPABILITY_TRUTH.md)
+for the restart-safe installed-pack → MoonClaw Cowork call chain.
 
 ## Run the complete fixture
 
@@ -52,7 +58,12 @@ The run is written below `.moonsuite/products/moonfind/runs/<run-id>/` with:
 moon run cmd/main -- prepare-live ~/Research moonfind-2026-07-20
 ```
 
-The pending run and `moonclaw-command.json` are durable. Execute that command through the existing MoonClaw host, save its JSON result, then:
+The pending run is durable. The production operator path first invokes
+`moonfind/research.prepare-analysis@0.1.0` through MoonClaw's generic
+installed-pack seam, appends every attempt/receipt revision, and only then
+submits the exact resulting command through the existing MoonClaw Cowork
+gateway. The Cowork session/run identity is appended before polling. Save its
+durable JSON result, then:
 
 ```bash
 moon run cmd/main -- complete ~/Research moonfind-2026-07-20 analysis-result.json
@@ -109,23 +120,58 @@ Publish Moonfind's typed robotics graph into a MoonBook, open that book in
 MoonDesk, and switch to MoonFlow:
 
 ```bash
-moon run cmd/main -- publish-robotics-graph /path/to/moonbook
+moon run cmd/main -- publish-robotics-graph \
+  /path/to/moonbook \
+  fixtures/humanoid-robotics-requests \
+  fixtures/humanoid-robotics-capability-catalog.fixture.v1.json \
+  2026-07-31T12:00:00Z
 ```
 
-The infinite canvas shows MoonWiki → Moonfind → MoonTown/MoonChat → MoonProj,
-parallel MoonCode/MoonMini/MoonMold work, MoonRobo integration, MoonMoon
-simulation, MoonStat evaluation, MoonGate authority review, MoonVis/MoonCast
-delivery, and MoonBook Bookkeeper closure. You can exclude declared nodes only when dependency closure
-remains valid. Saving creates a source-bound selection overlay; starting the run
-compiles a distinct digest-bound graph. MoonDesk, MoonFlow, and MoonClaw remain
-the control plane and do not absorb robotics semantics.
+The JSON is a 63-stage exact desired graph, never a runnable graph. Every stage
+uses a canonical operation, schema, authority, and claim class. MoonBook owns
+wiki requirements and Bookkeeper closure; MoonClaw is the only runtime and
+runs the `wiki` and `mooncode` roles with `gpt-5.6-sol`. MoonChat owns the
+owner, stakeholder, and final authority decisions. The MoonCast tail is a
+complete staged production and cut-editor flow through immutable delivery,
+client decision, and final evidence—not a monolithic video or publication
+call.
 
-The enforcement and dispatch paths for full-text evidence, reducer-output
-ingestion, restart recovery, malicious-document isolation, provider licensing,
-and MoonDesk-to-MoonFlow/MoonClaw execution are implemented. Production use
-still requires real provider contracts, credentials, an isolated extractor,
-healthy product adapters, and explicit authority grants; absent external facts
-disable the relevant node rather than falling back silently.
+`project_desired_graph` shows catalog-derived suggestions for every gap and
+emits no `moonsuite.work-model.v1` object unless the entire selected graph is
+exactly conformant, healthy, and within its claim ceiling. One missing or
+expired operation blocks the entire import. MoonFlow executes; MoonGate and
+MoonLib are support-only; MoonEdit and MoonLeaf remain libraries. MoonFish is
+outside the robotics book. There is no physical command and no publication
+stage.
+
+The checked-in capability catalog beside the workflow is deterministic
+fixture-only data. It is deliberately marked synthetic and is not packaged as
+production health evidence.
+
+Publication is fail-closed on request materialization. Every one of the 63
+stages has exactly one first, pack-owned typed request; MoonFlow appends
+dependency outputs later. The publisher requires a complete
+`moonfind.robotics-request-materialization.v1` ledger, checks exact
+stage/schema/path coverage, payload digests, required top-level fields, and
+registered constants, then copies the requests and graph into the target
+MoonBook. The bundled request set is schema-valid synthetic scenario data for
+projection/adapter preflight only. Replace it with an equivalently complete
+validated bundle for real work.
+
+The catalog and evaluation timestamp are explicit. The publisher preserves
+bound intent as `flow/desired-graph.json`, projects it against that exact
+healthy catalog, writes the resulting `moonsuite.work-model.v1` to
+`flow/work-graph.json`, and snapshots the exact evaluated catalog as
+`flow/capability-catalog.json` for MoonDesk/MoonFlow validation and replay.
+The timestamp above is valid only inside the short-lived synthetic fixture
+health window.
+
+The pack contains enforcement contracts and local paths for full-text evidence,
+reducer-output ingestion, restart recovery, malicious-document isolation,
+provider licensing, and MoonDesk-to-MoonFlow/MoonClaw execution. Production use
+still requires real provider contracts, credentials, a deployed isolated
+extractor, conformant product adapters and explicit authority grants. The
+desired composition JSON is not itself proof of those external facts.
 
 ## Rabbita UI
 

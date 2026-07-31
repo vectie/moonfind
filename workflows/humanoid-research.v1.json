@@ -1,14 +1,51 @@
 {
-  "workflow_id": "moonfind.humanoid-research.v1",
+  "contract_id": "moonfind.research-workflow.v2",
+  "workflow_id": "moonfind.humanoid-research.v2",
   "owner": "moonfind",
-  "runtime": "moonflow",
+  "orchestrator": "moonflow",
   "agent_runtime": "moonclaw",
+  "executable": false,
+  "execution_rule": "compile exact operations from moonflow.capability-catalog.v1 before import",
   "stages": [
-    {"id":"acquire","tool":"papers.acquire-arxiv","authority":"observe"},
-    {"id":"rank","tool":"humanoid.rank-papers","authority":"sandbox-execution"},
-    {"id":"analyze","tool":"research.prepare-analysis","authority":"sandbox-execution","model":"gpt-5.6-sol"},
-    {"id":"synthesize","tool":"research.cross-paper-synthesize","runtime":"moontown","pattern":"research-salon"},
-    {"id":"review","tool":"research.review","authority":"named-human"},
-    {"id":"learn","tool":"bookkeeper.outcome-handoff","authority":"named-human"}
+    {
+      "id": "acquire",
+      "operation_ref": "moonfind/papers.acquire-arxiv@0.1.0",
+      "authority": "observe"
+    },
+    {
+      "id": "rank",
+      "operation_ref": null,
+      "desired_tool_hint": "deterministic humanoid paper ranking",
+      "status": "unpublished-capability"
+    },
+    {
+      "id": "prepare-analysis",
+      "operation_ref": "moonfind/research.prepare-analysis@0.1.0",
+      "authority": "sandbox-execution",
+      "result": "moonfind/moonclaw-research-command@1.0.0"
+    },
+    {
+      "id": "execute-analysis",
+      "runtime": "moonclaw",
+      "submission": "exact capability-produced command through Cowork",
+      "recovery": "persist session/run IDs and reconcile; never create a second runtime"
+    },
+    {
+      "id": "synthesize",
+      "operation_ref": "moontown/civic.communication.synthesize@0.1.0",
+      "authority": "workspace-mutation"
+    },
+    {
+      "id": "review",
+      "operation_ref": "moonfind/research.review@0.1.0",
+      "authority": "workspace-mutation",
+      "named_human_required": true
+    },
+    {
+      "id": "learn",
+      "operation_ref": "moonbook/bookkeeper.outcome.close@0.1.0",
+      "authority": "workspace-mutation",
+      "named_human_required": true
+    }
   ]
 }

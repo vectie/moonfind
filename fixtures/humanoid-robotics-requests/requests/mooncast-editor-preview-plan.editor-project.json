@@ -1,0 +1,44 @@
+{
+  "contract": "mooncast.editor-project.v1",
+  "project_id": "fixture-project_id",
+  "revision": 0,
+  "identity_graph": [
+    {
+      "project_id": "fixture-project_id",
+      "episode_id": "fixture-episode_id",
+      "scene_id": "fixture-scene_id",
+      "shot_id": "fixture-shot_id",
+      "asset_id": "fixture-asset_id"
+    }
+  ],
+  "intent_refs": [],
+  "media_refs": [],
+  "artifacts": [],
+  "timeline": {
+    "contract": "mooncast.editor-timeline.v1",
+    "timeline_id": "fixture-timeline_id",
+    "revision": 0,
+    "timebase": {
+      "ticks_per_second": 1
+    },
+    "output": {
+      "preset": "horizontal-1080p",
+      "orientation": "horizontal",
+      "width": 1,
+      "height": 1,
+      "fps": {
+        "numerator": 1,
+        "denominator": 1
+      },
+      "background": "fixture-background"
+    },
+    "tracks": [
+      {
+        "track_id": "fixture-track_id",
+        "kind": "video",
+        "order": 0,
+        "clips": []
+      }
+    ]
+  }
+}

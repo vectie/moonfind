@@ -1,0 +1,176 @@
+{
+  "id": "moonfind",
+  "version": "0.1.0",
+  "display_name": "Moonfind Evidence-Backed AutoResearch",
+  "product_id": "moonfind",
+  "kind": "DomainPack",
+  "required_runtime_extensions": ["moonclaw", "moontown", "moonbook"],
+  "book_templates": [
+    {
+      "id": "moonfind-research-book",
+      "version": "1.0.0",
+      "path": "book/research-book.md"
+    }
+  ],
+  "schemas": [
+    {"id": "research-watch", "version": "1.0.0", "path": "schemas/research-watch.schema.json"},
+    {"id": "local-input-coverage", "version": "1.0.0", "path": "schemas/local-input-coverage.schema.json"},
+    {"id": "paper-record", "version": "1.0.0", "path": "schemas/paper-record.schema.json"},
+    {"id": "full-text-evidence", "version": "1.0.0", "path": "schemas/full-text-evidence.schema.json"},
+    {"id": "provider-use-decision", "version": "1.0.0", "path": "schemas/provider-use-decision.schema.json"},
+    {"id": "recovery-snapshot", "version": "1.0.0", "path": "schemas/recovery-snapshot.schema.json"},
+    {"id": "research-run", "version": "1.0.0", "path": "schemas/research-run.schema.json"},
+    {"id": "moonclaw-research-command", "version": "1.0.0", "path": "schemas/moonclaw-research-command.schema.json"},
+    {"id": "research-execution-record", "version": "1.0.0", "path": "schemas/research-execution-record.schema.json"},
+    {"id": "capability-graph-projection", "version": "1.0.0", "path": "schemas/capability-graph-projection.schema.json"},
+    {"id": "research-analysis-result", "version": "1.0.0", "path": "schemas/research-analysis-result.schema.json"},
+    {"id": "human-research-review", "version": "1.0.0", "path": "schemas/human-research-review.schema.json"},
+    {"id": "moontown-research-scenario", "version": "1.0.0", "path": "schemas/moontown-research-scenario.schema.json"},
+    {"id": "bookkeeper-deliverable-candidate", "version": "1.0.0", "path": "schemas/bookkeeper-deliverable-candidate.schema.json"},
+    {"id": "capability-observation", "version": "1.0.0", "path": "schemas/capability-observation.schema.json"},
+    {"id": "read-only-qa-grounding", "version": "1.0.0", "path": "schemas/read-only-qa-grounding.schema.json"}
+  ],
+  "tools": [
+    {
+      "id": "papers.acquire-arxiv",
+      "owner_product": "moonfind",
+      "input_schema_id": "research-watch",
+      "output_schema_id": "paper-record",
+      "authority": "Observe",
+      "idempotent": true,
+      "evidence_outputs": ["raw/arxiv", "records/papers"],
+      "review_required": false
+    },
+    {
+      "id": "research.account-local-corpus",
+      "owner_product": "moonfind",
+      "input_schema_id": "local-input-coverage",
+      "output_schema_id": "local-input-coverage",
+      "authority": "WorkspaceMutation",
+      "idempotent": true,
+      "evidence_outputs": ["raw/imports", "raw/extracted", "records/local-input-coverage"],
+      "review_required": false
+    },
+    {
+      "id": "papers.record-isolated-fulltext",
+      "owner_product": "moonfind",
+      "input_schema_id": "full-text-evidence",
+      "output_schema_id": "full-text-evidence",
+      "authority": "SandboxExecution",
+      "idempotent": true,
+      "evidence_outputs": ["raw/quarantine", "records/fulltext-evidence", "records/isolation-receipts"],
+      "review_required": false
+    },
+    {
+      "id": "research.prepare-analysis",
+      "owner_product": "moonfind",
+      "input_schema_id": "research-run",
+      "output_schema_id": "moonclaw-research-command",
+      "authority": "SandboxExecution",
+      "idempotent": true,
+      "evidence_outputs": ["records/moonclaw-commands"],
+      "review_required": false
+    },
+    {
+      "id": "research.cross-paper-synthesize",
+      "owner_product": "moonfind",
+      "input_schema_id": "research-run",
+      "output_schema_id": "moontown-research-scenario",
+      "authority": "SandboxExecution",
+      "idempotent": true,
+      "evidence_outputs": ["records/moontown-scenarios", "records/model-ideas"],
+      "review_required": false
+    },
+    {
+      "id": "research.challenge-local-corpus",
+      "owner_product": "moonfind",
+      "input_schema_id": "local-input-coverage",
+      "output_schema_id": "moontown-research-scenario",
+      "authority": "SandboxExecution",
+      "idempotent": true,
+      "evidence_outputs": ["records/moontown-scenarios", "records/local-corpus-challenges"],
+      "review_required": false
+    },
+    {
+      "id": "research.review",
+      "owner_product": "moonfind",
+      "input_schema_id": "human-research-review",
+      "output_schema_id": "research-run",
+      "authority": "WorkspaceMutation",
+      "idempotent": true,
+      "evidence_outputs": ["records/human-reviews", "records/accepted-outcomes"],
+      "review_required": true
+    },
+    {
+      "id": "bookkeeper.deliverable-handoff",
+      "owner_product": "moonfind",
+      "input_schema_id": "research-run",
+      "output_schema_id": "bookkeeper-deliverable-candidate",
+      "authority": "WorkspaceMutation",
+      "idempotent": true,
+      "evidence_outputs": ["records/bookkeeper-deliverables", "records/three-gap-candidates"],
+      "review_required": true
+    },
+    {
+      "id": "book.prepare-read-only-qa-grounding",
+      "owner_product": "moonfind",
+      "input_schema_id": "research-run",
+      "output_schema_id": "read-only-qa-grounding",
+      "authority": "SandboxExecution",
+      "idempotent": true,
+      "evidence_outputs": ["records/qa-grounding"],
+      "review_required": true
+    },
+    {
+      "id": "moonflow.capability-observe",
+      "owner_product": "moonfind",
+      "input_schema_id": "research-run",
+      "output_schema_id": "capability-observation",
+      "authority": "SandboxExecution",
+      "idempotent": true,
+      "evidence_outputs": ["records/capability-observations"],
+      "review_required": true
+    }
+  ],
+  "workflows": [
+    {"id": "humanoid-research", "version": "2.0.0", "path": "workflows/humanoid-research.v1.json"},
+    {"id": "humanoid-robotics-suite-desired", "version": "3.0.0", "path": "workflows/humanoid-robotics-suite.v1.json"}
+  ],
+  "skills": [
+    {"id": "humanoid-cross-paper-synthesis", "version": "1.0.0", "path": "skills/humanoid-cross-paper-synthesis.md"}
+  ],
+  "policies": [
+    {"id": "humanoid-model-research", "version": "1.0.0", "path": "policies/humanoid-model-research.v1.md"}
+  ],
+  "provider_ports": [
+    {"id": "arxiv-paper-metadata", "version": "1.0.0", "path": "providers/arxiv-development.json"},
+    {"id": "crossref-policy", "version": "1.0.0", "path": "providers/crossref-policy.json"},
+    {"id": "openalex-policy", "version": "1.0.0", "path": "providers/openalex-policy.json"},
+    {"id": "semantic-scholar-policy", "version": "1.0.0", "path": "providers/semantic-scholar-policy.json"},
+    {"id": "licensed-fulltext-policy", "version": "1.0.0", "path": "providers/licensed-fulltext-policy.json"},
+    {"id": "moonflow-adapter-declaration", "version": "1.0.0", "path": "adapters/moonflow/adapter-declaration.v1.json"},
+    {"id": "moonflow-adapter-health-template", "version": "1.0.0", "path": "adapters/moonflow/adapter-health.template.v1.json"}
+  ],
+  "schedules": [
+    {
+      "id": "humanoid-daily-watch",
+      "cadence": "0 8 * * *",
+      "timezone": "Asia/Shanghai",
+      "workflow_id": "humanoid-research"
+    }
+  ],
+  "app_entrypoints": [
+    {
+      "id": "research-studio",
+      "path": "/apps/moonfind/research",
+      "audience": "research-operator"
+    }
+  ],
+  "migrations": [],
+  "evaluations": [],
+  "uninstall_contract": {
+    "id": "uninstall",
+    "version": "1.0.0",
+    "path": "UNINSTALL.md"
+  }
+}

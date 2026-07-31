@@ -1,0 +1,64 @@
+{
+  "contract_version": "moonbook.bookkeeper.product_outcome_closure.v1",
+  "request": {
+    "record_id": "fixture-record_id",
+    "record_version": "1.0.0",
+    "record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "source_product": "fixture-source_product",
+  "deliverable": {
+    "record_id": "fixture-record_id",
+    "record_version": "1.0.0",
+    "record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "result": {
+    "record_id": "fixture-record_id",
+    "record_version": "1.0.0",
+    "record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "deliverable_review": {
+    "record_id": "fixture-record_id",
+    "record_version": "1.0.0",
+    "record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+  },
+  "observed_at": 0,
+  "recorded_at": 0,
+  "outcome_summary": "fixture-outcome_summary",
+  "owner_route": "fixture-owner_route",
+  "evidence_refs": [
+    {
+      "reference_id": "fixture-reference_id",
+      "reference_version": "1.0.0",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "provenance_ref": "fixture-provenance_ref"
+    }
+  ],
+  "information_gap": {
+    "present": false,
+    "severity": 0,
+    "summary": "fixture-summary",
+    "evidence_refs": [
+      "fixture-evidence_refs"
+    ]
+  },
+  "recognition_gap": {
+    "present": false,
+    "severity": 0,
+    "summary": "fixture-summary",
+    "evidence_refs": [
+      "fixture-evidence_refs"
+    ]
+  },
+  "decisiveness_gap": {
+    "present": false,
+    "severity": 0,
+    "summary": "fixture-summary",
+    "evidence_refs": [
+      "fixture-evidence_refs"
+    ]
+  },
+  "capability_id": "fixture-capability_id",
+  "capability_version": "1.0.0",
+  "capability_change_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "capability_summary": "fixture-capability_summary"
+}

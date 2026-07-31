@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "moonfind/moonclaw-research-command@1.0.0",
+  "title": "MoonFind MoonClaw Research Command",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "session_id",
+    "book_root",
+    "command",
+    "model",
+    "capability_scope_id",
+    "capability_participant_id",
+    "text",
+    "packet"
+  ],
+  "properties": {
+    "protocol": { "const": "moonclaw.mooncode.v1" },
+    "session_id": { "type": "string", "minLength": 1 },
+    "book_root": { "type": "string", "minLength": 1 },
+    "command": { "const": "prompt" },
+    "model": { "const": "gpt-5.6-sol" },
+    "capability_scope_id": { "type": "string", "minLength": 1 },
+    "capability_participant_id": { "type": "string", "minLength": 1 },
+    "text": { "type": "string", "minLength": 1 },
+    "packet": {
+      "type": "object",
+      "required": ["command_id", "product_id", "required_review", "owner_route"],
+      "properties": {
+        "command_id": { "type": "string", "minLength": 1 },
+        "product_id": { "const": "moonfind" },
+        "required_review": { "const": "named-human" },
+        "owner_route": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

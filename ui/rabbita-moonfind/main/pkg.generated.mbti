@@ -11,19 +11,33 @@ import {
 // Errors
 
 // Types and methods
-type Idea derive(@debug.Debug, @json.FromJson)
+type CapabilityReceiptProjection derive(@debug.Debug, @json.FromJson)
+
+type CoworkMessage derive(@debug.Debug, @json.FromJson)
+
+type CoworkProposalRef derive(@debug.Debug, @json.FromJson)
+
+type CoworkRunRef derive(ToJson, @debug.Debug, @json.FromJson)
+
+type CoworkSessionDetail derive(@debug.Debug, @json.FromJson)
+
+type CoworkSessionPayload derive(@debug.Debug, @json.FromJson)
+
+type CoworkSessionSummary derive(@debug.Debug, @json.FromJson)
 
 type Model
 
 type Msg
 
-type Paper derive(@debug.Debug, @json.FromJson)
+type ResearchExecutionPayload derive(@debug.Debug, @json.FromJson)
 
-type Question derive(@debug.Debug, @json.FromJson)
+type ResearchExecutionProjection derive(@debug.Debug, @json.FromJson)
 
-type Summary derive(@debug.Debug, @json.FromJson)
+type ResearchPhase derive(Eq, @debug.Debug)
 
-type Workspace derive(@debug.Debug, @json.FromJson)
+type ReviewPhase derive(Eq, @debug.Debug)
+
+type WorkspaceSnapshot derive(@debug.Debug, @json.FromJson)
 
 // Type aliases
 

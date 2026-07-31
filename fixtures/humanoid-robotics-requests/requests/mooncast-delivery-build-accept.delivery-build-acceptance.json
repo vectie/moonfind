@@ -1,0 +1,9 @@
+{
+  "expected_project_revision": 1,
+  "expected_build_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "expected_build_record_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "human_confirmed": true,
+  "actor": "fixture-actor",
+  "actor_role": "fixture-actor_role",
+  "decision": "accept"
+}

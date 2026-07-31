@@ -1,0 +1,50 @@
+{
+  "contract_id": "moonsuite.robot-design.v1",
+  "design_id": "fixture-design_id",
+  "revision": "1",
+  "mission": {
+    "authority": "digital-only",
+    "robot_class": "fixture-robot_class"
+  },
+  "task_loop": [
+    "fixture-task_loop",
+    "fixture-task_loop",
+    "fixture-task_loop",
+    "fixture-task_loop"
+  ],
+  "mechanisms": [
+    {
+      "id": "fixture-id",
+      "kind": "fixture-kind"
+    },
+    {
+      "id": "fixture-id",
+      "kind": "fixture-kind"
+    },
+    {
+      "id": "fixture-id",
+      "kind": "fixture-kind"
+    }
+  ],
+  "validation": {
+    "scenarios": [
+      {
+        "id": "fixture-id",
+        "expected": "fixture-expected"
+      },
+      {
+        "id": "fixture-id",
+        "expected": "fixture-expected"
+      },
+      {
+        "id": "fixture-id",
+        "expected": "fixture-expected"
+      }
+    ]
+  },
+  "constraints": {
+    "commanded_speed_mps": {
+      "max": 1
+    }
+  }
+}

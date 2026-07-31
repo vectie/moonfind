@@ -1,0 +1,15 @@
+{
+  "contract": "mooncast.master-provenance.v2",
+  "master_id": "fixture-master_id",
+  "project_id": "fixture-project_id",
+  "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "video_url": "fixture://artifact",
+  "subtitle_url": "fixture://artifact",
+  "timeline": [
+    null
+  ],
+  "media": {},
+  "labels": {},
+  "qc": {},
+  "created_at": "2026-07-31T00:00:00Z"
+}
