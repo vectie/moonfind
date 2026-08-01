@@ -28,6 +28,11 @@ Research watch
 
 Moonfind never installs a capability or approves its own output. Model ideas are proposals until evidence and a named human review say otherwise.
 
+MoonFind also exposes an optional [public listing search adapter](docs/PUBLIC_LISTING_SEARCH_ADAPTER.md)
+for MoonTown's exact sanitized `moonsuite.public-listing.v1` cards. It performs
+deterministic, explainable organic retrieval only; Town continues to own
+publication, recommendations, sponsorship, notifications and messaging.
+
 See [Responsibility and testability](docs/RESPONSIBILITY_AND_TESTABILITY.md)
 for the executable delegation boundary and layered test model.
 See [Execution and capability truth](docs/EXECUTION_AND_CAPABILITY_TRUTH.md)

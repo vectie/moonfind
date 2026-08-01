@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moonsuite.local/schemas/public-listing-search-response.schema.json",
+  "title": "MoonFind organic public listing search response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id", "query", "provider_id", "organic_only", "results", "total_candidates"],
+  "properties": {
+    "contract_id": { "const": "moonfind.public-listing-search-response.v1" },
+    "query": { "type": "string" },
+    "provider_id": { "type": "string", "minLength": 1 },
+    "organic_only": { "const": true },
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["listing", "score", "reasons"],
+        "properties": {
+          "listing": { "$ref": "public-listing-projection.schema.json" },
+          "score": { "type": "integer", "minimum": 1 },
+          "reasons": { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+        }
+      }
+    },
+    "total_candidates": { "type": "integer", "minimum": 0 }
+  }
+}

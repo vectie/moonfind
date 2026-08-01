@@ -58,6 +58,9 @@ pub fn manifest() -> @pack.MoonPackManifest {
       schema("read-only-qa-grounding"),
       schema("ui-workspace"),
       schema("series-use-case"),
+      schema("public-listing-projection"),
+      schema("public-listing-search-request"),
+      schema("public-listing-search-response"),
     ],
     tools: [
       tool("papers.acquire-arxiv", "research-watch", "paper-record", Observe, [
@@ -175,6 +178,9 @@ pub fn manifest() -> @pack.MoonPackManifest {
       ),
       @pack.contract_ref(
         "moonflow-adapter-health-template", "1.0.0", "adapters/moonflow/adapter-health.template.v1.json",
+      ),
+      @pack.contract_ref(
+        "public-listing-ranking", "1.0.0", "providers/public-listing-ranking.port.json",
       ),
     ],
     schedules: [

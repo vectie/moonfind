@@ -1,0 +1,16 @@
+{
+  "id": "public-listing-ranking",
+  "version": "1.0.0",
+  "owner_product": "moonfind",
+  "contract_id": "moonfind.public-listing-ranking-port.v1",
+  "input_contract": "moonsuite.public-listing.v1",
+  "output_contract": "moonfind.public-listing-search-response.v1",
+  "default_provider": "moonfind.lexical-public-listing.v1",
+  "semantic_provider_state": "not_configured",
+  "rules": [
+    "Accept only exact sanitized published projections.",
+    "Return explainable organic scores independent of sponsored placement.",
+    "A future embedding provider receives only the sanitized index record.",
+    "Never index runtime profiles, private books, paths, authority, consent, secrets, or raw evidence."
+  ]
+}

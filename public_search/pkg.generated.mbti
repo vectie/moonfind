@@ -1,0 +1,87 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "vectie/moonfind/public_search"
+
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/json",
+}
+
+// Values
+pub fn admit_public_listing_json(Json) -> PublicListingV1 raise
+
+pub fn deterministic_lexical_public_listing_provider() -> PublicListingRankProviderV1
+
+pub fn index_public_listing(PublicListingV1) -> PublicListingIndexRecordV1 raise
+
+pub fn search_public_listing_index(ArrayView[PublicListingIndexRecordV1], PublicListingSearchRequestV1) -> PublicListingSearchResponseV1 raise
+
+pub fn search_public_listing_index_with_provider(ArrayView[PublicListingIndexRecordV1], PublicListingSearchRequestV1, PublicListingRankProviderV1) -> PublicListingSearchResponseV1 raise
+
+pub fn validate_public_listing(PublicListingV1) -> Array[String]
+
+// Errors
+
+// Types and methods
+pub(all) struct PublicListingIndexRecordV1 {
+  contract_id : String
+  listing : PublicListingV1
+  normalized_text : String
+  terms : Array[String]
+  semantic_provider_ref : String?
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct PublicListingRankProviderV1 {
+  provider_id : String
+  rank : (String, PublicListingIndexRecordV1) -> PublicListingRankSignalV1
+}
+
+pub(all) struct PublicListingRankSignalV1 {
+  score : Int
+  reasons : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct PublicListingSearchRequestV1 {
+  contract_id : String
+  query : String
+  listing_kinds : Array[String]
+  required_capabilities : Array[String]
+  required_tags : Array[String]
+  limit : Int
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct PublicListingSearchResponseV1 {
+  contract_id : String
+  query : String
+  provider_id : String
+  organic_only : Bool
+  results : Array[PublicListingSearchResultV1]
+  total_candidates : Int
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct PublicListingSearchResultV1 {
+  listing : PublicListingV1
+  score : Int
+  reasons : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct PublicListingV1 {
+  contract_id : String
+  listing_id : String
+  listing_kind : String
+  publisher_id : String
+  title : String
+  summary : String
+  capabilities : Array[String]
+  tags : Array[String]
+  action_ids : Array[String]
+  publication_state : String
+  published_at : String
+  version : Int
+  content_digest : String
+  license_class : String
+  rights_summary : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+// Type aliases
+
+// Traits

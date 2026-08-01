@@ -10,6 +10,7 @@ not reimplemented.
 | Research domain | `research/`, `humanoid/`, `series/`, `hardening/` | Evidence admission, synthesis records, specializations and desired series intent. |
 | Application and review | `app/`, `closed_loop/`, `host/` | Durable projections and named-review preparation. |
 | Provider/adapters | `arxiv/`, `providers/`, `pack_adapter/`, `adapters/moonflow/` | Permission-aware acquisition and generic executable seams. |
+| Public catalog adapter | `public_search/`, `providers/public-listing-ranking.port.json` | Sanitized published-card admission and organic retrieval only; MoonTown retains publication and social policy. |
 | Pack boundary | `pack.json`, `schemas/`, `workflows/` | Versioned tools, handoffs and domain workflow templates. |
 | Visible application | `ui/rabbita-moonfind/` | Research journey and typed scenario catalog in Rabbita. |
 | Composition roots | `cmd/` | Native UI/tool hosts without research policy duplication. |

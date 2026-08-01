@@ -4,15 +4,41 @@ package "vectie/moonfind/app"
 import {
   "moonbitlang/core/debug",
   "moonbitlang/core/json",
+  "vectie/moonfind/public_search",
   "vectie/moonfind/research",
 }
 
 // Values
+pub fn project_public_listing_search(@public_search.PublicListingSearchResponseV1) -> PublicListingSearchWorkspaceV1
+
 pub fn project_research_workspace(@research.ResearchRun) -> ResearchWorkspaceProjection
 
 // Errors
 
 // Types and methods
+pub(all) struct PublicListingSearchCardV1 {
+  listing_id : String
+  listing_kind : String
+  title : String
+  summary : String
+  publisher_id : String
+  capabilities : Array[String]
+  action_ids : Array[String]
+  score : Int
+  reason : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct PublicListingSearchWorkspaceV1 {
+  contract_id : String
+  title : String
+  query : String
+  source_label : String
+  organic_only : Bool
+  result_count : Int
+  cards : Array[PublicListingSearchCardV1]
+  empty_state : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct ResearchWorkspaceProjection {
   product_id : String
   title : String

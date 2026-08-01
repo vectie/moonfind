@@ -1,0 +1,37 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moonsuite.local/schemas/public-listing-projection.schema.json",
+  "title": "MoonSuite sanitized public listing",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "contract_id", "listing_id", "listing_kind", "publisher_id", "title",
+    "summary", "capabilities", "tags", "action_ids", "publication_state",
+    "published_at", "version", "content_digest", "license_class",
+    "rights_summary"
+  ],
+  "properties": {
+    "contract_id": { "const": "moonsuite.public-listing.v1" },
+    "listing_id": { "type": "string", "minLength": 1 },
+    "listing_kind": { "enum": ["agent", "building"] },
+    "publisher_id": { "type": "string", "minLength": 1 },
+    "title": { "type": "string", "minLength": 1 },
+    "summary": { "type": "string", "minLength": 1 },
+    "capabilities": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "tags": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "action_ids": {
+      "type": "array",
+      "items": {
+        "enum": ["follow", "message", "try", "visit", "request_access", "install", "invite", "share"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "publication_state": { "const": "published" },
+    "published_at": { "type": "string", "minLength": 1 },
+    "version": { "type": "integer", "minimum": 1 },
+    "content_digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "license_class": { "type": "string", "minLength": 1 },
+    "rights_summary": { "type": "string", "minLength": 1 }
+  }
+}

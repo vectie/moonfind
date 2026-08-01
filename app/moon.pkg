@@ -1,5 +1,6 @@
 import {
   "moonbitlang/core/json",
+  "vectie/moonfind/public_search",
   "vectie/moonfind/research",
 }
 

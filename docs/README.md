@@ -7,6 +7,8 @@
   closed-loop release gates.
 - [Implementation plan](IMPLEMENTATION_PLAN.md) — phase status and external
   readiness.
+- [Public listing search adapter](PUBLIC_LISTING_SEARCH_ADAPTER.md) — exact
+  sanitized MoonTown card admission and explainable organic retrieval.
 - [Responsibility and testability](RESPONSIBILITY_AND_TESTABILITY.md) —
   MoonClaw, MoonFlow, MoonTown and MoonBook ownership.
 - [Execution and capability truth](EXECUTION_AND_CAPABILITY_TRUTH.md) —

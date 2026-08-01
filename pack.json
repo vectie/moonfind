@@ -38,7 +38,10 @@
     {"id": "capability-observation", "version": "1.0.0", "path": "schemas/capability-observation.schema.json"},
     {"id": "read-only-qa-grounding", "version": "1.0.0", "path": "schemas/read-only-qa-grounding.schema.json"},
     {"id": "ui-workspace", "version": "1.0.0", "path": "schemas/ui-workspace.schema.json"},
-    {"id": "series-use-case", "version": "1.0.0", "path": "schemas/series-use-case.schema.json"}
+    {"id": "series-use-case", "version": "1.0.0", "path": "schemas/series-use-case.schema.json"},
+    {"id": "public-listing-projection", "version": "1.0.0", "path": "schemas/public-listing-projection.schema.json"},
+    {"id": "public-listing-search-request", "version": "1.0.0", "path": "schemas/public-listing-search-request.schema.json"},
+    {"id": "public-listing-search-response", "version": "1.0.0", "path": "schemas/public-listing-search-response.schema.json"}
   ],
   "tools": [
     {
@@ -160,7 +163,8 @@
     {"id": "semantic-scholar-policy", "version": "1.0.0", "path": "providers/semantic-scholar-policy.json"},
     {"id": "licensed-fulltext-policy", "version": "1.0.0", "path": "providers/licensed-fulltext-policy.json"},
     {"id": "moonflow-adapter-declaration", "version": "1.0.0", "path": "adapters/moonflow/adapter-declaration.v1.json"},
-    {"id": "moonflow-adapter-health-template", "version": "1.0.0", "path": "adapters/moonflow/adapter-health.template.v1.json"}
+    {"id": "moonflow-adapter-health-template", "version": "1.0.0", "path": "adapters/moonflow/adapter-health.template.v1.json"},
+    {"id": "public-listing-ranking", "version": "1.0.0", "path": "providers/public-listing-ranking.port.json"}
   ],
   "schedules": [
     {

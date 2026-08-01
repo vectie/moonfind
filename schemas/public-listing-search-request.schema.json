@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://moonsuite.local/schemas/public-listing-search-request.schema.json",
+  "title": "MoonFind public listing search request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_id", "query", "listing_kinds", "required_capabilities", "required_tags", "limit"],
+  "properties": {
+    "contract_id": { "const": "moonfind.public-listing-search-request.v1" },
+    "query": { "type": "string" },
+    "listing_kinds": { "type": "array", "items": { "enum": ["agent", "building"] }, "uniqueItems": true },
+    "required_capabilities": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "required_tags": { "type": "array", "items": { "type": "string", "minLength": 1 }, "uniqueItems": true },
+    "limit": { "type": "integer", "minimum": 1, "maximum": 100 }
+  }
+}
