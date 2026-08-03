@@ -99,10 +99,7 @@ fn mooncast_creative_decide(
     "requests/" + stage_id + ".creative-decision-request.json",
     depends_on,
     None,
-    Some({
-      "artifact_kind": artifact_kind,
-      "named_decider_required": true,
-    }),
+    Some({ "artifact_kind": artifact_kind, "named_decider_required": true }),
   )
 }
 
@@ -226,7 +223,10 @@ fn lunar_habitat_graph() -> @integration.DesiredCapabilityGraphV2 {
         "requests/owner-commission-review.conversation-review-bundle.json",
         ["capture-commission"],
         None,
-        Some({ "review_kind": "owner-commission", "named_decider_required": true }),
+        Some({
+          "review_kind": "owner-commission",
+          "named_decider_required": true,
+        }),
       ),
       stage(
         "requirements-agent-check",
@@ -282,7 +282,10 @@ fn lunar_habitat_graph() -> @integration.DesiredCapabilityGraphV2 {
         "requests/accept-evidence-baseline.conversation-review-bundle.json",
         ["challenge-site-strategy"],
         None,
-        Some({ "review_kind": "evidence-baseline", "named_decider_required": true }),
+        Some({
+          "review_kind": "evidence-baseline",
+          "named_decider_required": true,
+        }),
       ),
       stage(
         "plan-habitat-program",
@@ -378,7 +381,9 @@ fn lunar_habitat_graph() -> @integration.DesiredCapabilityGraphV2 {
         "digital-artifact",
         "the production role creates a three-minute evidence-bound narrative without inventing readiness",
         "requests/draft-episode-narrative.agent-goal-execution-request.json",
-        ["challenge-site-strategy", "inspect-digital-readiness", "resolve-review-visuals"],
+        [
+          "challenge-site-strategy", "inspect-digital-readiness", "resolve-review-visuals",
+        ],
         Some("mooncode"),
         Some({ "model": "gpt-5.6-sol", "runtime": "moonclaw" }),
       ),
@@ -393,8 +398,8 @@ fn lunar_habitat_graph() -> @integration.DesiredCapabilityGraphV2 {
         "a named intake decision seeds the 180-second project with accepted qualification, owner, budget, and rights facts; projection must block until Mooncast publishes this operation",
         "requests/seed-approved-review-episode.moonwiki-needs-export.json",
         [
-          "capture-commission", "owner-commission-review",
-          "accept-evidence-baseline", "draft-episode-narrative",
+          "capture-commission", "owner-commission-review", "accept-evidence-baseline",
+          "draft-episode-narrative",
         ],
         None,
         Some({
@@ -540,8 +545,8 @@ fn lunar_habitat_graph() -> @integration.DesiredCapabilityGraphV2 {
         "the timed plan binds shots, temporary audio, cost ceiling, and source assets",
         "requests/prepare-animatic-plan.animatic-plan.json",
         [
-          "approve-review-storyboard", "approve-review-visual-asset",
-          "approve-review-voice-asset", "approve-review-music-asset",
+          "approve-review-storyboard", "approve-review-visual-asset", "approve-review-voice-asset",
+          "approve-review-music-asset",
         ],
         None,
         Some({
@@ -600,7 +605,10 @@ fn lunar_habitat_graph() -> @integration.DesiredCapabilityGraphV2 {
         "requests/owner-animatic-decision.conversation-review-bundle.json",
         ["approve-review-animatic"],
         None,
-        Some({ "review_kind": "internal-animatic", "named_decider_required": true }),
+        Some({
+          "review_kind": "internal-animatic",
+          "named_decider_required": true,
+        }),
       ),
       stage(
         "bookkeeper-close-loop",
@@ -637,8 +645,7 @@ pub fn lunar_habitat_decision_series() -> SeriesUseCaseV1 {
         outcome: "Accepted commission and explicit unknowns",
         product_ids: ["moonbook", "moonchat", "moonclaw"],
         stage_ids: [
-          "capture-commission", "owner-commission-review",
-          "requirements-agent-check",
+          "capture-commission", "owner-commission-review", "requirements-agent-check",
         ],
       },
       {
@@ -647,8 +654,7 @@ pub fn lunar_habitat_decision_series() -> SeriesUseCaseV1 {
         outcome: "Cited evidence and challenged assumptions",
         product_ids: ["moonfind", "moontown", "moonchat"],
         stage_ids: [
-          "research-habitat-evidence", "challenge-site-strategy",
-          "accept-evidence-baseline",
+          "research-habitat-evidence", "challenge-site-strategy", "accept-evidence-baseline",
         ],
       },
       {
@@ -664,8 +670,8 @@ pub fn lunar_habitat_decision_series() -> SeriesUseCaseV1 {
         outcome: "Digital habitat, simulated site, and observed robot readiness",
         product_ids: ["moonmold", "moonmoon", "moonrobo"],
         stage_ids: [
-          "design-habitat-digital-twin", "simulate-lunar-site-mission",
-          "integrate-construction-robot", "inspect-digital-readiness",
+          "design-habitat-digital-twin", "simulate-lunar-site-mission", "integrate-construction-robot",
+          "inspect-digital-readiness",
         ],
       },
       {
@@ -674,19 +680,14 @@ pub fn lunar_habitat_decision_series() -> SeriesUseCaseV1 {
         outcome: "Evidence-bound three-minute internal animatic",
         product_ids: ["moonvis", "moonclaw", "mooncast"],
         stage_ids: [
-          "resolve-review-visuals", "draft-episode-narrative",
-          "seed-approved-review-episode", "revise-review-brief",
-          "approve-review-brief",
-          "revise-review-rights", "approve-review-rights",
-          "revise-habitat-bible", "approve-habitat-bible",
-          "revise-review-script", "approve-review-script",
-          "revise-review-claims",
-          "approve-review-claims", "revise-review-storyboard",
-          "approve-review-storyboard", "plan-review-assets",
-          "generate-review-visual", "generate-review-voice",
-          "generate-review-music", "approve-review-visual-asset",
-          "approve-review-voice-asset", "approve-review-music-asset",
-          "prepare-animatic-plan", "render-review-animatic",
+          "resolve-review-visuals", "draft-episode-narrative", "seed-approved-review-episode",
+          "revise-review-brief", "approve-review-brief", "revise-review-rights",
+          "approve-review-rights", "revise-habitat-bible", "approve-habitat-bible",
+          "revise-review-script", "approve-review-script", "revise-review-claims",
+          "approve-review-claims", "revise-review-storyboard", "approve-review-storyboard",
+          "plan-review-assets", "generate-review-visual", "generate-review-voice",
+          "generate-review-music", "approve-review-visual-asset", "approve-review-voice-asset",
+          "approve-review-music-asset", "prepare-animatic-plan", "render-review-animatic",
           "approve-review-animatic",
         ],
       },
@@ -695,9 +696,7 @@ pub fn lunar_habitat_decision_series() -> SeriesUseCaseV1 {
         title: "Decide & learn",
         outcome: "Named decision and reviewed Three-Gap closure",
         product_ids: ["moonchat", "moonbook"],
-        stage_ids: [
-          "owner-animatic-decision", "bookkeeper-close-loop",
-        ],
+        stage_ids: ["owner-animatic-decision", "bookkeeper-close-loop"],
       },
     ],
     graph: lunar_habitat_graph(),
@@ -745,7 +744,10 @@ pub fn validate(use_case : SeriesUseCaseV1) -> Array[String] {
     for dependency in item.depends_on {
       if !stage_ids.contains(dependency) {
         issues.push(
-          "dependency must precede stage: " + item.stage_id + " -> " + dependency,
+          "dependency must precede stage: " +
+          item.stage_id +
+          " -> " +
+          dependency,
         )
       }
     }

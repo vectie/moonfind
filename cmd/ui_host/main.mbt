@@ -374,7 +374,7 @@ async fn main {
   server.run_forever(
     (request, body, conn) => {
       handle_request(options, request, body, conn) catch {
-        error => {
+        error =>
           // A client may disconnect after the response headers or a partial
           // body. The original write error is already terminal for that
           // connection; attempting to serialize a second error must not stop
@@ -384,8 +384,9 @@ async fn main {
             409,
             "Conflict",
             "MoonFind host rejected the request: \{error}",
-          ) catch { _ => () }
-        }
+          ) catch {
+            _ => ()
+          }
       }
     },
     max_connections=32,

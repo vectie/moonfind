@@ -33,17 +33,20 @@ test "lunar habitat series is complete, ordered, and fail-closed" {
     }),
   )
   assert_eq(
-    scenario.graph.stages.filter(stage => {
+    scenario.graph.stages
+    .filter(stage => {
       stage.desired_operation_ref ==
       Some("mooncast/asset-factory.generate@0.2.0")
-    }).length(),
+    })
+    .length(),
     3,
   )
   assert_eq(
-    scenario.graph.stages.filter(stage => {
-      stage.desired_operation_ref ==
-      Some("mooncast/asset-factory.review@0.2.0")
-    }).length(),
+    scenario.graph.stages
+    .filter(stage => {
+      stage.desired_operation_ref == Some("mooncast/asset-factory.review@0.2.0")
+    })
+    .length(),
     3,
   )
   assert_true(
@@ -53,8 +56,7 @@ test "lunar habitat series is complete, ordered, and fail-closed" {
   )
   assert_true(
     scenario.graph.stages.all(stage => {
-      stage.desired_operation_ref !=
-      Some("mooncast/client-portal.create@0.2.0")
+      stage.desired_operation_ref != Some("mooncast/client-portal.create@0.2.0")
     }),
   )
   assert_true(

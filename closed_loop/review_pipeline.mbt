@@ -58,8 +58,7 @@ fn validate_gap(
   if summary.is_blank() {
     fail("\{label} summary is required")
   }
-  if (present && (severity < 1 || severity > 5)) ||
-    (!present && severity != 0) {
+  if (present && (severity < 1 || severity > 5)) || (!present && severity != 0) {
     fail("\{label} severity must be 1..5 when present and zero otherwise")
   }
 }
@@ -86,15 +85,9 @@ fn validate_review_decision(
     fail("review outcome must be approve, defer, or reject")
   }
   let known = output.ideas.map(idea => idea.id)
-  if decision.accepted_idea_ids.any(id => {
-      id.is_blank() || !known.contains(id)
-    }) ||
-    decision.rejected_idea_ids.any(id => {
-      id.is_blank() || !known.contains(id)
-    }) ||
-    decision.accepted_idea_ids.any(id => {
-      decision.rejected_idea_ids.contains(id)
-    }) {
+  if decision.accepted_idea_ids.any(id => id.is_blank() || !known.contains(id)) ||
+    decision.rejected_idea_ids.any(id => id.is_blank() || !known.contains(id)) ||
+    decision.accepted_idea_ids.any(id => decision.rejected_idea_ids.contains(id)) {
     fail("review decision contains unknown or conflicting idea ids")
   }
   if decision.outcome == "approve" && decision.accepted_idea_ids.is_empty() {
@@ -231,7 +224,10 @@ pub fn moonchat_review_bundle(
 }
 
 ///|
-fn review_record_field(fields : Map[String, Json], key : String) -> String raise {
+fn review_record_field(
+  fields : Map[String, Json],
+  key : String,
+) -> String raise {
   match fields.get(key) {
     Some(String(value)) if !value.is_blank() => value
     _ => fail("MoonChat review record requires \{key}")
@@ -272,12 +268,7 @@ pub fn apply_moonchat_review(
   source_digest : String,
 ) -> @research.ResearchRun raise {
   validate_review_decision(run, output, decision)
-  accepted_moonchat_record(
-    moonchat_record,
-    run,
-    decision,
-    source_digest,
-  )
+  accepted_moonchat_record(moonchat_record, run, decision, source_digest)
   run.apply_human_review({
     review_id: decision.review_id,
     run_id: run.run_id,
@@ -325,11 +316,7 @@ pub fn moonbook_product_outcome_submission(
   review_digest : String,
 ) -> Json raise {
   let reviewed = apply_moonchat_review(
-    run,
-    output,
-    decision,
-    moonchat_record,
-    town_digest,
+    run, output, decision, moonchat_record, town_digest,
   )
   let town_evidence_id = "moontown-synthesis-" + run.run_id
   let review_evidence_id = "moonchat-review-" + decision.review_id
