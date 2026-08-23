@@ -18,6 +18,8 @@ pub fn local_corpus_challenge_scenario(@research.LocalInputCoverageLedger, Strin
 
 pub fn local_corpus_handoff(@research.LocalInputCoverageLedger, String, String) -> TownResearchHandoff raise
 
+pub async fn prepare_research_candidate(String, TownPackCandidate, String, Array[String], Array[String], String, String, String) -> PackTownProjection
+
 pub fn project_research_watch(@research.ResearchWatch, String, Array[String], String) -> PackTownProjection
 
 pub fn town_handoff_contract_version() -> String
