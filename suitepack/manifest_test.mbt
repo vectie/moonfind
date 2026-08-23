@@ -7,6 +7,9 @@ test "manifest declares generic local corpus accounting and MoonBook" {
     value.provider_ports.any(port => port.id == "moontown-pack-projection"),
   )
   assert_true(
+    value.schemas.any(schema => schema.id == "pack-candidate-acknowledgement"),
+  )
+  assert_true(
     value.tools.any(tool => {
       tool.id == "research.candidate.intake" &&
       tool.input_schema_id == "town-pack-candidate" &&

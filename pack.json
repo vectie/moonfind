@@ -43,7 +43,8 @@
     {"id": "public-listing-search-request", "version": "1.0.0", "path": "schemas/public-listing-search-request.schema.json"},
     {"id": "public-listing-search-response", "version": "1.0.0", "path": "schemas/public-listing-search-response.schema.json"},
     {"id": "pack-town-projection", "version": "1.0.0", "path": "schemas/pack-town-projection.schema.json"},
-    {"id": "town-pack-candidate", "version": "1.0.0", "path": "schemas/town-pack-candidate.schema.json"}
+    {"id": "town-pack-candidate", "version": "1.0.0", "path": "schemas/town-pack-candidate.schema.json"},
+    {"id": "pack-candidate-acknowledgement", "version": "1.0.0", "path": "schemas/pack-candidate-acknowledgement.schema.json"}
   ],
   "tools": [
     {

@@ -63,6 +63,7 @@ pub fn manifest() -> @pack.MoonPackManifest {
       schema("public-listing-search-response"),
       schema("pack-town-projection"),
       schema("town-pack-candidate"),
+      schema("pack-candidate-acknowledgement"),
     ],
     tools: [
       tool("papers.acquire-arxiv", "research-watch", "paper-record", Observe, [
