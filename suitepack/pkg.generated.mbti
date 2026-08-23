@@ -17,4 +17,3 @@ pub fn validation_report() -> @pack.ValidationReport
 // Type aliases
 
 // Traits
-

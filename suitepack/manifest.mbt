@@ -61,6 +61,8 @@ pub fn manifest() -> @pack.MoonPackManifest {
       schema("public-listing-projection"),
       schema("public-listing-search-request"),
       schema("public-listing-search-response"),
+      schema("pack-town-projection"),
+      schema("town-pack-candidate"),
     ],
     tools: [
       tool("papers.acquire-arxiv", "research-watch", "paper-record", Observe, [
@@ -135,6 +137,14 @@ pub fn manifest() -> @pack.MoonPackManifest {
         ["records/capability-observations"],
         review_required=true,
       ),
+      tool(
+        "research.candidate.intake",
+        "town-pack-candidate",
+        "research-watch",
+        WorkspaceMutation,
+        ["records/research-candidate-intake"],
+        review_required=true,
+      ),
     ],
     workflows: [
       @pack.contract_ref(
@@ -181,6 +191,9 @@ pub fn manifest() -> @pack.MoonPackManifest {
       ),
       @pack.contract_ref(
         "public-listing-ranking", "1.0.0", "providers/public-listing-ranking.port.json",
+      ),
+      @pack.contract_ref(
+        "moontown-pack-projection", "1.0.0", "providers/moontown-pack-projection.port.md",
       ),
     ],
     schedules: [
