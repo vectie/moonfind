@@ -9,9 +9,17 @@ import {
 // Values
 pub fn complete_research_run(ResearchRun, ResearchAnalysisResult, Int64) -> ResearchRun raise
 
+pub fn delivery_manifest_complete(ResearchJob, DeliveryManifest) -> Bool
+
+pub fn delivery_manifest_contract_version() -> String
+
+pub fn delivery_manifest_issues(ResearchJob, DeliveryManifest) -> Array[String]
+
 pub fn local_input_coverage_contract_version() -> String
 
 pub fn research_contract_version() -> String
+
+pub fn research_job_contract_version() -> String
 
 pub fn start_research_run(String, ResearchWatch, Array[PaperRecord], Int64) -> ResearchRun raise
 
@@ -21,11 +29,50 @@ pub fn validate_analysis_result(ResearchRun, ResearchAnalysisResult) -> Array[St
 
 pub fn validate_local_input_coverage(LocalInputCoverageLedger) -> Array[String]
 
+pub fn validate_research_job(ResearchJob) -> Array[String]
+
 pub fn validate_watch(ResearchWatch) -> Array[String]
 
 // Errors
 
 // Types and methods
+pub(all) struct DeliveredOutput {
+  output_id : String
+  artifact_ref : String
+  media_type : String
+  artifact_digest : String
+  byte_length : Int64
+  evidence_refs : Array[String]
+  checks : Array[DeliveryCheck]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct DeliveryCheck {
+  criterion : String
+  status : String
+  evidence_ref : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct DeliveryEvidence {
+  contract_id : String
+  job_id : String
+  outputs : Array[DeliveryEvidenceOutput]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct DeliveryEvidenceOutput {
+  output_id : String
+  evidence_refs : Array[String]
+  checks : Array[DeliveryCheck]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct DeliveryManifest {
+  contract_id : String
+  job_id : String
+  outputs : Array[DeliveredOutput]
+  open_gaps : Array[String]
+  review_status : String
+  delivered_at : Int64
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct HumanResearchReview {
   review_id : String
   run_id : String
@@ -127,6 +174,14 @@ pub(all) struct RecordRef {
   record_digest : String
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
+pub(all) struct RequestedOutput {
+  output_id : String
+  title : String
+  kind : String
+  format : String
+  acceptance_criteria : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct ResearchAnalysisResult {
   contract_version : String
   result_id : String
@@ -150,6 +205,16 @@ pub(all) struct ResearchIdea {
   falsifier : String
   next_experiment : String
   domain_payload : Json
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ResearchJob {
+  contract_id : String
+  job_id : String
+  objective : String
+  audience : String
+  source_scope : Array[String]
+  requested_outputs : Array[RequestedOutput]
+  created_at : Int64
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct ResearchQuestion {

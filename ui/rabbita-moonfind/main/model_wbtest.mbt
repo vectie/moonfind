@@ -10,6 +10,8 @@ test "run status normalization maps gateway states to review phases" {
 test "initial model remains pending and targets the governed workspace" {
   let model = initial_model()
   assert_eq(model.phase == Ready, true)
+  assert_eq(phase_text(model.phase), "Not started")
+  assert_eq(model.model_name, "")
   assert_eq(model.gateway_published, false)
   assert_eq(model.book_dir, "")
   assert_eq(model.reviewer_name, "")
@@ -19,6 +21,59 @@ test "initial model remains pending and targets the governed workspace" {
   assert_eq(model.review_prepare_reply is None, true)
   assert_eq(model.qa_session is None, true)
   assert_eq(model.qa_ready, false)
+}
+
+///|
+test "command-ready research waits for an explicit model route" {
+  let execution : ResearchExecutionProjection = @json.from_json({
+    "contract_id": "moonfind.research-execution-record.v1",
+    "revision": 1,
+    "run_id": "run-1",
+    "operation_ref": "moonfind/research.prepare-analysis@0.1.0",
+    "request_id": "request-1",
+    "attempt_id": "attempt-1",
+    "idempotency_key": "moonfind/run-1/attempt-1",
+    "state": "command-ready",
+    "invocation": Json::empty_object(),
+    "error_kind": "",
+    "requires_review": true,
+    "next_action": "run-exact-command",
+    "updated_at": "2026-09-30T00:00:00Z",
+  })
+  let model = {
+    ..initial_model(),
+    gateway_published: true,
+    research_execution: Some(execution),
+  }
+  let (_, held) = update(_ => @rabbita.none, StartResearch, model)
+  assert_eq(held.phase, Ready)
+  assert_true(
+    held.error.unwrap_or("").contains("Choose a MoonClaw model route"),
+  )
+  let reply : CapabilityOperationReply = {
+    contract_id: "moonfind.capability-operation-reply.v1",
+    operation: "reconcile",
+    blocked: false,
+    message: "ready",
+    execution,
+  }
+  let (_, reconciled) = update(
+    _ => @rabbita.none,
+    CapabilitySubmitted(Ok(reply)),
+    model,
+  )
+  assert_eq(reconciled.phase, Ready)
+  assert_true(
+    reconciled.notice.unwrap_or("").contains("Choose a MoonClaw model route"),
+  )
+  let (_, selected) = update(
+    _ => @rabbita.none,
+    SetModelName("configured/research-route"),
+    model,
+  )
+  let (_, started) = update(_ => @rabbita.none, StartResearch, selected)
+  assert_eq(started.phase, CreatingSession)
+  assert_eq(started.error, None)
 }
 
 ///|

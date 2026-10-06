@@ -6,6 +6,8 @@ import {
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/json",
   "moonbitlang/x/time",
+  "ivgtr/moonzip",
+  "vectie/moonfind/arxiv",
   "vectie/moonfind/app",
   "vectie/moonfind/closed_loop",
   "vectie/moonfind/integration",

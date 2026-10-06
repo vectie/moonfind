@@ -126,6 +126,311 @@ fn load_workspace_snapshot(
 }
 
 ///|
+fn job_output_format(name : String) -> String {
+  if name.has_suffix(".md") {
+    "text/markdown"
+  } else if name.has_suffix(".txt") {
+    "text/plain"
+  } else if name.has_suffix(".csv") {
+    "text/csv"
+  } else if name.has_suffix(".tsv") {
+    "text/tab-separated-values"
+  } else if name.has_suffix(".json") {
+    "application/json"
+  } else if name.has_suffix(".ipynb") {
+    "application/x-ipynb+json"
+  } else if name.has_suffix(".pdf") {
+    "application/pdf"
+  } else if name.has_suffix(".tex") {
+    "text/x-tex"
+  } else if name.has_suffix(".bib") {
+    "text/x-bibtex"
+  } else if name.has_suffix(".png") {
+    "image/png"
+  } else if name.has_suffix(".jpg") || name.has_suffix(".jpeg") {
+    "image/jpeg"
+  } else if name.has_suffix(".svg") {
+    "image/svg+xml"
+  } else if name.has_suffix(".html") {
+    "text/html"
+  } else if name.has_suffix(".docx") {
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+  } else if name.has_suffix(".xlsx") {
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  } else if name.has_suffix(".pptx") {
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  } else if name.has_suffix(".zip") {
+    "application/zip"
+  } else {
+    "application/octet-stream"
+  }
+}
+
+///|
+fn requested_job_criteria(text : String) -> Array[String] {
+  text
+  .split(";")
+  .map(value => value.trim().to_owned())
+  .filter(value => !value.is_blank())
+  .collect()
+}
+
+///|
+fn requested_job_outputs(
+  text : String,
+  criteria : String,
+) -> Array[RequestedJobOutput] {
+  let names : Array[String] = text
+    .split(",")
+    .map(value => value.trim().to_owned())
+    .filter(value => !value.is_blank())
+    .collect()
+  let requirements = requested_job_criteria(criteria)
+  names.map(name => {
+    let checks : Array[String] = []
+    for requirement in requirements {
+      let parts : Array[StringView] = requirement.split("=>").collect()
+      if parts.length() == 2 && names.contains(parts[0].trim().to_owned()) {
+        if parts[0].trim() == name {
+          checks.push(parts[1].trim().to_owned())
+        }
+      } else {
+        checks.push(requirement)
+      }
+    }
+    RequestedJobOutput::{
+      output_id: name,
+      title: name,
+      kind: "research-output",
+      format: job_output_format(name),
+      acceptance_criteria: checks,
+    }
+  })
+}
+
+///|
+fn load_research_jobs(emit : @rabbita.Emit[Msg]) -> @rabbita.Cmd {
+  @http.get(product_api_url("/api/v1/jobs")).expect_json(
+    emit.map(result => {
+      JobsLoaded(
+        match result {
+          Ok(jobs) => Ok(jobs)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn create_general_job(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Cmd {
+  let sources = model.job_sources
+    .split(";")
+    .map(value => value.trim().to_owned())
+    .filter(value => !value.is_blank())
+  let payload : Json = {
+    "objective": model.job_objective.trim(),
+    "audience": model.job_audience.trim(),
+    "source_scope": sources,
+    "requested_outputs": requested_job_outputs(
+      model.job_outputs,
+      model.job_criteria,
+    ),
+  }
+  @http.post(product_api_url("/api/v1/jobs"))
+  .with_json(payload)
+  .expect_json(
+    emit.map(result => {
+      JobCreated(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn refresh_general_job(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+) -> @rabbita.Cmd {
+  @http.get(product_api_url("/api/v1/jobs/" + job_id)).expect_json(
+    emit.map(result => {
+      JobRefreshed(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn start_general_job(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+  model_name : String,
+) -> @rabbita.Cmd {
+  @http.post(product_api_url("/api/v1/jobs/" + job_id + "/start"))
+  .with_json({ "model_name": model_name })
+  .expect_json(
+    emit.map(result => {
+      JobStarted(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn resume_general_job(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+  content : String,
+) -> @rabbita.Cmd {
+  @http.post(product_api_url("/api/v1/jobs/" + job_id + "/resume"))
+  .with_json({ "content": content })
+  .expect_json(
+    emit.map(result => {
+      JobResumed(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn verify_general_job_delivery(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+) -> @rabbita.Cmd {
+  @http.post(product_api_url("/api/v1/jobs/" + job_id + "/delivery"))
+  .with_json({ "verify": true })
+  .expect_json(
+    emit.map(result => {
+      JobDeliveryVerified(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn add_general_job_text_source(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+  name : String,
+  content : String,
+) -> @rabbita.Cmd {
+  @http.post(product_api_url("/api/v1/jobs/" + job_id + "/sources/text"))
+  .with_json({ "name": name, "content": content })
+  .expect_json(
+    emit.map(result => {
+      JobSourceAdded(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn add_general_job_arxiv_source(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+  query : String,
+) -> @rabbita.Cmd {
+  let payload : Json = { "query": query, "max_results": 10 }
+  @http.post(product_api_url("/api/v1/jobs/" + job_id + "/sources/arxiv"))
+  .with_json(payload)
+  .expect_json(
+    emit.map(result => {
+      JobSourceAdded(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn add_general_job_url_source(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+  url : String,
+) -> @rabbita.Cmd {
+  @http.post(product_api_url("/api/v1/jobs/" + job_id + "/sources/url"))
+  .with_json({ "url": url })
+  .expect_json(
+    emit.map(result => {
+      JobSourceAdded(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn create_general_job_revision(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+  name : String,
+  instruction : String,
+) -> @rabbita.Cmd {
+  @http.post(product_api_url("/api/v1/jobs/" + job_id + "/revisions"))
+  .with_json({ "file_name": name, "instruction": instruction })
+  .expect_json(
+    emit.map(result => {
+      JobRevisionCreated(
+        match result {
+          Ok(job) => Ok(job)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
+fn preview_general_job_file(
+  emit : @rabbita.Emit[Msg],
+  job_id : String,
+  name : String,
+) -> @rabbita.Cmd {
+  @http.get(
+    product_api_url("/api/v1/jobs/" + job_id + "/files/" + name + "/preview"),
+  ).expect_json(
+    emit.map(result => {
+      JobPreviewLoaded(
+        match result {
+          Ok(preview) => Ok(preview)
+          Err(error) => Err("\{error}")
+        },
+      )
+    }),
+  )
+}
+
+///|
 fn load_series_catalog(emit : @rabbita.Emit[Msg]) -> @rabbita.Cmd {
   @http.get(product_api_url("/api/v1/series")).expect_json(
     emit.map(result => SeriesCatalogLoaded(decode_series_catalog(result))),

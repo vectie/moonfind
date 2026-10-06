@@ -16,4 +16,5 @@ import {
   "moonbitlang/async@0.19.4",
   "moonbitlang/x@0.4.50",
   "vectie/moonlib@0.1.19",
+  "ivgtr/moonzip@0.2.4",
 }
