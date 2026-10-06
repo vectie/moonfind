@@ -129,6 +129,7 @@ async test "MoonTown callback ingest is idempotent and remains pending review" {
     public_base_url: "http://127.0.0.1:4313",
     capability_catalog_path: None,
     moonclaw_gateway_base: None,
+    moonclaw_gateway_token: None,
     moonclaw_submit_url: None,
     moonclaw_reconcile_url: None,
     moontown_base_url: None,
@@ -144,4 +145,168 @@ async test "MoonTown callback ingest is idempotent and remains pending review" {
   assert_true(
     @fs.exists(run_artifact(config, "moontown-result-ingest-v1.json")),
   )
+  let before = @fs.read_file(
+    run_artifact(config, "moontown-reducer-output.json"),
+  ).text()
+  let town = handoff_status(config, None)
+  let view = completed_result_view(config, town)
+  assert_eq(view.state, "available")
+  assert_eq(view.output, Some(output))
+  assert_eq(view.source_digest, Some(@store.digest_text(before)))
+  assert_eq(
+    @fs.read_file(run_artifact(config, "moontown-reducer-output.json")).text(),
+    before,
+  )
+  qa_fixture_workspace(config)
+  let snapshot = workspace_snapshot_with(config, gateway_reachable=_ => false)
+  assert_eq(
+    snapshot.moontown_result.map(value => value.state),
+    Some("available"),
+  )
+  assert_true(
+    snapshot.to_json()
+    is {
+      "moontown_result": {
+        "source_digest": String(digest),
+        "output": {
+          "ideas": [{ "id": "idea-1", "summary": "A cross-paper bridge.", .. }],
+          ..
+        },
+        ..
+      },
+      ..
+    } &&
+    digest == @store.digest_text(before),
+  )
+  // Exercise the real prepare entry point: the shown byte digest guards the
+  // existing named-human workflow before its first immutable write.
+  let run : @research.ResearchRun = @json.from_json({
+    "contract_version": "moonfind.research.v1",
+    "run_id": run_id,
+    "watch": {
+      "watch_id": "fixture",
+      "title": "Fixture watch",
+      "query": "fixture",
+      "categories": [],
+      "keywords": [],
+      "negative_keywords": [],
+      "max_papers": 2,
+      "cadence": "once",
+      "domain_profile": "research",
+    },
+    "status": "human-review",
+    "papers": [],
+    "summaries": [],
+    "questions": [],
+    "ideas": [],
+    "synthesis_notes": [],
+    "validation_issues": [],
+    "started_at": "0",
+    "human_review_status": "pending",
+    "accepted_idea_ids": [],
+  })
+  @store.write_run_artifact(workspace, run_id, "run.json", run.to_json())
+  let review_request : ReviewPrepareRequestV1 = @json.from_json({
+    "contract_id": "moonfind.review-prepare-request.v1",
+    "source_digest": "sha256:stale",
+    "reviewer_name": "Fixture reviewer",
+    "outcome": "approve_subset",
+    "accepted_idea_ids": ["idea-1"],
+    "rejected_idea_ids": [],
+    "rationale": "Fixture evidence reviewed",
+    "information_gap": {
+      "present": false,
+      "severity": 0,
+      "summary": "No missing evidence in this fixture",
+    },
+    "recognition_gap": {
+      "present": false,
+      "severity": 0,
+      "summary": "Fixture boundary recognized",
+    },
+    "decisiveness_gap": {
+      "present": false,
+      "severity": 0,
+      "summary": "Fixture decision made",
+    },
+  })
+  let stale_rejected = try {
+    ignore(prepare_cross_product_review(config, review_request))
+    false
+  } catch {
+    _ => true
+  }
+  assert_true(stale_rejected)
+  assert_false(
+    @fs.exists(run_artifact(config, "cross-product-review-decision.json")),
+  )
+  assert_false(@fs.exists(run_artifact(config, "moonchat-review-bundle.json")))
+  let prepared = prepare_cross_product_review(config, {
+    ..review_request,
+    source_digest: view.source_digest,
+  })
+  assert_eq(Some(prepared.source_digest), view.source_digest)
+  assert_eq(prepared.state, "awaiting-moonchat")
+  assert_false(
+    @fs.exists(run_artifact(config, "bookkeeper-outcome-submission.json")),
+  )
+  assert_eq(
+    @fs.read_file(run_artifact(config, "moontown-reducer-output.json")).text(),
+    before,
+  )
+  // The same valid shape with changed content must not be presented as the
+  // correlated immutable result. The read never repairs or overwrites it.
+  let changed = {
+    ..output,
+    ideas: [{ ..output.ideas[0], summary: "changed after ingest", }],
+  }
+  @store.write_run_artifact(
+    workspace,
+    run_id,
+    "moontown-reducer-output.json",
+    changed.to_json(),
+  )
+  let changed_town = handoff_status(config, None)
+  let changed_view = completed_result_view(config, changed_town)
+  assert_eq(changed_view.state, "unavailable")
+  assert_true(changed_view.output is None)
+  assert_true(changed_view.detail.contains("no longer agree"))
+  @store.write_run_artifact(
+    workspace,
+    run_id,
+    "moontown-reducer-output.json",
+    { ..output, ideas: [], }.to_json(),
+  )
+  assert_eq(handoff_status(config, None).state, "blocked")
+  @fs.write_file(
+    run_artifact(config, "moontown-reducer-output.json"),
+    "not json",
+    create_mode=CreateOrTruncate,
+  )
+  assert_eq(handoff_status(config, None).state, "blocked")
+  let malformed = workspace_snapshot_with(config, gateway_reachable=_ => false)
+  assert_eq(
+    malformed.moontown_result.map(value => value.state),
+    Some("unavailable"),
+  )
+  @fs.write_file(
+    run_artifact(config, "moontown-reducer-output.json"),
+    before,
+    create_mode=CreateOrTruncate,
+  )
+  @fs.write_file(
+    run_artifact(config, "moontown-result-ingest-v1.json"),
+    "{}",
+    create_mode=CreateOrTruncate,
+  )
+  let broken_envelope = completed_result_view(
+    config,
+    handoff_status(config, None),
+  )
+  assert_eq(broken_envelope.state, "unavailable")
+  assert_true(broken_envelope.output is None)
+  @fs.remove(run_artifact(config, "moontown-reducer-output.json"))
+  let missing_output = handoff_status(config, None)
+  assert_eq(missing_output.state, "result-incomplete")
+  assert_true(completed_result_view(config, missing_output).output is None)
 }

@@ -5,7 +5,7 @@ fn responsibility_command() -> MoonClawResearchCommand {
     session_id: "moonfind-test",
     book_root: "/tmp/book",
     command: "prompt",
-    model: "gpt-5.6-sol",
+    model: "",
     capability_scope_id: "moonfind.humanoid.synthesis",
     capability_participant_id: "participant-1",
     text: "analyze evidence",
@@ -22,7 +22,7 @@ test "research command delegates a bounded model loop without ownership transfer
   assert_true(
     research_command_responsibility_issues(responsibility_command()).is_empty(),
   )
-  let wrong_model = { ..responsibility_command(), model: "gpt-5.4" }
+  let wrong_model = { ..responsibility_command(), model: " moongate/exact ", }
   assert_false(research_command_responsibility_issues(wrong_model).is_empty())
   let self_approving = {
     ..responsibility_command(),

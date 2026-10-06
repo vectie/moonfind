@@ -66,6 +66,9 @@ fn service_options() -> ServiceOptions raise {
       moonclaw_gateway_base: environment_or_option(
         args, "--moonclaw-gateway", "MOONCLAW_GATEWAY_BASE",
       ),
+      moonclaw_gateway_token: environment_or_option(
+        args, "--moonclaw-gateway-token", "MOONCLAW_GATEWAY_TOKEN",
+      ),
       moonclaw_submit_url: environment_or_option(
         args, "--moonclaw-submit", "MOONCLAW_CAPABILITY_SUBMIT_URL",
       ),
@@ -138,6 +141,32 @@ async fn send_error(
 ///|
 fn request_header(request : @http.Request, name : String) -> String {
   request.headers.get(name).unwrap_or("").trim().to_owned()
+}
+
+///|
+fn trusted_request_origin(host : String, origin : String, port : Int) -> Bool {
+  (host == "127.0.0.1:\{port}" || host == "localhost:\{port}") &&
+  (origin.is_blank() || origin == "http://" + host)
+}
+
+///|
+async fn reject_unsafe_origin(
+  request : @http.Request,
+  port : Int,
+  conn : @http.ServerConnection,
+) -> Bool {
+  if !trusted_request_origin(
+      request_header(request, "host").to_lower(),
+      request_header(request, "origin").to_lower(),
+      port,
+    ) {
+    send_error(
+      conn, 403, "Forbidden", "trusted localhost host and same-origin request are required",
+    )
+    true
+  } else {
+    false
+  }
 }
 
 ///|
@@ -268,6 +297,99 @@ async fn handle_request(
     (Get, "/api/v1/workspace") => {
       let snapshot = @host.workspace_snapshot(options.config)
       send_json(conn, 200, "OK", snapshot.to_json())
+    }
+    (Get, "/api/v1/delivery") => {
+      if reject_unsafe_origin(request, options.port, conn) {
+        return
+      }
+      send_json(
+        conn,
+        200,
+        "OK",
+        @host.delivery_status(options.config).to_json(),
+      )
+    }
+    (Post, "/api/v1/delivery/prepare") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let preparation : @host.DeliveryPrepareV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(
+        conn,
+        200,
+        "OK",
+        @host.prepare_delivery(options.config, preparation).to_json(),
+      )
+    }
+    (Get, delivery_path) if delivery_path.has_prefix("/api/v1/delivery/") => {
+      if reject_unsafe_origin(request, options.port, conn) {
+        return
+      }
+      let parts = delivery_path["/api/v1/delivery/".length():]
+        .split("/")
+        .map(part => part.to_owned())
+        .collect()
+      match parts {
+        [id] =>
+          send_json(
+            conn,
+            200,
+            "OK",
+            @host.delivery_status(options.config, delivery_id=id).to_json(),
+          )
+        [id, name] => {
+          let bytes = @host.read_delivery_file(options.config, id, name)
+          let media = if name == "package.zip" {
+            "application/zip"
+          } else if name == "report.md" {
+            "text/plain; charset=utf-8"
+          } else {
+            "application/json; charset=utf-8"
+          }
+          conn.send_response(200, "OK", extra_headers={
+            "Content-Type": media,
+            "Content-Length": bytes.length().to_string(),
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+          })
+          conn.write(bytes)
+          conn.end_response()
+        }
+        _ => send_error(conn, 400, "Bad Request", "Invalid delivery route")
+      }
+    }
+    (Get, "/api/v1/model-route") => {
+      if reject_unsafe_origin(request, options.port, conn) {
+        return
+      }
+      send_json(
+        conn,
+        200,
+        "OK",
+        @host.native_model_route(options.config).to_json(),
+      )
+    }
+    (Get | Post, relay) if relay.has_prefix("/api/v1/cowork-gateway/v1/cowork/") => {
+      if reject_unsafe_origin(request, options.port, conn) {
+        return
+      }
+      if request.meth == Post &&
+        reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let payload = if request.meth == Post {
+        Some(@json.parse(body.read_all().text()))
+      } else {
+        None
+      }
+      let value = @host.cowork_relay(
+        options.config,
+        relay["/api/v1/cowork-gateway".length():].to_owned(),
+        payload,
+      )
+      send_json(conn, 200, "OK", value)
     }
     (Get, "/api/v1/moontown/handoff") => {
       let handoff = @host.typed_moontown_handoff(options.config)

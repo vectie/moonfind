@@ -146,7 +146,12 @@ pub fn moonchat_review_bundle(
   } else {
     decision.accepted_idea_ids.join(", ")
   }
-  {
+  let not_approved = if decision.rejected_idea_ids.is_empty() {
+    "none"
+  } else {
+    decision.rejected_idea_ids.join(", ")
+  }
+  let bundle : Json = {
     "contract_id": "moonchat.conversation-review-bundle.v1",
     "review_id": decision.review_id,
     "source_artifact_ref": source_artifact_ref,
@@ -155,7 +160,7 @@ pub fn moonchat_review_bundle(
     "previous_bundle_ref": "",
     "previous_bundle_digest": "",
     "conversation": {
-      "contract_id": "moonsuite-conversation.v1",
+      "contract_id": @review.conversation_contract_id(),
       "protocol": "moonfind.cross-paper-review.v1",
       "product_id": "moonfind",
       "conversation_id": "moonfind-\{run.run_id}-review",
@@ -182,7 +187,7 @@ pub fn moonchat_review_bundle(
           "client_turn_id": "client-turn-synthesis",
           "command_id": "command-synthesis",
         },
-        "body": "Review \{output.ideas.length()} cross-paper idea(s); selected idea ids: \{selected}.",
+        "body": "Review \{output.ideas.length()} cross-paper idea(s); selected idea ids: \{selected}; rejected or changes-requested idea ids: \{not_approved}.",
         "evidence_refs": [source_artifact_ref],
       },
       {
@@ -221,38 +226,42 @@ pub fn moonchat_review_bundle(
     ],
     "recorded_at": decision.reviewed_at_utc,
   }
-}
-
-///|
-fn review_record_field(
-  fields : Map[String, Json],
-  key : String,
-) -> String raise {
-  match fields.get(key) {
-    Some(String(value)) if !value.is_blank() => value
-    _ => fail("MoonChat review record requires \{key}")
+  let typed = @review.decode_review_bundle(bundle)
+  let issues = @review.bundle_issues(typed, source_digest)
+  if !issues.is_empty() {
+    fail(issues.join("; "))
   }
+  bundle
 }
 
 ///|
 fn accepted_moonchat_record(
   value : Json,
   run : @research.ResearchRun,
+  output : @moontown.TownSynthesisOutput,
   decision : CrossProductReviewDecision,
   source_digest : String,
 ) -> Unit raise {
-  guard value is Object(fields) else {
-    fail("MoonChat review record must be an object")
-  }
-  if review_record_field(fields, "contract_id") !=
-    "moonchat.conversation-review-record.v1" ||
-    review_record_field(fields, "review_id") != decision.review_id ||
-    review_record_field(fields, "source_digest") != source_digest ||
-    review_record_field(fields, "source_revision_id") !=
-    "moontown-\{run.run_id}" ||
-    review_record_field(fields, "review_status") != "accepted" ||
-    review_record_field(fields, "claim_class") != "accepted-knowledge" ||
-    !(fields["accepted"] is True) {
+  let record = @review.decode_review_record(value)
+  let bundle = @review.decode_review_bundle(
+    moonchat_review_bundle(
+      run,
+      output,
+      decision,
+      ".moonsuite/products/moonfind/runs/\{run.run_id}/moontown-reducer-output.json",
+      source_digest,
+    ),
+  )
+  let expected = @review.project_review_record(
+    bundle,
+    source_digest,
+    record.journal_evidence,
+  )
+  if record != expected ||
+    !record.accepted ||
+    record.claim_class != "accepted-knowledge" ||
+    record.journal_evidence.length() !=
+    @review.review_events(bundle, source_digest).length() {
     fail("MoonChat did not return accepted knowledge for this exact synthesis")
   }
 }
@@ -268,21 +277,24 @@ pub fn apply_moonchat_review(
   source_digest : String,
 ) -> @research.ResearchRun raise {
   validate_review_decision(run, output, decision)
-  accepted_moonchat_record(moonchat_record, run, decision, source_digest)
-  run.apply_human_review({
-    review_id: decision.review_id,
-    run_id: run.run_id,
-    reviewer_id: decision.reviewer_id,
-    authority_ref: "moonchat://" +
-    decision.review_id +
-    "/" +
-    decision.reviewer_id,
-    disposition: "accept",
-    accepted_idea_ids: decision.accepted_idea_ids,
-    rejected_idea_ids: decision.rejected_idea_ids,
-    notes: decision.rationale,
-    reviewed_at: decision.reviewed_at_epoch,
-  })
+  accepted_moonchat_record(
+    moonchat_record, run, output, decision, source_digest,
+  )
+  // The named decision is scoped to the Town result. Do not reinterpret its
+  // IDs as analysis candidates or silently approve any original candidate.
+  {
+    ..run,
+    status: "accepted",
+    human_review_status: "accept",
+    reviewed_synthesis: Some({
+      review_id: decision.review_id,
+      reviewer_id: decision.reviewer_id,
+      source_ref: ".moonsuite/products/moonfind/runs/\{run.run_id}/moontown-reducer-output.json",
+      source_digest,
+      accepted_idea_ids: decision.accepted_idea_ids.copy(),
+      rejected_idea_ids: decision.rejected_idea_ids.copy(),
+    }),
+  }
 }
 
 ///|
@@ -322,7 +334,7 @@ pub fn moonbook_product_outcome_submission(
   let review_evidence_id = "moonchat-review-" + decision.review_id
   let capability_payload : Json = {
     "run_id": run.run_id,
-    "accepted_idea_ids": reviewed.accepted_idea_ids,
+    "accepted_idea_ids": reviewed.reviewed_synthesis.unwrap().accepted_idea_ids,
     "information_gap": decision.information_gap_summary,
     "recognition_gap": decision.recognition_gap_summary,
     "decisiveness_gap": decision.decisiveness_gap_summary,
@@ -336,7 +348,7 @@ pub fn moonbook_product_outcome_submission(
     },
     "source_product": "moonfind",
     "deliverable_title": "MoonFind reviewed cross-paper synthesis",
-    "deliverable_summary": "MoonChat recorded named-human acceptance of \{reviewed.accepted_idea_ids.length()} exact idea(s).",
+    "deliverable_summary": "MoonChat recorded named-human acceptance of \{decision.accepted_idea_ids.length()} exact synthesis idea(s).",
     "outcome_summary": decision.rationale,
     "owner_route": "moonfind://runs/\{run.run_id}/review",
     "evidence_refs": [

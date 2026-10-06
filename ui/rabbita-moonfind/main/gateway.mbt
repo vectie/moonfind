@@ -108,10 +108,14 @@ fn decode_series_detail(
 }
 
 ///|
-fn load_workspace_snapshot(emit : @rabbita.Emit[Msg]) -> @rabbita.Cmd {
+fn load_workspace_snapshot(
+  emit : @rabbita.Emit[Msg],
+  generation : Int,
+) -> @rabbita.Cmd {
   @http.get(product_api_url("/api/v1/workspace")).expect_json(
     emit.map(result => {
       WorkspaceLoaded(
+        generation,
         match result {
           Ok(snapshot) => Ok(snapshot)
           Err(error) => Err("\{error}")
@@ -143,6 +147,7 @@ fn prepare_portable_review(
   emit : @rabbita.Emit[Msg],
   url : String,
   model : Model,
+  request_generation : Int,
 ) -> @rabbita.Cmd {
   let scope_ids = review_scope_ids(model.review_scope)
   let accepted_idea_ids = if model.review_outcome == "approve_subset" {
@@ -157,6 +162,9 @@ fn prepare_portable_review(
   }
   let payload : Json = {
     "contract_id": "moonfind.review-prepare-request.v1",
+    "source_digest": model.moontown_result
+    .bind(result => result.source_digest)
+    .unwrap_or(""),
     "reviewer_name": model.reviewer_name.trim(),
     "outcome": model.review_outcome,
     "accepted_idea_ids": accepted_idea_ids,
@@ -181,7 +189,13 @@ fn prepare_portable_review(
   @http.post(product_api_url(url))
   .with_json(payload)
   .expect_json(
-    emit.map(result => ReviewPrepared(decode_review_prepare(result))),
+    emit.map(result => {
+      ReviewPrepared(
+        request_generation,
+        review_result_context(model),
+        decode_review_prepare(result),
+      )
+    }),
   )
 }
 
@@ -253,20 +267,22 @@ fn invoke_research_capability(
   @http.post(product_api_url(url))
   .with_json(execution.invocation)
   .expect_json(
-    emit.map(result => CapabilitySubmitted(decode_execution(result))),
+    emit.map(result => CapabilitySubmitted(execution, decode_execution(result))),
   )
 }
 
 ///|
 fn create_research_session(
   emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  book_dir : String,
+  request : ModelSubmission,
 ) -> @rabbita.Cmd {
-  @http.post("\{gateway_base}/v1/cowork/sessions")
-  .with_json({ "cwd": book_dir, "title": "Moonfind DeepSeek research" })
+  @http.post("\{request.gateway}/v1/cowork/sessions")
+  .with_json({
+    "cwd": request.cwd,
+    "title": "MoonFind research: " + request.title,
+  })
   .expect_json(
-    emit.map(result => ResearchSessionCreated(decode_session(result))),
+    emit.map(result => ResearchSessionCreated(request, decode_session(result))),
   )
 }
 
@@ -277,10 +293,12 @@ fn submit_prepared_research_command(
   session : CoworkSessionDetail,
   book_dir : String,
   execution : ResearchExecutionProjection,
+  request : ModelSubmission,
 ) -> @rabbita.Cmd {
-  guard execution.receipt is Some({ output: Some(command) }) else {
+  guard execution.receipt is Some({ output: Some(command), }) else {
     return emit(
       ResearchCommandSubmitted(
+        request,
         Err("capability receipt does not contain a MoonClaw command"),
       ),
     )
@@ -290,12 +308,13 @@ fn submit_prepared_research_command(
   )
   .with_json({
     "content": command.stringify(),
+    "model": request.selector,
     "cwd": book_dir,
     "source_contract": "moonclaw.capability-invocation-receipt.v1",
     "source_request_id": execution.request_id,
   })
   .expect_json(
-    emit.map(result => ResearchCommandSubmitted(decode_session(result))),
+    emit.map(result => ResearchCommandSubmitted(request, decode_session(result))),
   )
 }
 
@@ -304,7 +323,9 @@ fn checkpoint_research_execution(
   emit : @rabbita.Emit[Msg],
   url : String,
   session : CoworkSessionDetail,
+  execution : ResearchExecutionProjection?,
 ) -> @rabbita.Cmd {
+  guard execution is Some(execution) else { return @rabbita.none }
   let checkpoint : Json = {
     "contract_id": "moonfind.moonclaw-session-checkpoint-request.v1",
     "session_key": session.session.session_key,
@@ -312,27 +333,29 @@ fn checkpoint_research_execution(
   @http.post(product_api_url(url))
   .with_json(checkpoint)
   .expect_json(
-    emit.map(result => ExecutionCheckpointed(decode_execution(result))),
+    emit.map(result => {
+      ExecutionCheckpointed(execution, decode_execution(result))
+    }),
   )
 }
 
 ///|
 fn configure_research_session(
   emit : @rabbita.Emit[Msg],
-  gateway_base : String,
   session : CoworkSessionDetail,
-  book_dir : String,
-  model_name : String,
+  request : ModelSubmission,
 ) -> @rabbita.Cmd {
   @http.post(
-    "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/config",
+    "\{request.gateway}/v1/cowork/sessions/\{session.session.session_key}/config",
   )
   .with_json({
-    "title": "Moonfind DeepSeek research",
-    "cwd": book_dir,
-    "model": model_name,
+    "title": "MoonFind research: " + request.title,
+    "cwd": request.cwd,
+    "model": request.selector,
   })
-  .expect_json(emit.map(result => ResearchConfigured(decode_session(result))))
+  .expect_json(
+    emit.map(result => ResearchConfigured(request, decode_session(result))),
+  )
 }
 
 ///|
@@ -340,56 +363,58 @@ fn refresh_session(
   emit : @rabbita.Emit[Msg],
   gateway_base : String,
   session_key : String,
-  qa : Bool,
+  _qa : Bool,
+  run_id : String,
 ) -> @rabbita.Cmd {
   @http.get("\{gateway_base}/v1/cowork/sessions/\{session_key}").expect_json(
-    if qa {
-      emit.map(result => QaAnswered(decode_session(result)))
-    } else {
-      emit.map(result => ResearchRefreshed(decode_session(result)))
-    },
+    emit.map(result => ResearchRefreshed(run_id, decode_session(result))),
   )
 }
 
 ///|
 fn reconnect_qa_session(
   emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  session_key : String,
+  request : QaRestoreRequest,
 ) -> @rabbita.Cmd {
-  @http.get("\{gateway_base}/v1/cowork/sessions/\{session_key}").expect_json(
-    emit.map(result => QaReconnected(decode_session(result))),
+  @http.get("\{request.gateway}/v1/cowork/sessions/\{request.session_key}").expect_json(
+    emit.map(result => QaReconnected(request, decode_session(result))),
   )
 }
 
 ///|
 fn create_qa_session(
   emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  cwd : String,
+  request : ModelSubmission,
 ) -> @rabbita.Cmd {
-  @http.post("\{gateway_base}/v1/cowork/sessions")
-  .with_json({ "cwd": cwd, "title": "moonfind-deepseek-research-book-qa" })
-  .expect_json(emit.map(result => QaSessionCreated(decode_session(result))))
+  @http.post("\{request.gateway}/v1/cowork/sessions")
+  .with_json({
+    "cwd": request.cwd,
+    "title": "MoonFind Q&A: " + request.title,
+    "moonfind_purpose": "qa",
+    "moonfind_run_id": request.run_id,
+  })
+  .expect_json(
+    emit.map(result => QaSessionCreated(request, decode_session(result))),
+  )
 }
 
 ///|
 fn configure_qa_session(
   emit : @rabbita.Emit[Msg],
-  gateway_base : String,
   session : CoworkSessionDetail,
-  cwd : String,
-  model_name : String,
+  request : ModelSubmission,
 ) -> @rabbita.Cmd {
   @http.post(
-    "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/config",
+    "\{request.gateway}/v1/cowork/sessions/\{session.session.session_key}/config",
   )
   .with_json({
-    "title": "moonfind-deepseek-research-book-qa",
-    "cwd": cwd,
-    "model": model_name,
+    "title": "MoonFind Q&A: " + request.title,
+    "cwd": request.cwd,
+    "model": request.selector,
   })
-  .expect_json(emit.map(result => QaConfigured(decode_session(result))))
+  .expect_json(
+    emit.map(result => QaConfigured(request, decode_session(result))),
+  )
 }
 
 ///|
@@ -398,41 +423,38 @@ fn bootstrap_qa_session(
   gateway_base : String,
   session : CoworkSessionDetail,
   cwd : String,
+  request : ModelSubmission,
 ) -> @rabbita.Cmd {
   let content = qa_grounding_prompt(
-    "Return a short readiness receipt listing the files loaded and the current review state.",
+    request.grounding_context,
+    "Return a short readiness receipt naming this run, the supplied evidence and its limits, and the current review state. Do not claim that files were loaded.",
   )
   @http.post(
     "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/messages",
   )
-  .with_json({ "content": content, "cwd": cwd })
-  .expect_json(emit.map(result => QaBootstrapped(decode_session(result))))
-}
-
-///|
-fn qa_grounding_prompt(task : String) -> String {
-  (
-    $|Act as the retained DeepSeek research-book Q&A agent. For this turn, read wiki/queries/qa-agent-contract.md, wiki/synthesis/deepseek-research-report.md, wiki/synthesis/claim-matrix.md, wiki/sources/local-transcript-source-map.md, wiki/sources/external-validation.md, and state/review-status.json before answering.
-    $|
-    $|Cite private screenshot claims as local:pN and public evidence by exact URL. Label pending-review evidence, later web updates, and analysis separately. Never reconstruct missing page 1, authenticate the alleged transcript, expose private inputs, approve MoonBook changes, or imply that earlier conversation is evidence.
-    $|
-    $|Task:
-    $|\{task}
+  .with_json({
+    "content": content,
+    "cwd": cwd,
+    "model": session.session.model_override.unwrap_or(""),
+  })
+  .expect_json(
+    emit.map(result => QaBootstrapped(request, decode_session(result))),
   )
 }
 
 ///|
 fn ask_qa_session(
   emit : @rabbita.Emit[Msg],
-  gateway_base : String,
-  session : CoworkSessionDetail,
-  cwd : String,
-  question : String,
+  request : QaQuestionRequest,
 ) -> @rabbita.Cmd {
-  let content = qa_grounding_prompt(question)
+  let content = qa_grounding_prompt(request.grounding_context, request.question)
   @http.post(
-    "\{gateway_base}/v1/cowork/sessions/\{session.session.session_key}/messages",
+    "\{request.gateway}/v1/cowork/sessions/\{request.session_key}/messages",
   )
-  .with_json({ "content": content, "cwd": cwd })
-  .expect_json(emit.map(result => QaAnswered(decode_session(result))))
+  .with_json({
+    "content": content,
+    "cwd": request.cwd,
+    "model": request.selector,
+  })
+  .expect_json(emit.map(result => QaAnswered(request, decode_session(result))))
 }

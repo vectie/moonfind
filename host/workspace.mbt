@@ -78,6 +78,28 @@ async fn handoff_status(
   config : Config,
   execution : @integration.ResearchExecutionRecordV1?,
 ) -> MoonTownHandoffStatusV1 {
+  handoff_status_checked(config, execution) catch {
+    _ =>
+      {
+        contract_id: "moonfind.moontown-handoff-status.v1",
+        run_id: config.run_id,
+        state: "blocked",
+        handoff_contract: @moontown.town_handoff_contract_version(),
+        handoff_id: None,
+        handoff_url: None,
+        open_url: None,
+        receipt_contract: None,
+        receipt_status: None,
+        detail: "The durable MoonTown artifacts could not be read or decoded. Restore the correlated artifacts, then reload. No synthesis is shown as verified.",
+      }
+  }
+}
+
+///|
+async fn handoff_status_checked(
+  config : Config,
+  execution : @integration.ResearchExecutionRecordV1?,
+) -> MoonTownHandoffStatusV1 {
   let handoff_path = run_artifact(config, "moontown-handoff.json")
   let receipt_path = run_artifact(config, "moontown-receipt.json")
   let output_path = run_artifact(config, "moontown-reducer-output.json")
@@ -204,6 +226,14 @@ async fn handoff_status(
 
 ///|
 pub async fn workspace_snapshot(config : Config) -> UiWorkspaceSnapshotV1 {
+  workspace_snapshot_with(config, gateway_reachable=moonclaw_gateway_reachable)
+}
+
+///|
+async fn workspace_snapshot_with(
+  config : Config,
+  gateway_reachable~ : async (String) -> Bool,
+) -> UiWorkspaceSnapshotV1 {
   let projection_path = run_artifact(config, "workspace.json")
   guard @fs.exists(projection_path) else {
     fail("MoonFind durable workspace projection does not exist")
@@ -216,8 +246,8 @@ pub async fn workspace_snapshot(config : Config) -> UiWorkspaceSnapshotV1 {
   }
   let execution = current_execution(config)
   let moonclaw_gateway_base = match config.moonclaw_gateway_base {
-    Some(base) if !base.is_blank() && moonclaw_gateway_reachable(base) =>
-      Some(trimmed_base(base))
+    Some(base) if !base.is_blank() && gateway_reachable(base) =>
+      Some("/api/v1/cowork-gateway")
     _ => None
   }
   let blockers : Array[String] = []
@@ -250,6 +280,7 @@ pub async fn workspace_snapshot(config : Config) -> UiWorkspaceSnapshotV1 {
     None => ()
   }
   let town = handoff_status(config, execution)
+  let (qa_cowork_session_key, qa_agent_status) = qa_session_retention(config)
   {
     contract_id: "moonfind.ui-workspace.v1",
     product_id: "moonfind",
@@ -259,8 +290,8 @@ pub async fn workspace_snapshot(config : Config) -> UiWorkspaceSnapshotV1 {
     research_cowork_session_key: execution.bind(record => {
       record.moonclaw_session_key
     }),
-    qa_cowork_session_key: None,
-    qa_agent_status: "not-published",
+    qa_cowork_session_key,
+    qa_agent_status,
     research_execution: execution,
     capability_submit_url: execution.map(_ => "/api/v1/capability/submit"),
     capability_reconcile_url: execution.map(_ => "/api/v1/capability/reconcile"),
@@ -275,6 +306,7 @@ pub async fn workspace_snapshot(config : Config) -> UiWorkspaceSnapshotV1 {
     },
     host_blockers: blockers,
     moontown_handoff: town,
+    moontown_result: Some(completed_result_view(config, town)),
     review_workflow: review_workflow_status(config),
   }
 }

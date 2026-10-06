@@ -74,6 +74,7 @@ pub fn start_research_run(
     completed_at: None,
     human_review_status: "pending",
     accepted_idea_ids: [],
+    reviewed_synthesis: None,
   }
 }
 

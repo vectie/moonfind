@@ -115,6 +115,19 @@ pub(all) struct ResearchRun {
   completed_at : Int64?
   human_review_status : String
   accepted_idea_ids : Array[String]
+  // Cross-paper synthesis IDs are not analysis-candidate IDs. Older runs
+  // omit this additive field and retain their existing analysis review.
+  reviewed_synthesis : ReviewedSynthesisSelection?
+} derive(Debug, Eq, ToJson, FromJson)
+
+///|
+pub(all) struct ReviewedSynthesisSelection {
+  review_id : String
+  reviewer_id : String
+  source_ref : String
+  source_digest : String
+  accepted_idea_ids : Array[String]
+  rejected_idea_ids : Array[String]
 } derive(Debug, Eq, ToJson, FromJson)
 
 ///|

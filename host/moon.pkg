@@ -2,6 +2,7 @@ import {
   "moonbitlang/async",
   "moonbitlang/async/fs",
   "moonbitlang/async/http",
+  "moonbitlang/core/buffer",
   "moonbitlang/core/encoding/utf8",
   "moonbitlang/core/json",
   "moonbitlang/x/time",
@@ -11,6 +12,7 @@ import {
   "vectie/moonfind/moontown",
   "vectie/moonfind/research",
   "vectie/moonfind/store",
+  "vectie/moonfind/vendor/moonchat/review",
 }
 
 supported_targets = "native"

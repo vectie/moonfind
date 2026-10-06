@@ -12,15 +12,25 @@ import {
 // Values
 pub async fn checkpoint_execution(Config, MoonClawSessionCheckpointRequestV1) -> CapabilityOperationReplyV1
 
+pub async fn cowork_relay(Config, String, Json?) -> Json
+
+pub async fn delivery_status(Config, delivery_id? : String) -> DeliveryStatusV1
+
 pub async fn ensure_prepared_execution(Config) -> @integration.ResearchExecutionRecordV1?
 
 pub async fn ingest_moonchat_result(Config, MoonChatResultIngestRequestV1) -> MoonChatResultIngestReplyV1
 
 pub async fn ingest_moontown_result(Config, @moontown.TownResultIngestRequest) -> MoonTownResultIngestReplyV1
 
+pub async fn native_model_route(Config) -> NativeModelRouteV1
+
 pub async fn prepare_cross_product_review(Config, ReviewPrepareRequestV1) -> ReviewPrepareReplyV1
 
+pub async fn prepare_delivery(Config, DeliveryPrepareV1) -> DeliveryStatusV1
+
 pub async fn prepare_moonflow_review_receipt(Config, ReviewMoonFlowReceiptRequestV1) -> ReviewMoonFlowReceiptReplyV1
+
+pub async fn read_delivery_file(Config, String, String) -> Bytes
 
 pub async fn reconcile_execution(Config, Json) -> CapabilityOperationReplyV1
 
@@ -43,6 +53,8 @@ pub(all) struct CapabilityOperationReplyV1 {
   execution : @integration.ResearchExecutionRecordV1
 } derive(ToJson, @debug.Debug, @json.FromJson)
 
+type CompletedResultEnvelope derive(@json.FromJson)
+
 pub(all) struct Config {
   workspace : String
   run_id : String
@@ -50,16 +62,52 @@ pub(all) struct Config {
   public_base_url : String
   capability_catalog_path : String?
   moonclaw_gateway_base : String?
+  moonclaw_gateway_token : String?
   moonclaw_submit_url : String?
   moonclaw_reconcile_url : String?
   moontown_base_url : String?
-} derive(@debug.Debug)
+}
 
 type CoworkCheckpointDetail derive(@debug.Debug, @json.FromJson)
 
 type CoworkCheckpointPayload derive(@debug.Debug, @json.FromJson)
 
 type CoworkCheckpointRun derive(ToJson, @debug.Debug, @json.FromJson)
+
+type CoworkModelRouteV1 derive(@json.FromJson)
+
+pub(all) struct DeliveryFileV1 {
+  name : String
+  media_type : String
+  byte_count : Int
+  digest : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct DeliveryManifestV1 {
+  contract_id : String
+  run_id : String
+  delivery_id : String
+  run_digest : String
+  source_digest : String
+  files : Array[DeliveryFileV1]
+  boundary : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct DeliveryPrepareV1 {
+  contract_id : String
+  run_id : String
+  source_digest : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct DeliveryStatusV1 {
+  contract_id : String
+  run_id : String
+  state : String
+  detail : String
+  manifest : DeliveryManifestV1?
+  issues : Array[String]
+  versions : Array[String]
+} derive(ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct MoonChatResultIngestReplyV1 {
   contract_id : String
@@ -114,6 +162,49 @@ pub(all) struct MoonTownResultIngestReplyV1 {
   message : String
 } derive(ToJson, @debug.Debug, @json.FromJson)
 
+pub(all) struct MoonTownResultViewV1 {
+  contract_id : String
+  run_id : String
+  state : String
+  detail : String
+  source_ref : String?
+  source_digest : String?
+  output : @moontown.TownSynthesisOutput?
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct NativeModelRouteV1 {
+  contract_id : String
+  run_id : String
+  cwd : String
+  catalog_ready : Bool
+  default_ready : Bool
+  default_model : String
+  models : Array[String]
+  blocker : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ReviewDecisionReceiptViewV1 {
+  review_id : String
+  reviewer_id : String
+  reviewer_name : String
+  outcome : String
+  rationale : String
+  accepted_idea_ids : Array[String]
+  rejected_idea_ids : Array[String]
+  objections : Array[String]
+  source_ref : String
+  source_digest : String
+  source_revision_id : String
+  source_current : Bool
+  review_status : String
+  delivery_status : String
+  evidence_status : String
+  record_ref : String?
+  record_digest : String?
+  bookkeeper_state : String
+  detail : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct ReviewGapInputV1 {
   present : Bool
   severity : Int
@@ -148,6 +239,7 @@ pub(all) struct ReviewPrepareReplyV1 {
 
 pub(all) struct ReviewPrepareRequestV1 {
   contract_id : String
+  source_digest : String?
   reviewer_name : String
   outcome : String
   accepted_idea_ids : Array[String]
@@ -170,6 +262,7 @@ pub(all) struct ReviewWorkflowStatusV1 {
   bookkeeper_operation_ref : String?
   bookkeeper_submission_ref : String?
   detail : String
+  decision_receipt : ReviewDecisionReceiptViewV1?
 } derive(ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct UiWorkspaceSnapshotV1 {
@@ -189,10 +282,10 @@ pub(all) struct UiWorkspaceSnapshotV1 {
   host_status : String
   host_blockers : Array[String]
   moontown_handoff : MoonTownHandoffStatusV1
+  moontown_result : MoonTownResultViewV1?
   review_workflow : ReviewWorkflowStatusV1
 } derive(ToJson, @debug.Debug, @json.FromJson)
 
 // Type aliases
 
 // Traits
-

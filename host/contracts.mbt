@@ -25,6 +25,9 @@ pub(all) struct UiWorkspaceSnapshotV1 {
   book_workspace : String
   workspace : @app.ResearchWorkspaceProjection
   research_cowork_session_key : String?
+  // A retained key is a nonsecret canonical MoonClaw runtime identifier.
+  // Status is not-created, retained, creation-uncertain or reconnect-required;
+  // retention does not assert that evidence was loaded or review was accepted.
   qa_cowork_session_key : String?
   qa_agent_status : String
   research_execution : @integration.ResearchExecutionRecordV1?
@@ -35,7 +38,21 @@ pub(all) struct UiWorkspaceSnapshotV1 {
   host_status : String
   host_blockers : Array[String]
   moontown_handoff : MoonTownHandoffStatusV1
+  moontown_result : MoonTownResultViewV1?
   review_workflow : ReviewWorkflowStatusV1
+} derive(Debug, ToJson, FromJson)
+
+///|
+/// Read-only projection of the exact reducer artifact used by review.
+/// A validated result is still pending named-human acceptance.
+pub(all) struct MoonTownResultViewV1 {
+  contract_id : String
+  run_id : String
+  state : String
+  detail : String
+  source_ref : String?
+  source_digest : String?
+  output : @moontown.TownSynthesisOutput?
 } derive(Debug, ToJson, FromJson)
 
 ///|
@@ -88,6 +105,7 @@ pub(all) struct ReviewGapInputV1 {
 /// run identity and timestamp before producing a MoonChat bundle.
 pub(all) struct ReviewPrepareRequestV1 {
   contract_id : String
+  source_digest : String?
   reviewer_name : String
   outcome : String
   accepted_idea_ids : Array[String]
@@ -167,6 +185,32 @@ pub(all) struct ReviewWorkflowStatusV1 {
   record_ref : String?
   bookkeeper_operation_ref : String?
   bookkeeper_submission_ref : String?
+  detail : String
+  decision_receipt : ReviewDecisionReceiptViewV1?
+} derive(Debug, ToJson, FromJson)
+
+///|
+/// Read-only retained human decision. A linked MoonChat receipt is not a
+/// MoonBook receiver acknowledgement or acceptance.
+pub(all) struct ReviewDecisionReceiptViewV1 {
+  review_id : String
+  reviewer_id : String
+  reviewer_name : String
+  outcome : String
+  rationale : String
+  accepted_idea_ids : Array[String]
+  rejected_idea_ids : Array[String]
+  objections : Array[String]
+  source_ref : String
+  source_digest : String
+  source_revision_id : String
+  source_current : Bool
+  review_status : String
+  delivery_status : String
+  evidence_status : String
+  record_ref : String?
+  record_digest : String?
+  bookkeeper_state : String
   detail : String
 } derive(Debug, ToJson, FromJson)
 

@@ -175,12 +175,25 @@ async fn review_inputs(
 }
 
 ///|
+fn validate_displayed_result_digest(
+  request : ReviewPrepareRequestV1,
+  source_digest : String,
+) -> Unit raise {
+  if request.source_digest is Some(expected) && expected != source_digest {
+    fail(
+      "The synthesis changed since it was displayed. Reload the result and review its current contents before preparing a decision.",
+    )
+  }
+}
+
+///|
 pub async fn prepare_cross_product_review(
   config : Config,
   request : ReviewPrepareRequestV1,
 ) -> ReviewPrepareReplyV1 {
   validate_prepare_request(request)
   let (run, _, output, source_ref, source_digest) = review_inputs(config)
+  validate_displayed_result_digest(request, source_digest)
   let decision_path = run_artifact(config, "cross-product-review-decision.json")
   let decision = if @fs.exists(decision_path) {
     let persisted : @closed_loop.CrossProductReviewDecision = @json.from_json(
@@ -199,8 +212,28 @@ pub async fn prepare_cross_product_review(
   let bundle_path = run_artifact(config, "moonchat-review-bundle.json")
   let decision_text = decision.to_json().stringify(indent=2) + "\n"
   let bundle_text = bundle.stringify(indent=2) + "\n"
+  // Preflight immutable historical content before creating the new-format
+  // binding. A retry against a v1 bundle must not leave a v2 marker beside it.
+  if @fs.exists(bundle_path) && @fs.read_file(bundle_path).text() != bundle_text {
+    fail(
+      "MoonChat review bundle already exists with different content; retain it and create a new research revision",
+    )
+  }
   ensure_immutable_review_artifact(
     decision_path, decision_text, "review decision",
+  )
+  // Bind the complete intended bundle before publishing it. An interrupted
+  // preparation can retry using the already retained decision timestamp;
+  // a visible new-format bundle can never lack its format/scope binding.
+  ensure_immutable_review_artifact(
+    run_artifact(config, review_prepared_name()),
+    prepared_review_binding(
+      config, source_ref, source_digest, decision_text, bundle_text,
+    )
+    .to_json()
+    .stringify(indent=2) +
+    "\n",
+    "typed review preparation binding",
   )
   ensure_immutable_review_artifact(
     bundle_path, bundle_text, "MoonChat review bundle",
@@ -224,11 +257,11 @@ fn moonchat_result_identity(
 ) -> Json raise {
   if request.contract_id != "moonfind.moonchat-result-ingest.v1" ||
     request.product_id != "moonchat" ||
-    request.status.to_lower() != "succeeded" ||
-    request.output_artifact_ref.is_blank() ||
+    !["succeeded", "failed"].contains(request.status.to_lower()) ||
+    !review_receiver_safe_ref(request.output_artifact_ref) ||
     request.record_text.is_blank() ||
     @store.digest_text(request.record_text) != request.output_digest {
-    fail("MoonChat result is missing exact successful output identity")
+    fail("MoonChat result is missing exact output identity")
   }
   @json.parse(request.record_text)
 }
@@ -238,7 +271,31 @@ pub async fn ingest_moonchat_result(
   config : Config,
   request : MoonChatResultIngestRequestV1,
 ) -> MoonChatResultIngestReplyV1 {
-  let record = moonchat_result_identity(request)
+  let record_json = moonchat_result_identity(request)
+  let raw_existing = run_artifact(config, review_record_name())
+  // A pre-upgrade completed return can be replayed read-only. Do not grant it
+  // new typed authority, replace it, or run acceptance again.
+  if @fs.exists(raw_existing) &&
+    !@fs.exists(run_artifact(config, review_return_name())) &&
+    @fs.exists(run_artifact(config, "bookkeeper-outcome-submission.json")) &&
+    @fs.read_file(raw_existing).text() == request.record_text {
+    let retained = retained_decision_view(config)
+    if retained is Some({ evidence_status: "legacy-retained", .. }) {
+      return {
+        contract_id: "moonfind.moonchat-result-ingest-reply.v1",
+        state: "ready-for-bookkeeper",
+        run_id: config.run_id,
+        review_id: review_id(config.run_id),
+        record_ref: review_relative_run_ref(config, review_record_name()),
+        record_digest: request.output_digest,
+        submission_ref: Some(
+          review_relative_run_ref(config, "bookkeeper-outcome-submission.json"),
+        ),
+        next_operation_ref: Some("moonbook/bookkeeper.outcome.submit@0.1.0"),
+        message: "Historical return and prepared submission retained unchanged. This read-only replay does not newly qualify the incomplete historical evidence or assert MoonBook acceptance.",
+      }
+    }
+  }
   let (run, _, output, town_ref, town_digest) = review_inputs(config)
   let decision_path = run_artifact(config, "cross-product-review-decision.json")
   let bundle_path = run_artifact(config, "moonchat-review-bundle.json")
@@ -248,10 +305,50 @@ pub async fn ingest_moonchat_result(
   let decision : @closed_loop.CrossProductReviewDecision = @json.from_json(
     @store.read_json(decision_path),
   )
-  let reviewed = @closed_loop.apply_moonchat_review(
-    run, output, decision, record, town_digest,
-  )
-  let raw_record_name = "moonchat-review-record.raw.json"
+  let bundle = retained_review_bundle(config)
+  guard town_digest == bundle.source_digest else {
+    fail(
+      "MoonChat decision belongs to different source bytes. Restore the exact result or create a new revision.",
+    )
+  }
+  let record = validate_typed_review_return(config, bundle, record_json)
+  guard request.status.to_lower() != "failed" || !record.accepted else {
+    fail("A failed MoonChat operation cannot promote an approval")
+  }
+  let return_text = review_return_json(config, request, record).stringify(
+      indent=2,
+    ) +
+    "\n"
+  let return_path = run_artifact(config, review_return_name())
+  if @fs.exists(return_path) && @fs.read_file(return_path).text() != return_text {
+    fail("Producer receipt already binds a different MoonChat return")
+  }
+  // An interrupted accepted return may already have applied precisely this
+  // synthesis selection. Normalize only that matching durable receipt for
+  // deterministic reconstruction; never reopen an unrelated reviewed run.
+  let expected_selection : @research.ReviewedSynthesisSelection = {
+    review_id: decision.review_id,
+    reviewer_id: decision.reviewer_id,
+    source_ref: town_ref,
+    source_digest: town_digest,
+    accepted_idea_ids: decision.accepted_idea_ids,
+    rejected_idea_ids: decision.rejected_idea_ids,
+  }
+  let input_run = if run.status == "accepted" &&
+    run.reviewed_synthesis == Some(expected_selection) {
+    { ..run, status: "human-review", reviewed_synthesis: None, }
+  } else {
+    run
+  }
+  guard @closed_loop.moonchat_review_bundle(
+      input_run, output, decision, town_ref, town_digest,
+    ) ==
+    bundle.to_json() else {
+    fail(
+      "Retained MoonChat bundle does not match the exact source and human decision",
+    )
+  }
+  let raw_record_name = review_record_name()
   let raw_record_path = run_artifact(config, raw_record_name)
   ensure_immutable_review_artifact(
     raw_record_path,
@@ -260,39 +357,67 @@ pub async fn ingest_moonchat_result(
   )
   let review_ref = review_relative_run_ref(config, raw_record_name)
   let review_digest = @store.digest_text(request.record_text)
-  let submission = @closed_loop.moonbook_product_outcome_submission(
-    run, output, decision, record, town_ref, town_digest, review_ref, review_digest,
-  )
-  @store.write_run_artifact(
-    config.workspace,
-    config.run_id,
-    "run.json",
-    reviewed.to_json(),
-  )
-  @store.write_run_artifact(
-    config.workspace,
-    config.run_id,
-    "workspace.json",
-    @app.project_research_workspace(reviewed).to_json(),
-  )
-  @store.write_run_artifact(
-    config.workspace,
-    config.run_id,
-    "bookkeeper-outcome-submission.json",
-    submission,
+  if record.accepted {
+    let reviewed = @closed_loop.apply_moonchat_review(
+      input_run, output, decision, record_json, town_digest,
+    )
+    let submission = @closed_loop.moonbook_product_outcome_submission(
+      input_run, output, decision, record_json, town_ref, town_digest, review_ref,
+      review_digest,
+    )
+    ensure_immutable_review_artifact(
+      run_artifact(config, "bookkeeper-outcome-submission.json"),
+      submission.stringify(indent=2) + "\n",
+      "Bookkeeper outcome submission",
+    )
+    if run != reviewed {
+      @store.write_run_artifact(
+        config.workspace,
+        config.run_id,
+        "run.json",
+        reviewed.to_json(),
+      )
+    }
+    @store.write_run_artifact(
+      config.workspace,
+      config.run_id,
+      "workspace.json",
+      @app.project_research_workspace(reviewed).to_json(),
+    )
+  }
+  ensure_immutable_review_artifact(
+    return_path, return_text, "producer review return receipt",
   )
   {
     contract_id: "moonfind.moonchat-result-ingest-reply.v1",
-    state: "ready-for-bookkeeper",
+    state: if record.accepted {
+      "ready-for-bookkeeper"
+    } else if record.review_status == "rejected" {
+      "review-rejected"
+    } else {
+      "review-deferred"
+    },
     run_id: config.run_id,
     review_id: decision.review_id,
     record_ref: review_ref,
     record_digest: review_digest,
-    submission_ref: Some(
-      review_relative_run_ref(config, "bookkeeper-outcome-submission.json"),
-    ),
-    next_operation_ref: Some("moonbook/bookkeeper.outcome.submit@0.1.0"),
-    message: "MoonChat accepted the exact synthesis. MoonFind updated its run and prepared a generic MoonBook outcome submission; MoonBook retains every human gate.",
+    submission_ref: if record.accepted {
+      Some(
+        review_relative_run_ref(config, "bookkeeper-outcome-submission.json"),
+      )
+    } else {
+      None
+    },
+    next_operation_ref: if record.accepted {
+      Some("moonbook/bookkeeper.outcome.submit@0.1.0")
+    } else {
+      None
+    },
+    message: if record.accepted {
+      "MoonChat approved the exact synthesis and the producer receipt is linked. MoonBook submission is prepared; receiver acceptance is not acknowledged."
+    } else {
+      "MoonChat retained the exact non-approving decision and dissent. The producer receipt is linked; no Bookkeeper submission was prepared."
+    },
   }
 }
 
@@ -302,7 +427,26 @@ pub async fn review_workflow_status(config : Config) -> ReviewWorkflowStatusV1 {
   let bundle = run_artifact(config, "moonchat-review-bundle.json")
   let record = run_artifact(config, "moonchat-review-record.raw.json")
   let submission = run_artifact(config, "bookkeeper-outcome-submission.json")
-  let state = if @fs.exists(submission) && @fs.exists(record) {
+  let mut readback_error : String? = None
+  let decision_receipt = retained_decision_view(config) catch {
+    _ => {
+      readback_error = Some(
+        "Retained review evidence is incomplete or inconsistent. Restore the original files before retrying; existing history has not been rewritten.",
+      )
+      None
+    }
+  }
+  let state = if readback_error is Some(_) {
+    "review-evidence-invalid"
+  } else if decision_receipt is Some({ source_current: false, .. }) {
+    "review-stale"
+  } else if decision_receipt
+    is Some({ delivery_status: "linked", outcome: "reject", .. }) {
+    "review-rejected"
+  } else if decision_receipt
+    is Some({ delivery_status: "linked", outcome: "defer", .. }) {
+    "review-deferred"
+  } else if @fs.exists(submission) && @fs.exists(record) {
     "ready-for-bookkeeper"
   } else if @fs.exists(bundle) {
     "awaiting-moonchat"
@@ -352,14 +496,26 @@ pub async fn review_workflow_status(config : Config) -> ReviewWorkflowStatusV1 {
     } else {
       None
     },
-    detail: match state {
-      "ready-for-human-review" =>
-        "MoonTown returned a correlated synthesis. Record the named-human decision and explicit Three-Gap statements."
-      "awaiting-moonchat" =>
-        "The portable bundle is durable and waiting for MoonFlow to execute MoonChat's versioned review operation."
-      "ready-for-bookkeeper" =>
-        "MoonChat accepted the exact source. The generic MoonBook submission is ready for Bookkeeper's own review queue."
-      _ => "MoonTown synthesis must complete before review."
-    },
+    decision_receipt,
+    detail: (match readback_error {
+      Some(_) => readback_error
+      None => decision_receipt.map(receipt => receipt.detail)
+    }).unwrap_or(
+      match state {
+        "ready-for-human-review" =>
+          "MoonTown returned a correlated synthesis. Record the named-human decision and explicit Three-Gap statements."
+        "awaiting-moonchat" =>
+          "The portable bundle is durable and waiting for MoonFlow to execute MoonChat's versioned review operation."
+        "ready-for-bookkeeper" =>
+          "MoonChat accepted the exact source. The generic MoonBook submission is ready for Bookkeeper's own review queue."
+        "review-rejected" =>
+          "The named reviewer rejected this exact version. Retained dissent remains visible; create a revised research run."
+        "review-deferred" =>
+          "The named reviewer deferred the decision. It remains unresolved and nonqualifying; create a revised research run to reconsider."
+        "review-stale" =>
+          "The retained decision belongs to different source bytes and cannot approve the current result. Restore the exact original or create a new revision."
+        _ => "MoonTown synthesis must complete before review."
+      },
+    ),
   }
 }

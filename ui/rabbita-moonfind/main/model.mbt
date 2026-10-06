@@ -109,6 +109,10 @@ struct DurableResearchWorkspace {
   idea_count : Int
   question_count : Int
   accepted_idea_count : Int
+  papers : Array[EvidencePaper]?
+  summaries : Array[EvidenceSummary]?
+  ideas : Array[EvidenceIdea]?
+  questions : Array[EvidenceQuestion]?
   active_stage : String
   validation_issues : Array[String]
   bookkeeper_route : String
@@ -142,6 +146,7 @@ struct ReviewWorkflowStatus {
   bookkeeper_operation_ref : String?
   bookkeeper_submission_ref : String?
   detail : String
+  decision_receipt : ReviewDecisionReceipt?
 } derive(Debug, FromJson)
 
 ///|
@@ -298,6 +303,7 @@ struct WorkspaceSnapshot {
   host_status : String
   host_blockers : Array[String]
   moontown_handoff : MoonTownHandoffStatus
+  moontown_result : CompletedResult?
   review_workflow : ReviewWorkflowStatus
 } derive(Debug, FromJson)
 
@@ -368,12 +374,43 @@ struct Model {
   gateway_base : String
   gateway_published : Bool
   book_dir : String
+  trusted_book_dir : String
   model_name : String
+  model_source : String
+  saved_selection_key : String?
+  saved_selection_error : String?
+  native_route : NativeModelRoute?
+  route_generation : Int
+  route_loading : Bool
+  route_error : String?
+  workspace_generation : Int
+  submission_generation : Int
+  pending_research : ModelSubmission?
+  research_message_sent : Bool
+  pending_qa : ModelSubmission?
+  qa_canonical_key : String?
+  qa_agent_status : String
+  pending_qa_restore : QaRestoreRequest?
+  qa_readback_loading : Bool
+  question_generation : Int
+  pending_question : QaQuestionRequest?
+  qa_error : String?
+  qa_response_context : String?
+  qa_answered_question : String?
+  qa_answer_text : String?
   phase : ResearchPhase
   research_session : CoworkSessionDetail?
   qa_session : CoworkSessionDetail?
   review_phase : ReviewPhase
   review_prepare_reply : ReviewPrepareReply?
+  review_pending_context : String?
+  // Monotonic across result switches: A -> B -> A must not let the first
+  // request consume a later preparation for the same result context.
+  review_request_generation : Int
+  review_drafts : Map[String, ReviewDraft]
+  review_context_notice : String?
+  delivery : DeliveryView
+  result_page : Int
   qa_ready : Bool
   reviewer_name : String
   review_outcome : String
@@ -394,6 +431,7 @@ struct Model {
   host_status : String
   host_blockers : Array[String]
   moontown_handoff : MoonTownHandoffStatus?
+  moontown_result : CompletedResult?
   review_workflow : ReviewWorkflowStatus?
   moonflow_run_id : String
   moonflow_handoff_token : String
@@ -414,7 +452,16 @@ struct Model {
 
 ///|
 enum Msg {
-  WorkspaceLoaded(Result[WorkspaceSnapshot, String])
+  RefreshDelivery
+  PrepareDelivery
+  SelectDelivery(String)
+  DeliveryLoaded(DeliveryRequest, Result[DeliveryStatus, String])
+  WorkspaceLoaded(Int, Result[WorkspaceSnapshot, String])
+  NativeRouteLoaded(Int, Result[NativeModelRoute, String])
+  RefreshModelRoutes
+  SelectCatalogModel(Int, String)
+  UseConfiguredDefault(Int)
+  SavedSelectionRestored(String, String, Result[CoworkSessionDetail, String])
   RefreshSeriesCatalog
   SeriesCatalogLoaded(Result[Array[SeriesUseCaseProjection], String])
   SelectSeries(String)
@@ -427,6 +474,8 @@ enum Msg {
   SetReviewerName(String)
   SetReviewOutcome(String)
   SetReviewScope(String)
+  ToggleResultIdea(String, String)
+  SetResultPage(Int)
   SetReviewMessage(String)
   SetInformationGapSeverity(String)
   SetInformationGapSummary(String)
@@ -436,15 +485,21 @@ enum Msg {
   SetDecisivenessGapSummary(String)
   SetQaQuestion(String)
   StartResearch
-  CapabilitySubmitted(Result[CapabilityOperationReply, String])
-  ResearchSessionCreated(Result[CoworkSessionDetail, String])
-  ResearchConfigured(Result[CoworkSessionDetail, String])
-  ResearchCommandSubmitted(Result[CoworkSessionDetail, String])
-  ExecutionCheckpointed(Result[CapabilityOperationReply, String])
+  CapabilitySubmitted(
+    ResearchExecutionProjection,
+    Result[CapabilityOperationReply, String]
+  )
+  ResearchSessionCreated(ModelSubmission, Result[CoworkSessionDetail, String])
+  ResearchConfigured(ModelSubmission, Result[CoworkSessionDetail, String])
+  ResearchCommandSubmitted(ModelSubmission, Result[CoworkSessionDetail, String])
+  ExecutionCheckpointed(
+    ResearchExecutionProjection,
+    Result[CapabilityOperationReply, String]
+  )
   RefreshResearch
-  ResearchRefreshed(Result[CoworkSessionDetail, String])
+  ResearchRefreshed(String, Result[CoworkSessionDetail, String])
   PrepareReview
-  ReviewPrepared(Result[ReviewPrepareReply, String])
+  ReviewPrepared(Int, String, Result[ReviewPrepareReply, String])
   RefreshMoonFlowReceiver
   MoonFlowIntakeLoaded(Result[MoonFlowReceiverHandoff, String])
   MoonFlowStatusLoaded(Result[MoonFlowReceiverStatus, String])
@@ -452,12 +507,14 @@ enum Msg {
   MoonFlowReceiptPrepared(Result[MoonFlowReviewReceiptReply, String])
   MoonFlowReceiptPosted(Result[MoonFlowReceiverStatus, String])
   PrepareQa
-  QaSessionCreated(Result[CoworkSessionDetail, String])
-  QaConfigured(Result[CoworkSessionDetail, String])
-  QaBootstrapped(Result[CoworkSessionDetail, String])
-  QaReconnected(Result[CoworkSessionDetail, String])
+  FinishQaPreparation
+  RefreshQa
+  QaSessionCreated(ModelSubmission, Result[CoworkSessionDetail, String])
+  QaConfigured(ModelSubmission, Result[CoworkSessionDetail, String])
+  QaBootstrapped(ModelSubmission, Result[CoworkSessionDetail, String])
+  QaReconnected(QaRestoreRequest, Result[CoworkSessionDetail, String])
   AskQa
-  QaAnswered(Result[CoworkSessionDetail, String])
+  QaAnswered(QaQuestionRequest, Result[CoworkSessionDetail, String])
 }
 
 ///|
@@ -559,13 +616,13 @@ fn initial_series_selection() -> (String, String?) {
     return (browser_series_selection("series"), None)
   }
   if moonfind_template_launch_valid(
-    template_id,
-    browser_query_value("template_version"),
-    browser_query_value("template_catalog"),
-    browser_query_value("template_catalog_version"),
-    browser_query_value("template_catalog_digest"),
-    browser_query_value("template_source_digest"),
-  ) {
+      template_id,
+      browser_query_value("template_version"),
+      browser_query_value("template_catalog"),
+      browser_query_value("template_catalog_version"),
+      browser_query_value("template_catalog_digest"),
+      browser_query_value("template_source_digest"),
+    ) {
     (template_id, None)
   } else {
     (
@@ -619,30 +676,59 @@ extern "js" fn moondesk_series_url(
 
 ///|
 fn initial_model() -> Model {
-  let book_dir = "/Users/kq/Workspace/deepseek-research-book"
+  let book_dir = ""
   let (selected_series_id, template_error) = initial_series_selection()
   {
     gateway_base: browser_gateway_base(),
     gateway_published: false,
     book_dir,
-    model_name: "codex/gpt-5.6-sol",
+    trusted_book_dir: "",
+    model_name: "",
+    model_source: "automatic",
+    saved_selection_key: None,
+    saved_selection_error: None,
+    native_route: None,
+    route_generation: 0,
+    route_loading: false,
+    route_error: None,
+    workspace_generation: 1,
+    submission_generation: 0,
+    pending_research: None,
+    research_message_sent: false,
+    pending_qa: None,
+    qa_canonical_key: None,
+    qa_agent_status: "not-created",
+    pending_qa_restore: None,
+    qa_readback_loading: false,
+    question_generation: 0,
+    pending_question: None,
+    qa_error: None,
+    qa_response_context: None,
+    qa_answered_question: None,
+    qa_answer_text: None,
     phase: Ready,
     research_session: None,
     qa_session: None,
     review_phase: ReviewIdle,
     review_prepare_reply: None,
+    review_pending_context: None,
+    review_request_generation: 0,
+    review_drafts: Map([]),
+    review_context_notice: None,
+    delivery: empty_delivery(0),
+    result_page: 0,
     qa_ready: false,
     reviewer_name: "",
     review_outcome: "",
     review_scope: "",
-    review_message: "Approve only claims supported by cited evidence. Keep unauthenticated transcript claims attributed and preserve page 1 as missing.",
+    review_message: "",
     information_gap_severity: 1,
     information_gap_summary: "Record what evidence was missing before the synthesis decision.",
     recognition_gap_severity: 0,
     recognition_gap_summary: "The named reviewer recognized the material evidence boundary.",
     decisiveness_gap_severity: 1,
     decisiveness_gap_summary: "Record what reviewed rule or experiment is still required before action.",
-    qa_question: "What is the strongest evidence for and against the transcript's central DeepSeek strategy thesis?",
+    qa_question: "",
     workspace: None,
     research_execution: None,
     capability_submit_url: None,
@@ -651,6 +737,7 @@ fn initial_model() -> Model {
     host_status: "loading",
     host_blockers: [],
     moontown_handoff: None,
+    moontown_result: None,
     review_workflow: None,
     moonflow_run_id: browser_query_value("moonflow_run"),
     moonflow_handoff_token: browser_query_value("moonflow_handoff"),
@@ -818,7 +905,10 @@ fn review_gap_issues(model : Model) -> Array[String] {
 ///|
 fn review_phase_from_workflow(workflow : ReviewWorkflowStatus) -> ReviewPhase {
   match workflow.state {
-    "awaiting-moonchat" | "ready-for-bookkeeper" => ReviewBundleReady
+    "awaiting-moonchat"
+    | "ready-for-bookkeeper"
+    | "review-rejected"
+    | "review-deferred" => ReviewBundleReady
     "ready-for-human-review" | "not-ready" => ReviewIdle
     _ => ReviewFailed
   }
@@ -1001,7 +1091,12 @@ fn gateway_base_from_snapshot(
   snapshot : WorkspaceSnapshot,
   fallback : String,
 ) -> String {
-  snapshot.moonclaw_gateway_base.unwrap_or(fallback)
+  let base = snapshot.moonclaw_gateway_base.unwrap_or(fallback)
+  if base.has_prefix("/") {
+    product_api_url(base)
+  } else {
+    base
+  }
 }
 
 ///|
@@ -1024,7 +1119,7 @@ fn review_request_issues(
     issues.push("Choose approve_subset, request_changes, or reject.")
   }
   if outcome == "approve_subset" && scope.trim().is_blank() {
-    issues.push("List the exact claim IDs or sections approved.")
+    issues.push("List the exact synthesis idea IDs approved.")
   }
   if instruction.trim().is_blank() {
     issues.push("Record the reviewer rationale or requested change.")
@@ -1053,17 +1148,4 @@ fn phase_from_session(session : CoworkSessionDetail) -> ResearchPhase {
     Some(run) => phase_from_run_status(run.status)
     None => Ready
   }
-}
-
-///|
-fn latest_assistant_message(session : CoworkSessionDetail) -> String? {
-  for i = session.messages.length() - 1; i >= 0; i = i - 1 {
-    let message = session.messages[i]
-    if message.role == "assistant" &&
-      message.kind == "assistant" &&
-      !message.content.is_blank() {
-      return Some(message.content)
-    }
-  }
-  None
 }

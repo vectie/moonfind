@@ -88,6 +88,12 @@
         "detail": { "type": "string", "minLength": 1 }
       }
     },
+    "moontown_result": {
+      "anyOf": [
+        { "$ref": "moontown-result-view.schema.json" },
+        { "type": "null" }
+      ]
+    },
     "review_workflow": {
       "type": "object",
       "additionalProperties": false,

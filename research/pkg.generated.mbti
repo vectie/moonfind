@@ -175,6 +175,7 @@ pub(all) struct ResearchRun {
   completed_at : Int64?
   human_review_status : String
   accepted_idea_ids : Array[String]
+  reviewed_synthesis : ReviewedSynthesisSelection?
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 pub fn ResearchRun::apply_human_review(Self, HumanResearchReview) -> Self raise
 
@@ -190,7 +191,15 @@ pub(all) struct ResearchWatch {
   domain_profile : String
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
+pub(all) struct ReviewedSynthesisSelection {
+  review_id : String
+  reviewer_id : String
+  source_ref : String
+  source_digest : String
+  accepted_idea_ids : Array[String]
+  rejected_idea_ids : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 // Type aliases
 
 // Traits
-

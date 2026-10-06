@@ -129,7 +129,7 @@ fn action_button(
 ///|
 fn phase_text(phase : ResearchPhase) -> String {
   match phase {
-    Ready => "Ready"
+    Ready => "Not started"
     CreatingSession => "Creating session"
     Confirming => "Confirming"
     Running => "Running"
@@ -171,7 +171,7 @@ fn review_actions(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
     .unwrap_or(false)
   match model.review_phase {
     ReviewIdle | ReviewFailed =>
-      if workflow_ready {
+      if workflow_ready && current_synthesis(model) is Some(_) {
         actions.push(
           action_button(
             "Prepare MoonChat review bundle",
@@ -396,21 +396,14 @@ fn setup_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
         "MoonBook workspace",
         text_field(
           model.book_dir,
-          "/Users/name/Workspace/deepseek-research-book",
+          "Load the trusted Book workspace",
           emit.map(value => SetBookDir(value)),
         ),
       ),
       if research_execution_terminal(model) {
         @html.nothing
       } else {
-        field_label(
-          "MoonClaw model route",
-          text_field(
-            model.model_name,
-            "codex/gpt-5.6-sol",
-            emit.map(value => SetModelName(value)),
-          ),
-        )
+        model_picker(emit, model)
       },
       research_actions(emit, model),
       match model.research_execution {
@@ -483,6 +476,13 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
     id="named-review",
     style=surface() + ["padding:18px", "display:grid", "gap:11px"],
     [
+      completed_result_panel(emit, model),
+      delivery_panel(emit, model),
+      retained_review_panel(emit, model),
+      match model.review_context_notice {
+        Some(message) => p(class="evidence-boundary", message)
+        None => @html.nothing
+      },
       div([
         eyebrow("PORTABLE REVIEW → BOOKKEEPER"),
         h2(
@@ -561,7 +561,7 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
             option(
               value="request_changes",
               selected=model.review_outcome == "request_changes",
-              "Request changes",
+              "Defer / request changes",
             ),
             option(
               value="reject",
@@ -572,12 +572,16 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
         ),
       ),
       field_label(
-        "Decision scope",
+        "Decision scope · exact synthesis IDs",
         text_field(
           model.review_scope,
-          "Exact Cxx claim IDs or sections; required for approval",
+          "Select result ideas above or enter exact IDs, separated by commas",
           emit.map(value => SetReviewScope(value)),
         ),
+      ),
+      p(
+        class="evidence-boundary",
+        "Defer keeps the named decision unresolved and preserves your reason for waiting or requesting changes. Reject closes this version's review. Neither choice approves ideas or prepares a MoonBook submission; reconsideration needs a new research revision.",
       ),
       field_label(
         "Reviewer rationale or requested change",
@@ -701,7 +705,15 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
               "border-radius:11px",
             ],
             [
-              eyebrow("READY FOR MOONBOOK"),
+              eyebrow(
+                if workflow
+                  .map(value => value.state == "ready-for-bookkeeper")
+                  .unwrap_or(false) {
+                  "READY FOR MOONBOOK"
+                } else {
+                  "RETAINED MOONBOOK SUBMISSION"
+                },
+              ),
               code(
                 style=["color:#8fdccc", "overflow-wrap:anywhere"],
                 submission_ref,
@@ -714,7 +726,13 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
               ),
               small(
                 style=["color:#f4cb72", "line-height:1.45"],
-                "Open MoonBook's existing Rabbita Bookkeeper queue to review the deliverable. This MoonFind view cannot accept or activate it.",
+                if workflow
+                  .map(value => value.state == "ready-for-bookkeeper")
+                  .unwrap_or(false) {
+                  "Open MoonBook's existing Rabbita Bookkeeper queue to review the deliverable. This MoonFind view cannot accept or activate it."
+                } else {
+                  "This saved submission is retained for inspection. The current review is not ready for a new handoff; restore the exact evidence or create a new research revision. MoonBook acceptance is unknown."
+                },
               ),
             ],
           )
@@ -726,18 +744,24 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
 
 ///|
 fn qa_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
-  let answer = model.qa_session
-    .bind(latest_assistant_message)
-    .unwrap_or(
-      "Prepare the retained session after the research workspace exists. The readiness receipt or latest cited answer will appear here.",
+  let answer = if model.qa_response_context ==
+    Some(qa_projection_context(model)) {
+    model.qa_answer_text.unwrap_or(
+      "No cited response has been returned for this evidence yet.",
     )
+  } else {
+    "No response is bound to the current evidence yet. Prepare Q&A or ask a new question; a previous response is not evidence for this run."
+  }
   section(style=surface() + ["padding:18px", "display:grid", "gap:11px"], [
     div([
       eyebrow("RETAINED AGENT"),
-      h2(style=["margin:5px 0", "font-size:19px"], "Ask the DeepSeek book"),
+      h2(
+        style=["margin:5px 0", "font-size:19px", "overflow-wrap:anywhere"],
+        "Ask about " + research_context_title(model),
+      ),
       p(
         style=["margin:0", "color:#95aac5", "line-height:1.5"],
-        "Answers must cite the book, separate later web updates, and preserve pending-review labels.",
+        "Answers use this run's supplied evidence and citations. Missing sources stay missing; Q&A cannot accept ideas or change named review. Reloading restores the retained session with read-only requests. Ask explicitly to supply the current evidence.",
       ),
     ]),
     match model.qa_session {
@@ -746,15 +770,61 @@ fn qa_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
           style=["color:#79dccb", "font-size:11px", "overflow-wrap:anywhere"],
           session.session.session_key,
         )
-      None =>
-        if model.gateway_published {
-          action_button("Prepare Q&A agent", emit(PrepareQa), primary=true)
-        } else {
+      None => @html.nothing
+    },
+    if model.pending_qa is Some(_) {
+      button(
+        disabled=true,
+        attrs=@html.Attrs::build().aria_busy("true"),
+        "Preparing Q&A…",
+      )
+    } else if model.pending_qa_restore is Some(_) || model.qa_readback_loading {
+      button(
+        disabled=true,
+        attrs=@html.Attrs::build().aria_busy("true"),
+        "Checking retained Q&A…",
+      )
+    } else if qa_retained_issue(model) is Some(issue) {
+      div([
+        p(style=["color:#f4cb72"], issue),
+        action_button(
+          if model.book_dir != model.trusted_book_dir {
+            "Restore trusted Book and reconnect"
+          } else {
+            "Check retained session"
+          },
+          emit(RefreshQa),
+        ),
+      ])
+    } else if !model.gateway_published {
+      div([
+        small(
+          style=["color:#f4cb72"],
+          "No reachable MoonClaw gateway was published; check the host connection before reconnecting.",
+        ),
+        action_button("Check retained session", emit(RefreshQa)),
+      ])
+    } else if model.qa_canonical_key is Some(_) {
+      if model.qa_session is None {
+        action_button("Check retained session", emit(RefreshQa))
+      } else if !model.qa_ready {
+        div([
           small(
             style=["color:#f4cb72"],
-            "No reachable MoonClaw gateway was published; the retained agent is unavailable.",
-          )
-        }
+            "This session is retained, but preparation is unfinished. Use the selected exact model to finish preparation.",
+          ),
+          action_button(
+            "Finish Q&A preparation",
+            emit(FinishQaPreparation),
+            primary=true,
+          ),
+          action_button("Check retained session", emit(RefreshQa)),
+        ])
+      } else {
+        @html.nothing
+      }
+    } else {
+      action_button("Prepare Q&A agent", emit(PrepareQa), primary=true)
     },
     field_label(
       "Question",
@@ -770,12 +840,35 @@ fn qa_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
         "",
       ),
     ),
-    if model.qa_ready {
-      action_button("Ask retained agent", emit(AskQa), primary=true)
+    match model.qa_error {
+      Some(error) =>
+        p(
+          attrs=@html.Attrs::build().role("alert"),
+          style=["color:#f4cb72"],
+          error,
+        )
+      None => @html.nothing
+    },
+    if model.pending_question is Some(_) {
+      button(
+        disabled=true,
+        attrs=@html.Attrs::build().aria_busy("true"),
+        "Answering…",
+      )
+    } else if model.qa_ready {
+      action_button(
+        if model.qa_error is Some(_) {
+          "Retry question"
+        } else {
+          "Ask retained agent"
+        },
+        emit(AskQa),
+        primary=true,
+      )
     } else {
       small(
         style=["color:#8297b4"],
-        "Ask becomes available after the grounding receipt returns.",
+        "Ask becomes available after Q&A preparation finishes.",
       )
     },
     article(
@@ -784,6 +877,14 @@ fn qa_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
       ],
       [
         eyebrow("LATEST RESPONSE"),
+        if model.qa_response_context == Some(qa_projection_context(model)) {
+          match model.qa_answered_question {
+            Some(question) => p([strong("Question answered: "), span(question)])
+            None => @html.nothing
+          }
+        } else {
+          @html.nothing
+        },
         pre(
           style=[
             "white-space:pre-wrap", "overflow-wrap:anywhere", "font:12px/1.55 ui-monospace,SFMono-Regular,monospace",
@@ -870,7 +971,13 @@ fn evidence_panel(model : Model) -> @rabbita.Html {
       .map(value => "run \{value.run_id} · \{value.query}")
       .unwrap_or("no durable run loaded"),
     ),
-    if model.gateway_published && !research_execution_terminal(model) {
+    match workspace {
+      Some(value) => evidence_detail_panel(value)
+      None => @html.nothing
+    },
+    if model.gateway_published &&
+      !research_execution_terminal(model) &&
+      !model.gateway_base.contains("/api/v1/cowork-gateway") {
       a(
         href=model.gateway_base + "/ui",
         target=Blank,
@@ -880,7 +987,10 @@ fn evidence_panel(model : Model) -> @rabbita.Html {
     } else {
       small(
         style=["color:#8297b4"],
-        if research_execution_terminal(model) {
+        if model.gateway_base.contains("/api/v1/cowork-gateway") &&
+          !research_execution_terminal(model) {
+          "Cowork is connected through the trusted MoonFind host. Its separate operator interface is not published by this relay."
+        } else if research_execution_terminal(model) {
           "The terminal run is projected from durable evidence; no live MoonClaw operator is required."
         } else {
           "No reachable MoonClaw operator was published."

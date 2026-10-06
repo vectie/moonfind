@@ -65,7 +65,7 @@ fn adapter_request(
     attempt: 1,
     estimated_cost_micros: 0,
   }
-  { ..seed, evidence_path: expected_evidence_path(seed) }
+  { ..seed, evidence_path: expected_evidence_path(seed), }
 }
 
 ///|
@@ -118,11 +118,7 @@ async test "pack adapter submits once and reconciles durably without a provider"
   assert_eq(first.status, "succeeded")
   assert_eq(first.output_artifacts, [request.evidence_path])
   guard first.output
-    is {
-      "protocol": String("moonclaw.mooncode.v1"),
-      "model": String("gpt-5.6-sol"),
-      ..
-    } else {
+    is { "protocol": String("moonclaw.mooncode.v1"), "model": String(""), .. } else {
     fail("adapter output is not the governed MoonClaw command")
   }
   let replay = submit(AdapterConfig::new(workspace), request)

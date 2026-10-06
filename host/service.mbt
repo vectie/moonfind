@@ -6,10 +6,11 @@ pub(all) struct Config {
   public_base_url : String
   capability_catalog_path : String?
   moonclaw_gateway_base : String?
+  moonclaw_gateway_token : String?
   moonclaw_submit_url : String?
   moonclaw_reconcile_url : String?
   moontown_base_url : String?
-} derive(Debug)
+}
 
 ///|
 fn run_artifact(config : Config, name : String) -> String raise {
@@ -224,18 +225,21 @@ pub async fn reconcile_execution(
 
 ///|
 async fn fetch_cowork_checkpoint(
-  gateway_base : String,
+  config : Config,
   session_key : String,
 ) -> Result[CoworkCheckpointRun?, String] noraise {
-  let url = trimmed_base(gateway_base) + "/v1/cowork/sessions/" + session_key
   try {
-    let (response, data) = @http.get(url)
-    guard response.code >= 200 && response.code < 300 else {
-      fail("MoonClaw Cowork gateway returned HTTP \{response.code}")
-    }
-    let payload : CoworkCheckpointPayload = @json.from_json(
-      @json.parse(data.text()),
+    let value = fetch_cowork_json(
+      config,
+      "/v1/cowork/sessions/" + session_key,
+      None,
     )
+    guard valid_checkpoint_session_binding(config, session_key, value) else {
+      fail(
+        "Cowork checkpoint session identity or workspace differs from the trusted run binding.",
+      )
+    }
+    let payload : CoworkCheckpointPayload = @json.from_json(value)
     payload.session.linked_run
   } catch {
     error => Err("\{error}")
@@ -361,7 +365,17 @@ pub async fn checkpoint_execution(
       previous,
     )
   }
-  match fetch_cowork_checkpoint(gateway, request.session_key) {
+  guard checkpoint_session_authorized(
+    request.session_key,
+    previous.moonclaw_session_key,
+    registered_cowork_keys(config),
+  ) else {
+    return blocked_reply(
+      "checkpoint", "Cowork session is not independently bound to this MoonFind run; it was not fetched or adopted.",
+      previous,
+    )
+  }
+  match fetch_cowork_checkpoint(config, request.session_key) {
     Err(error) =>
       blocked_reply(
         "checkpoint",

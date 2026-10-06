@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "moonfind/delivery@1.0.0",
+  "title": "MoonFind retained research file delivery",
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+    "id": { "type": "string", "pattern": "^delivery-[0-9a-f]{64}$" },
+    "file": {
+      "type": "object", "additionalProperties": false,
+      "required": ["name", "media_type", "byte_count", "digest"],
+      "properties": {
+        "name": { "enum": ["report.md", "evidence.json", "synthesis.json"] },
+        "media_type": { "enum": ["text/markdown; charset=utf-8", "application/json; charset=utf-8"] },
+        "byte_count": { "type": "integer", "minimum": 0 },
+        "digest": { "$ref": "#/$defs/digest" }
+      }
+    },
+    "manifest": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contract_id", "run_id", "delivery_id", "run_digest", "source_digest", "files", "boundary"],
+      "properties": {
+        "contract_id": { "const": "moonfind.delivery-manifest.v1" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "delivery_id": { "$ref": "#/$defs/id" },
+        "run_digest": { "$ref": "#/$defs/digest" },
+        "source_digest": { "$ref": "#/$defs/digest" },
+        "files": { "type": "array", "minItems": 3, "maxItems": 3, "items": { "$ref": "#/$defs/file" } },
+        "boundary": { "type": "string", "minLength": 1 }
+      }
+    },
+    "prepare": {
+      "type": "object", "additionalProperties": false,
+      "required": ["contract_id", "run_id", "source_digest"],
+      "properties": {
+        "contract_id": { "const": "moonfind.delivery-prepare.v1" },
+        "run_id": { "type": "string", "minLength": 1 },
+        "source_digest": { "$ref": "#/$defs/digest" }
+      }
+    }
+  },
+  "type": "object", "additionalProperties": false,
+  "required": ["contract_id", "run_id", "state", "detail", "manifest", "issues", "versions"],
+  "properties": {
+    "contract_id": { "const": "moonfind.delivery-status.v1" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "state": { "enum": ["not-prepared", "complete", "incomplete", "stale", "unavailable"] },
+    "detail": { "type": "string" },
+    "manifest": { "anyOf": [{ "$ref": "#/$defs/manifest" }, { "type": "null" }] },
+    "issues": { "type": "array", "items": { "type": "string" } },
+    "versions": { "type": "array", "items": { "$ref": "#/$defs/id" } }
+  }
+}

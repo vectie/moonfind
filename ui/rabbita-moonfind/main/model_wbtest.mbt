@@ -1,3 +1,4 @@
+///|
 test "run status normalization maps gateway states to review phases" {
   assert_eq(phase_from_run_status("\"Succeeded\"") == Completed, true)
   assert_eq(phase_from_run_status(" WaitingForInput ") == NeedsReview, true)
@@ -10,7 +11,7 @@ test "initial model remains pending and targets the governed workspace" {
   let model = initial_model()
   assert_eq(model.phase == Ready, true)
   assert_eq(model.gateway_published, false)
-  assert_eq(model.book_dir, "/Users/kq/Workspace/deepseek-research-book")
+  assert_eq(model.book_dir, "")
   assert_eq(model.reviewer_name, "")
   assert_eq(model.review_outcome, "")
   assert_eq(model.review_scope, "")
@@ -140,7 +141,7 @@ test "terminal durable execution skips refresh and opens named review cleanly" {
   assert_eq(execution_needs_session_refresh(snapshot.research_execution), false)
   let (_, loaded) = update(
     _ => @rabbita.none,
-    WorkspaceLoaded(Ok(snapshot)),
+    WorkspaceLoaded(1, Ok(snapshot)),
     initial_model(),
   )
   assert_eq(loaded.phase == Completed, true)
@@ -161,7 +162,7 @@ test "post-run review requires identity outcome rationale and explicit approval 
   assert_eq(
     review_request_issues(
       "kq", "approve_subset", "", "Approve supported claims.",
-    ).contains("List the exact claim IDs or sections approved."),
+    ).contains("List the exact synthesis idea IDs approved."),
     true,
   )
   assert_eq(
@@ -213,9 +214,12 @@ test "MoonFlow launch and receiver identities fail closed" {
 
 ///|
 test "every Q&A turn carries its own grounding and privacy contract" {
-  let prompt = qa_grounding_prompt("Compare the strongest claims.")
-  assert_eq(prompt.contains("state/review-status.json"), true)
-  assert_eq(prompt.contains("local:pN"), true)
-  assert_eq(prompt.contains("Never reconstruct missing page 1"), true)
+  let prompt = qa_grounding_prompt(
+    qa_projection_context(route_model()),
+    "Compare the strongest claims.",
+  )
+  assert_eq(prompt.contains("run-1"), true)
+  assert_eq(prompt.contains("do not invent files, paths, citations"), true)
+  assert_eq(prompt.contains("Q&A cannot approve MoonBook changes"), true)
   assert_eq(prompt.contains("Compare the strongest claims."), true)
 }

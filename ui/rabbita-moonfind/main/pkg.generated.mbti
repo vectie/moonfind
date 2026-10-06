@@ -15,6 +15,8 @@ type CapabilityOperationReply derive(@debug.Debug, @json.FromJson)
 
 type CapabilityReceiptProjection derive(@debug.Debug, @json.FromJson)
 
+type CompletedResult derive(@debug.Debug, @json.FromJson)
+
 type CoworkMessage derive(@debug.Debug, @json.FromJson)
 
 type CoworkProposalRef derive(@debug.Debug, @json.FromJson)
@@ -27,23 +29,98 @@ type CoworkSessionPayload derive(@debug.Debug, @json.FromJson)
 
 type CoworkSessionSummary derive(@debug.Debug, @json.FromJson)
 
+type DeliveryFile derive(ToJson, @debug.Debug, @json.FromJson)
+
+type DeliveryManifest derive(ToJson, @debug.Debug, @json.FromJson)
+
+type DeliveryRequest derive(Eq, @debug.Debug)
+
+type DeliveryStatus derive(ToJson, @debug.Debug, @json.FromJson)
+
+type DeliveryView
+
 type DurableResearchWorkspace derive(@debug.Debug, @json.FromJson)
 
+type EvidenceClaim derive(ToJson, @debug.Debug, @json.FromJson)
+
+type EvidenceIdea derive(ToJson, @debug.Debug, @json.FromJson)
+
+type EvidencePaper derive(ToJson, @debug.Debug, @json.FromJson)
+
+type EvidenceQuestion derive(ToJson, @debug.Debug, @json.FromJson)
+
+type EvidenceSummary derive(ToJson, @debug.Debug, @json.FromJson)
+
 type Model
+
+type ModelSubmission derive(Eq, @debug.Debug)
+
+type MoonFlowHandoffAuthority derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowHandoffBinding derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowHandoffContracts derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowHandoffEntrypoint derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowHandoffEvidence derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowHandoffInputs derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowHandoffPayload derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowHandoffReview derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowHandoffRun derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowReceiverHandoff derive(ToJson, @debug.Debug, @json.FromJson)
+
+type MoonFlowReceiverStatus derive(@debug.Debug, @json.FromJson)
+
+type MoonFlowReviewReceiptReply derive(@debug.Debug, @json.FromJson)
 
 type MoonTownHandoffStatus derive(@debug.Debug, @json.FromJson)
 
 type Msg
 
+type NativeModelRoute derive(@debug.Debug, @json.FromJson)
+
+type QaQuestionRequest derive(Eq, @debug.Debug)
+
+type QaRestoreRequest derive(Eq, @debug.Debug)
+
 type ResearchExecutionProjection derive(@debug.Debug, @json.FromJson)
+
+type ResearchJourney derive(Eq, @debug.Debug)
 
 type ResearchPhase derive(Eq, @debug.Debug)
 
+type ReviewDecisionReceipt derive(@debug.Debug, @json.FromJson)
+
+type ReviewDraft
+
 type ReviewPhase derive(Eq, @debug.Debug)
+
+type ReviewPrepareReply derive(@debug.Debug, @json.FromJson)
+
+type ReviewWorkflowStatus derive(@debug.Debug, @json.FromJson)
+
+type SeriesExclusionProjection derive(Eq, @debug.Debug, @json.FromJson)
+
+type SeriesGraphProjection derive(Eq, @debug.Debug, @json.FromJson)
+
+type SeriesPhaseProjection derive(Eq, @debug.Debug, @json.FromJson)
+
+type SeriesStageProjection derive(Eq, @debug.Debug, @json.FromJson)
+
+type SeriesUseCaseProjection derive(Eq, @debug.Debug, @json.FromJson)
+
+type SynthesisIdea derive(@debug.Debug, @json.FromJson)
+
+type SynthesisOutput derive(@debug.Debug, @json.FromJson)
 
 type WorkspaceSnapshot derive(@debug.Debug, @json.FromJson)
 
 // Type aliases
 
 // Traits
-

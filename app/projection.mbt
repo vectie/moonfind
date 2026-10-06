@@ -48,7 +48,9 @@ pub fn project_research_workspace(
     summary_count: run.summaries.length(),
     idea_count: run.ideas.length(),
     question_count: run.questions.length(),
-    accepted_idea_count: run.accepted_idea_ids.length(),
+    accepted_idea_count: run.reviewed_synthesis
+    .map(selection => selection.accepted_idea_ids.length())
+    .unwrap_or(run.accepted_idea_ids.length()),
     pipeline: [
       "arXiv intake", "paper normalization", "MoonClaw analysis", "Moontown cross-paper salon",
       "named human review", "Bookkeeper Three-Gap learning",

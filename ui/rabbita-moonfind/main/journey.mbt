@@ -65,6 +65,23 @@ fn research_journey_state(
       target: "review",
     }
   }
+  if review_state
+    is ("review-rejected"
+    | "review-deferred"
+    | "review-stale"
+    | "review-evidence-invalid") {
+    return {
+      position: 3,
+      title: if review_state == "review-deferred" {
+        "Revisit the deferred decision"
+      } else {
+        "Inspect the retained review"
+      },
+      detail: "Read the retained rationale and objections. Restore exact evidence or create a revised research run before another decision; no MoonBook acceptance is implied.",
+      action: "Inspect decision",
+      target: "review",
+    }
+  }
   {
     position: 4,
     title: "Return reviewed learning to MoonBook",

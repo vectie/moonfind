@@ -4,6 +4,8 @@ pub(all) struct MoonClawResearchCommand {
   session_id : String
   book_root : String
   command : String
+  // Empty means this preparation-only packet has no model assignment.
+  // The trusted execution transport must bind an exact selected model.
   model : String
   capability_scope_id : String
   capability_participant_id : String
@@ -87,8 +89,10 @@ fn command_responsibility_issues(
   if command.protocol != "moonclaw.mooncode.v1" || command.command != "prompt" {
     issues.push("Moonfind must use the existing MoonClaw prompt protocol")
   }
-  if command.model != "gpt-5.6-sol" {
-    issues.push("Moonfind analysis must use gpt-5.6-sol")
+  if command.model != command.model.trim().to_owned() {
+    issues.push(
+      "Moonfind command model must be an exact selector or unassigned",
+    )
   }
   if command.capability_scope_id != expected_scope_id ||
     command.capability_participant_id.is_blank() {
@@ -187,7 +191,7 @@ pub fn prepare_humanoid_analysis_command_with_evidence(
     session_id: "moonfind-\{run.run_id}",
     book_root,
     command: "prompt",
-    model: "gpt-5.6-sol",
+    model: "",
     capability_scope_id: "moonfind.humanoid.synthesis",
     capability_participant_id: participant_id,
     text: "Analyze the selected arXiv papers and generate evidence-backed humanoid robotics model ideas through cross-paper synthesis.",
@@ -245,7 +249,7 @@ pub fn prepare_local_corpus_analysis_command(
     session_id: "moonfind-local-\{ledger.ledger_id}",
     book_root,
     command: "prompt",
-    model: "gpt-5.6-sol",
+    model: "",
     capability_scope_id: "moonfind.local-corpus.research",
     capability_participant_id: participant_id,
     text: "Analyze the fully accounted local corpus, cross-validate its claims, and persist a reviewable iteration in MoonBook.",
@@ -302,7 +306,7 @@ pub fn prepare_book_qa_command(
     session_id: "moonfind-\{book_id}-qa",
     book_root,
     command: "prompt",
-    model: "gpt-5.6-sol",
+    model: "",
     capability_scope_id: "moonfind.book.qa",
     capability_participant_id: participant_id,
     text: question,

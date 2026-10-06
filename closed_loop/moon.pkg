@@ -4,6 +4,7 @@ import {
   "moonbitlang/x/crypto",
   "vectie/moonfind/moontown",
   "vectie/moonfind/research",
+  "vectie/moonfind/vendor/moonchat/review",
 }
 
 supported_targets = "native"

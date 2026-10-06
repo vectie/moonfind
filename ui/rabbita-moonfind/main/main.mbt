@@ -6,7 +6,7 @@ fn main {
   let app = @rabbita.new(cell)
   app.with_init(
     @rabbita.batch([
-      load_workspace_snapshot(emit),
+      load_workspace_snapshot(emit, model.workspace_generation),
       load_series_catalog(emit),
       load_moonflow_receiver(
         emit,
