@@ -1,10 +1,10 @@
 {
   "id": "moonfind",
   "version": "0.1.0",
-  "display_name": "Moonfind Evidence-Backed AutoResearch",
+  "display_name": "Moonfind Research Jobs",
   "product_id": "moonfind",
   "kind": "DomainPack",
-  "required_runtime_extensions": ["moonclaw", "moontown", "moonbook"],
+  "required_runtime_extensions": ["moonclaw"],
   "book_templates": [
     {
       "id": "moonfind-research-book",
@@ -20,6 +20,9 @@
     }
   ],
   "schemas": [
+    {"id": "research-job", "version": "1.0.0", "path": "schemas/research-job.schema.json"},
+    {"id": "delivery-manifest", "version": "1.0.0", "path": "schemas/delivery-manifest.schema.json"},
+    {"id": "delivery-evidence", "version": "1.0.0", "path": "schemas/delivery-evidence.schema.json"},
     {"id": "research-watch", "version": "1.0.0", "path": "schemas/research-watch.schema.json"},
     {"id": "local-input-coverage", "version": "1.0.0", "path": "schemas/local-input-coverage.schema.json"},
     {"id": "paper-record", "version": "1.0.0", "path": "schemas/paper-record.schema.json"},
@@ -189,6 +192,11 @@
     }
   ],
   "app_entrypoints": [
+    {
+      "id": "research-jobs",
+      "path": "/apps/moonfind/jobs",
+      "audience": "researcher"
+    },
     {
       "id": "research-studio",
       "path": "/apps/moonfind/research",

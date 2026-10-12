@@ -1,0 +1,33 @@
+[
+  {
+    "id": "https://example.org/zotero/items/LUNAR001",
+    "type": "paper-conference",
+    "citation-key": "garcia2025Lunar",
+    "title": "Contact sensing on lunar terrain 🌒",
+    "author": [{"family": "García", "given": "Ana"}, {"family": "王", "given": "明"}],
+    "issued": {"date-parts": [[2025, 6, 12]]},
+    "container-title": "Lunar Systems Workshop",
+    "keyword": "contact; locomotion",
+    "DOI": "10.1234/synthetic.lunar001",
+    "URL": "https://example.org/synthetic-lunar",
+    "abstract": "First abstract line.\n第二行 with Unicode.",
+    "custom": {"fixture": "Synthetic example, not a real publication"}
+  },
+  {
+    "id": 9007199254740993,
+    "type": "article-journal",
+    "title": "Tactile mapping <script>alert(1)</script>",
+    "author": [{"family": "Smith", "given": "Jo"}, {"literal": "Research and Development Group"}],
+    "issued": {"date-parts": [[2024]]},
+    "container-title": "Synthetic Robotics Review",
+    "abstract": "A fictional alternative for the example comparison."
+  },
+  {
+    "id": "notes-2026",
+    "type": "book",
+    "title": "Références locales",
+    "editor": [{"family": "García", "given": "Ana"}],
+    "issued": {"literal": "forthcoming"},
+    "publisher": "Synthetic Research Press"
+  }
+]

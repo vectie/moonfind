@@ -1,104 +1,105 @@
-# Moonfind phase plan
+# Moonfind implementation priorities
 
-## Phase 1 — usable feature path (implemented)
+Revised 2026-09-26. The product target is a general research job that ends in
+usable, inspectable files. Humanoid robotics is a specialization of the same
+job path. MoonClaw remains the only agent runtime; MoonFlow owns generic
+activation; MoonBook owns reviewed memory and Three-Gap records.
 
-- Generic research watch, paper, claim, summary, question, idea, run, and human-review contracts.
-- Live arXiv Atom acquisition plus deterministic humanoid relevance ranking.
-- `gpt-5.6-sol` MoonClaw command packet with strict evidence and humanoid-model output contracts.
-- Moontown `research-salon` projection where each paper is a participant book and every proposed idea bridges at least two books.
-- Versioned `moontown.civic.communication.handoff.v1` envelope binding the scenario to the exact Moonfind producer run.
-- Durable `moontown.civic.communication.receipt.v1` import that proves which reducer ran, how many participant books and reviewable outputs were materialized, and which synthesis/review artifacts were written.
-- Typed humanoid model specification covering tokens, memory, actions, objectives, training, datasets, simulation, hardware, benchmarks, ablations, safety, and falsification.
-- Durable MoonBit CLI run bundle.
-- Rabbita research workspace.
-- Named-human reviewed deliverable intake into MoonBook Bookkeeper, followed by Bookkeeper-owned outcome binding, plus an assignment-bound MoonFlow observation.
+## P0 — make one general job deliver real files
 
-## Phase 2 — governed provider operation (implemented contracts and ports)
+1. **Prove installed-pack execution.** Native check and tests, a temporary
+   pack install and verification, and MoonDesk proxy smoke tests pass. The
+   proxy served source intake, preview, ZIP attachment, revision, and resume
+   route handling. The general MoonClaw path completed live jobs and reloaded
+   their delivery state after host restart. Repeat the smoke test for a
+   release build.
+2. **Persist a job brief before execution.** Accept an objective, audience,
+   source scope, requested output kinds/formats, and acceptance criteria via
+   Rabbita and a typed host endpoint. This first slice is implemented for
+   prompt-driven jobs. Extend it to local corpus and research watch without
+   requiring a fixed research recipe.
+3. **Run the generic research path through MoonClaw.** The host opens a
+   Cowork session, persists its key, plans the output-oriented brief, promotes
+   it to a proposal and starts the writable MoonClaw job run. It records
+   proposal and run IDs. A finished run's files are imported into the
+   MoonFind delivery folder on refresh. A waiting run now exposes its reason
+   and a response field in the job screen; add a richer progress timeline.
+4. **Assemble the delivery bundle.** Create each requested file under a safe
+   workspace-relative path, record its actual digest and byte length, link
+   source or generation evidence, and run every declared acceptance check.
+   The trusted host now issues `moonfind.delivery-manifest.v1` after checking
+   current file bytes, referenced evidence files, and submitted criteria
+   receipts. It detects changed outputs. Independent scientific review of
+   those receipts remains necessary.
+5. **Make delivery the UI endpoint.** The UI now shows actual files, open links,
+   text/image previews, ZIP export, missing requested filenames, verification,
+   and stale-manifest status. Citations and unresolved gaps remain visible in
+   the artifact and manifest; richer checks are still useful. Review remains
+   pending at handoff.
 
-- Full-text evidence is admitted only with provider-use and hostile-PDF isolation receipts; page/section locations are mandatory.
-- MoonDesk composes and imports the typed graph, then invokes only authority-bound MoonFlow actions backed by the existing MoonClaw host; no secondary runtime exists.
-- Moontown reducer output is imported and validated separately from its execution receipt before human review.
-- Add research-watch scheduling through generic MoonFlow schedules.
-- Crossref, OpenAlex, Semantic Scholar, and licensed-fulltext policy ports are present and deny by default until reviewed terms permit the requested use.
+**P0 exit gate:** From a fresh install, complete one literature brief, one
+local-corpus report, and one comparison job with different requested output
+sets. Each returns actual files and a verified manifest through the UI. Kill
+and restart the host during one run without duplicating work or losing files.
 
-## Phase 3 — experiment execution
+## P1 — improve research depth and output quality
 
-- Project accepted humanoid model ideas into MoonCode work orders for dataset adapters, training code, and evaluation harnesses.
-- Attach experiment plans to exact paper claims, code commits, datasets, seeds, metrics, and compute receipts.
-- Ingest experiment results as positive, negative, or inconclusive evidence; never discard failed ideas.
-- Compare baseline and challenger capabilities through MoonFlow assignment records and Moontown longitudinal observations.
+1. Supplied text, public HTTPS snapshots, and arXiv metadata/abstracts now
+   enter the generic job's `input/`. Add licensed source adapters in order of job demand. Keep source terms,
+   model-input rights, retention, and full-text isolation fail-closed.
+2. Add reusable deliverable recipes: cited report, evidence table, technical
+   memo, experiment plan, and reproducible figure. A recipe supplies default
+   files and checks; the user can adjust them in the job brief.
+3. The first revision loop creates a child job for one requested file, copying
+   prior sources and the file into `input/` and recording parent ID, base digest,
+   and requested change. Extend the UI to compare versions, carry reviewed
+   evidence links forward, and choose a final version.
+4. Add job-level quality checks for unsupported claims, missing citations,
+   unreported exclusions, broken file references, and incomplete requested
+   outputs. Separate deterministic checks from model-based critique.
+5. Show source coverage and limitations beside the final files. Do not call
+   abstract-only intake a full-text review or an unreviewed draft accepted.
 
-## Phase 4 — governed reinforcement loop
+**P1 exit gate:** A user can request, inspect, revise, and export a multi-file
+research package without navigating MoonSuite internals. Independent review
+can trace every material claim to a permitted source and every final file to
+its verification record.
 
-- Let MoonBook Bookkeeper classify each accepted outcome with exactly one Three-Gap class.
-- Aggregate only named-human accepted findings into a capability proposal.
-- Let MoonCode implement reviewed work orders; evaluate before adoption.
-- Let MoonFlow activate only reviewed capability versions in shadow/canary/full modes.
-- Resolve the assigned capability at MoonClaw run start and record the exact outcome/reward evidence afterward.
-- Promote, hold, or roll back only through a named-human settlement.
+## P2 — broaden the workspace where demand justifies it
 
-## Phase 5 — hardening foundation (implemented)
+- Add manuscript/LaTeX editing, figure editing, code execution, remote compute,
+  team workspaces, and cross-device continuity according to observed use.
+- Expand job types beyond literature: data analysis, technical assessment,
+  due diligence, policy research, and competitive research, each with fitting
+  output recipes and evidence rules.
+- Keep MoonTown challenge, named review, MoonBook outcome binding, and
+  Three-Gap learning available as explicit job stages or downstream work.
+- Continue the humanoid robotics and lunar series graphs as specializations;
+  their synthetic catalogs cannot serve as production readiness evidence.
 
-- Durable recovery projection and missing-command reconstruction are implemented; source-specific retry/rate-limit adapters remain provider work.
-- Strong content-addressed storage and canonical digests supplied by owning systems.
-- Hostile-document admission requires isolated parsing, disabled networking, active-content removal, bounded expansion/pages, instruction/evidence separation by artifact contract, and quarantine on any suspicious signal.
-- Comprehensive schema validation, replay, negative, accessibility, and browser tests.
-- Provider decisions enforce commercial use, model-input permission, retention, redistribution, expiry, deletion, audit, provenance, and named review.
+## Current assets and boundaries
 
-## Phase 6 — cross-suite robotics composition (exact desired graph implemented)
+Moonfind already has arXiv metadata intake, local-input accounting, typed
+research records, MoonClaw packet preparation, MoonTown handoffs, review
+contracts, recovery journals, provider policy, full-text receipt validation,
+and a Rabbita research workspace. These are inputs to the new primary journey.
+The four literature, corpus, comparison, and humanoid brief shapes now pass
+one shared multi-file verification and ZIP test. Separate live literature,
+local-corpus, comparison, and humanoid jobs have produced files through
+MoonClaw and passed host checks. The literature bundle reloaded after a host
+restart. The humanoid run resumed from a waiting step and delivered a digital
+plan and CSV risk register. This does not substitute for named scientific review.
+The real isolated PDF extractor, licensed provider agreements, production
+adapter health, document-native previews and editing remain operational or
+implementation work. A local MoonClaw run has produced a report and CSV
+through the generic host route; the host verified actual bytes and evidence
+links, while scientific acceptance still needs review. The checked-in robotics catalogs
+and complete-run fixtures are synthetic qualification data.
 
-- The humanoid-robotics file is a desired graph, not an executable graph.
-  MoonMini, MoonStat, phantom MoonWiki, and phantom MoonCode product identities
-  are removed. All 63 stages use canonical `product/tool@pack-version`
-  identities and exact input/output, authority, and claim contracts.
-- Catalog projection now emits suggestions from real installed operations and
-  emits no importable MoonFlow graph until every stage conforms, including
-  required-claim ceilings and short-lived health.
-- The 48-stage MoonCast episode tail preserves separate brief, rights, bible,
-  script, storyboard, animatic, provider routing, asset factory, QC, cut
-  editor, preview, export, master, three-party review, delivery build, client
-  decision, and immutable final-evidence operations. It has no publication
-  stage.
-- MoonDesk provides the infinite composition canvas and generic selection
-  overlay; MoonFlow compiles a dependency-closed, digest-bound run.
-- MoonFlow is the engine; MoonGate/MoonLib are support-only and MoonEdit/
-  MoonLeaf are libraries. MoonClaw is the sole runtime. Physical authority is
-  never inferred from canvas inclusion.
-- The publisher parses the v2 desired-graph contract and derives target
-  graph/book/digest identity from the current template; no historical v1
-  literal replacement remains.
-- The publisher requires and materializes a complete 63-request bundle. Each
-  first artifact is the exact pack-owned request schema; dependency evidence is
-  appended by MoonFlow rather than duplicated in graph inputs. The checked-in
-  bundle is schema-valid fixture data and remains explicitly non-production.
-- Exit gate: every node is derived from the capability registry, every edge
-  passes schema/authority/claim/health conformance, and the full graph completes
-  with production (non-fixture) attestations, restart, and evidence replay.
+## Non-goals for the first general release
 
-## Phase 7 — MoonClaw execution recovery (software implemented; host wiring pending)
-
-- The exact installed-pack invocation, attempt, idempotency key, receipt, and
-  subsequent Cowork session/run identities have an append-only MoonBit journal.
-- Unknown capability outcomes reconcile through the same MoonClaw invocation;
-  unknown Cowork outcomes poll the same persisted run. Neither path creates a
-  replacement runtime.
-- Rabbita consumes host-published generic submit/reconcile/checkpoint ports,
-  executes the capability-produced command through MoonClaw Cowork, and keeps
-  named-human review unavailable until the durable runtime result is
-  `needs-review`.
-- Exit gate: the deployment host must publish an active installed MoonFind
-  pack, compiled capability catalog, short-lived healthy adapter attestation,
-  and the three generic HTTP ports. Repository fixtures cannot claim this.
-
-## External readiness boundary
-
-Moonfind writes both the backward-compatible raw `moontown-scenario.json` and the preferred versioned `moontown-handoff.json`. An operator runs the handoff through Moontown and imports the resulting receipt with `moonfind record-moontown`. The normal `moonfind review` command fails closed until a completed, run-bound receipt exists. The receipt proves orchestration and durable materialization only; `review_status=pending` is mandatory and does not approve the synthesis. The self-contained `run-fixture` command bypasses this cross-repository prerequisite solely for deterministic pack-local tests.
-
-The software paths now exist and fail closed. A live provider node remains
-disabled until its actual contract, credentials, extractor isolation, retention
-configuration, and adapter health are present. Those are external operational
-facts, not code defaults.
-
-## Release gates
-
-The pack is feature-usable when a live or fixture watch produces a durable research run, a MoonClaw packet, a Moontown scenario, a reviewed model idea, and closed-loop handoffs visible in Rabbita. Production promotion still requires an operational demonstration with licensed full text, the real isolated extractor, real MoonClaw/Moontown execution, restart recovery under failure, reviewed provider terms, and prospective experiment outcomes. The software enforces these gates; a fixture cannot satisfy them.
+- Replacing MoonClaw with another model or agent runtime.
+- Requiring a robotics experiment, MoonTown salon, or Three-Gap closure for
+  every completed research job.
+- Treating a generated draft, a manifest with unverified files, or an agent
+  success receipt as a finished user deliverable.

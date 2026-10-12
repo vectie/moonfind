@@ -7,6 +7,14 @@ import {
 }
 
 // Values
+pub fn brief_boundary() -> String
+
+pub fn brief_filename(String) -> Bool
+
+pub fn brief_issues(ResearchBriefV1) -> Array[String]
+
+pub fn brief_safe_id(String) -> Bool
+
 pub fn complete_research_run(ResearchRun, ResearchAnalysisResult, Int64) -> ResearchRun raise
 
 pub fn delivery_manifest_complete(ResearchJob, DeliveryManifest) -> Bool
@@ -15,7 +23,25 @@ pub fn delivery_manifest_contract_version() -> String
 
 pub fn delivery_manifest_issues(ResearchJob, DeliveryManifest) -> Array[String]
 
+pub fn filter_bibtex(Array[BibtexReferenceV1], String) -> Array[BibtexReferenceV1]
+
+pub fn filter_csl(Array[CslReferenceV1], String) -> Array[CslReferenceV1]
+
+pub fn filter_csv(CsvTableV1, String, Int) -> Array[CsvRowV1] raise
+
+pub fn filter_ris_author(Array[RisReferenceV1], String) -> Array[RisReferenceV1]
+
 pub fn local_input_coverage_contract_version() -> String
+
+pub fn parse_bibtex(String) -> Array[BibtexReferenceV1] raise
+
+pub fn parse_csl(String) -> Array[CslReferenceV1] raise
+
+pub fn parse_csv(String) -> CsvTableV1 raise
+
+pub fn parse_ris(String) -> Array[RisReferenceV1] raise
+
+pub fn project_csv(CsvTableV1, Array[Int], Array[Int]) -> CsvTableV1 raise
 
 pub fn research_contract_version() -> String
 
@@ -36,6 +62,82 @@ pub fn validate_watch(ResearchWatch) -> Array[String]
 // Errors
 
 // Types and methods
+pub(all) struct BibtexReferenceV1 {
+  record_number : Int
+  citation_key : String
+  reference_type : String
+  title : String
+  authors : Array[String]
+  year : String
+  venue : String
+  keywords : String
+  doi : String
+  url : String
+  abstract_text : String
+  availability : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct BibtexSelectionV1 {
+  contract_id : String
+  source_name : String
+  source_digest : String
+  references : Array[BibtexReferenceV1]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct BriefSourceInputV1 {
+  name : String
+  origin : String
+  captured_at : String
+  kind : String
+  content_hex : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CslReferenceV1 {
+  record_number : Int
+  item_id : String
+  item_id_kind : String
+  citation_key : String
+  reference_type : String
+  title : String
+  authors : Array[String]
+  editors : Array[String]
+  year : String
+  issued : String
+  venue : String
+  keywords : String
+  doi : String
+  url : String
+  abstract_text : String
+  availability : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CslSelectionV1 {
+  contract_id : String
+  source_name : String
+  source_digest : String
+  references : Array[CslReferenceV1]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CsvRowV1 {
+  record_number : Int
+  values : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CsvSelectionV1 {
+  contract_id : String
+  source_name : String
+  source_digest : String
+  source_row_count : Int
+  column_numbers : Array[Int]
+  columns : Array[String]
+  rows : Array[CsvRowV1]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CsvTableV1 {
+  columns : Array[String]
+  rows : Array[CsvRowV1]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct DeliveredOutput {
   output_id : String
   artifact_ref : String
@@ -192,6 +294,20 @@ pub(all) struct ResearchAnalysisResult {
   synthesis_notes : Array[String]
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
+pub(all) struct ResearchBriefV1 {
+  contract_id : String
+  brief_id : String
+  parent_revision : String?
+  question : String
+  objective : String
+  audience : String
+  decision : String
+  source_restrictions : String
+  requested_filenames : Array[String]
+  acceptance_criteria : String
+  sources : Array[BriefSourceInputV1]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct ResearchIdea {
   idea_id : String
   title : String
@@ -263,6 +379,24 @@ pub(all) struct ReviewedSynthesisSelection {
   source_digest : String
   accepted_idea_ids : Array[String]
   rejected_idea_ids : Array[String]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct RisReferenceV1 {
+  record_number : Int
+  reference_type : String
+  title : String
+  authors : Array[String]
+  year : String
+  doi : String
+  url : String
+  abstract_text : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct RisSelectionV1 {
+  contract_id : String
+  source_name : String
+  source_digest : String
+  references : Array[RisReferenceV1]
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 // Type aliases

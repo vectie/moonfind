@@ -20,3 +20,13 @@
   [cross-product research loop](qualification/CROSS_PRODUCT_RESEARCH_LOOP.md) —
   reproducible MoonFind → MoonTown → MoonChat → MoonBook operator
   qualification, including governed negative paths.
+
+- [Numeric CSV summaries](CSV_NUMERIC_SUMMARIES.md): explicitly summarize a numeric column across all, matching or selected source records and export the inspectable result.
+- [JSON evidence explorer](JSON_EVIDENCE_EXPLORER.md): explore loaded arrays, retain exact source record locators and numeric tokens, and reuse selected records in a brief or JSON download.
+
+- [JSON field coverage and source selection](JSON_FIELD_COVERAGE.md)
+- [Nested JSON field inspection and source selection](JSON_NESTED_FIELD_LENS.md)
+- [Observed JSON value pairs](JSON_VALUE_PAIRS.md): discover two-field combinations and counts, inspect their exact source evidence, and select original records for existing extracts.
+- [Projected JSON/JSONL CSV output](JSON_PROJECTED_CSV.md): take selected nested fields into a spreadsheet with original record locators and explicit unavailable-value kinds.
+
+- [JSON snapshot comparison](JSON_SNAPSHOT_COMPARISON.md): compare two captures by an explicit unique key, inspect additions/removals and selected-field token changes, and export their exact values and locators.

@@ -224,3 +224,17 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
 .delivery-zip { display: inline-block; padding: 10px 0; font-weight: 600; }
 .delivery-version { text-align: left; white-space: normal; overflow-wrap: anywhere; max-width: 100%; }
 .delivery-versions ul { display: grid; gap: 8px; padding-left: 20px; }
+:root .choice-panel { padding: 22px; border: 1px solid #314563; border-radius: 18px; background: #111a2c; }
+.choice-panel h2 { margin-top: 0; }
+.choice-panel label { display: grid; gap: 7px; margin: 12px 0; }
+.choice-panel details { margin: 14px 0; }
+.choice-panel summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; }
+.choice-panel select { max-width: 100%; width: 100%; min-height: 44px; background: #07101f; color: #edf5ff; border: 1px solid #314563; padding: 8px; }
+.choice-panel button { min-height: 44px; padding: 10px 14px; border-radius: 9px; border: 1px solid #407168; background: #183b37; color: #edf5ff; cursor: pointer; }
+.choice-panel button:disabled { opacity: .5; cursor: default; }
+.choice-panel button:focus-visible, .choice-panel summary:focus-visible, .choice-panel select:focus-visible, .choice-panel textarea:focus-visible { outline: 3px solid #f4cb72; outline-offset: 3px; }
+.choice-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 14px; margin: 18px 0; }
+.choice-option { min-width: 0; overflow-wrap: anywhere; border: 1px solid #314563; border-radius: 12px; padding: 16px; background: #0b1424; }
+.choice-actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }
+.choice-boundary { color: #9cb0cd; max-width: 100ch; }
+.choice-warning { color: #f4cb72; }

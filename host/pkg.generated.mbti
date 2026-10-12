@@ -7,20 +7,45 @@ import {
   "vectie/moonfind/app",
   "vectie/moonfind/integration",
   "vectie/moonfind/moontown",
+  "vectie/moonfind/research",
 }
 
 // Values
+pub async fn add_research_job_arxiv_source(Config, String, AddJobArxivSourceRequestV1) -> ResearchJobViewV1
+
+pub async fn add_research_job_text_source(Config, String, AddJobTextSourceRequestV1) -> ResearchJobViewV1
+
+pub async fn add_research_job_url_source(Config, String, AddJobUrlSourceRequestV1) -> ResearchJobViewV1
+
+pub async fn brief_status(Config, String, String) -> BriefStatusV1
+
 pub async fn checkpoint_execution(Config, MoonClawSessionCheckpointRequestV1) -> CapabilityOperationReplyV1
 
 pub async fn cowork_relay(Config, String, Json?) -> Json
+
+pub async fn create_research_job(Config, CreateResearchJobRequestV1) -> ResearchJobViewV1
 
 pub async fn delivery_status(Config, delivery_id? : String) -> DeliveryStatusV1
 
 pub async fn ensure_prepared_execution(Config) -> @integration.ResearchExecutionRecordV1?
 
+pub async fn export_brief(Config, String, String, String) -> Bytes
+
 pub async fn ingest_moonchat_result(Config, MoonChatResultIngestRequestV1) -> MoonChatResultIngestReplyV1
 
 pub async fn ingest_moontown_result(Config, @moontown.TownResultIngestRequest) -> MoonTownResultIngestReplyV1
+
+pub fn intake_bibtex(BibtexIntakeRequestV1) -> BibtexIntakeV1 raise
+
+pub fn intake_csl(CslIntakeRequestV1) -> CslIntakeV1 raise
+
+pub fn intake_csv(CsvIntakeRequestV1) -> CsvIntakeV1 raise
+
+pub fn intake_ris(RisIntakeRequestV1) -> RisIntakeV1 raise
+
+pub async fn list_briefs(Config) -> Array[BriefListItemV1]
+
+pub async fn list_research_jobs(Config) -> Array[ResearchJobViewV1]
 
 pub async fn native_model_route(Config) -> NativeModelRouteV1
 
@@ -34,17 +59,114 @@ pub async fn read_delivery_file(Config, String, String) -> Bytes
 
 pub async fn reconcile_execution(Config, Json) -> CapabilityOperationReplyV1
 
+pub async fn record_research_job_session(Config, String, JobSessionRequestV1) -> ResearchJobViewV1
+
+pub async fn research_job_export(Config, String) -> Bytes
+
+pub async fn research_job_file(Config, String, String) -> (Bytes, String)
+
+pub async fn research_job_preview(Config, String, String) -> JobPreviewV1
+
+pub async fn research_job_source_file(Config, String, String) -> (Bytes, String)
+
+pub async fn research_job_view(Config, String) -> ResearchJobViewV1
+
+pub async fn resume_research_job(Config, String, ResumeResearchJobRequestV1) -> ResearchJobViewV1
+
 pub async fn review_workflow_status(Config) -> ReviewWorkflowStatusV1
+
+pub async fn revise_research_job_file(Config, String, ReviseResearchJobRequestV1) -> ResearchJobViewV1
+
+pub async fn save_brief(Config, @research.ResearchBriefV1) -> BriefStatusV1
+
+pub fn select_bibtex(BibtexSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
+
+pub fn select_csl(CslSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
+
+pub fn select_csv(CsvSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
+
+pub fn select_ris(RisSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
+
+pub async fn start_research_job(Config, String, StartResearchJobRequestV1) -> ResearchJobViewV1
 
 pub async fn submit_execution(Config, Json) -> CapabilityOperationReplyV1
 
 pub async fn typed_moontown_handoff(Config) -> Json
+
+pub async fn verify_research_job_delivery(Config, String) -> ResearchJobViewV1
 
 pub async fn workspace_snapshot(Config) -> UiWorkspaceSnapshotV1
 
 // Errors
 
 // Types and methods
+pub(all) struct AddJobArxivSourceRequestV1 {
+  query : String
+  max_results : Int
+} derive(@debug.Debug, @json.FromJson)
+
+pub(all) struct AddJobTextSourceRequestV1 {
+  name : String
+  content : String
+} derive(@debug.Debug, @json.FromJson)
+
+pub(all) struct AddJobUrlSourceRequestV1 {
+  url : String
+} derive(@debug.Debug, @json.FromJson)
+
+pub(all) struct BibtexIntakeRequestV1 {
+  source : @research.BriefSourceInputV1
+  query : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct BibtexIntakeV1 {
+  source : @research.BriefSourceInputV1
+  references : Array[@research.BibtexReferenceV1]
+  total_count : Int
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct BibtexSelectRequestV1 {
+  source : @research.BriefSourceInputV1
+  record_numbers : Array[Int]
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct BriefListItemV1 {
+  brief_id : String
+  revision_id : String
+  question : String
+  state : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct BriefSnapshotV1 {
+  contract_id : String
+  revision_id : String
+  state : String
+  brief : @research.ResearchBriefV1
+  sources : Array[BriefSourceV1]
+  boundary : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct BriefSourceV1 {
+  slot : Int
+  name : String
+  origin : String
+  captured_at : String
+  kind : String
+  availability : String
+  archive_path : String
+  byte_count : Int
+  digest : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct BriefStatusV1 {
+  contract_id : String
+  brief_id : String
+  revision_id : String
+  state : String
+  snapshot : BriefSnapshotV1?
+  issues : Array[String]
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct CapabilityOperationReplyV1 {
   contract_id : String
   operation : String
@@ -75,6 +197,48 @@ type CoworkCheckpointPayload derive(@debug.Debug, @json.FromJson)
 type CoworkCheckpointRun derive(ToJson, @debug.Debug, @json.FromJson)
 
 type CoworkModelRouteV1 derive(@json.FromJson)
+
+pub(all) struct CreateResearchJobRequestV1 {
+  objective : String
+  audience : String
+  source_scope : Array[String]
+  requested_outputs : Array[@research.RequestedOutput]
+} derive(@debug.Debug, @json.FromJson)
+
+pub(all) struct CslIntakeRequestV1 {
+  source : @research.BriefSourceInputV1
+  query : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CslIntakeV1 {
+  source : @research.BriefSourceInputV1
+  references : Array[@research.CslReferenceV1]
+  total_count : Int
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CslSelectRequestV1 {
+  source : @research.BriefSourceInputV1
+  record_numbers : Array[Int]
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CsvIntakeRequestV1 {
+  source : @research.BriefSourceInputV1
+  query : String
+  column_number : Int
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CsvIntakeV1 {
+  source : @research.BriefSourceInputV1
+  columns : Array[String]
+  rows : Array[@research.CsvRowV1]
+  total_count : Int
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct CsvSelectRequestV1 {
+  source : @research.BriefSourceInputV1
+  record_numbers : Array[Int]
+  column_numbers : Array[Int]
+} derive(ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct DeliveryFileV1 {
   name : String
@@ -108,6 +272,27 @@ pub(all) struct DeliveryStatusV1 {
   issues : Array[String]
   versions : Array[String]
 } derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct JobFileV1 {
+  name : String
+  media_type : String
+  byte_length : Int64
+  digest : String
+  open_url : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct JobPreviewV1 {
+  contract_id : String
+  name : String
+  media_type : String
+  text : String?
+  truncated : Bool
+  byte_length : Int64
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct JobSessionRequestV1 {
+  session_key : String
+} derive(@debug.Debug, @json.FromJson)
 
 pub(all) struct MoonChatResultIngestReplyV1 {
   contract_id : String
@@ -182,6 +367,30 @@ pub(all) struct NativeModelRouteV1 {
   models : Array[String]
   blocker : String
 } derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ResearchJobViewV1 {
+  contract_id : String
+  job : @research.ResearchJob
+  job_root : String
+  files : Array[JobFileV1]
+  sources : Array[JobFileV1]
+  revision_of : String?
+  missing_outputs : Array[String]
+  session_key : String?
+  run_id : String?
+  session_state : String?
+  session_preview : String?
+  run_summary : String?
+  moonclaw_gateway_base : String?
+  agent_prompt : String
+  delivery_manifest : @research.DeliveryManifest?
+  delivery_ready : Bool
+  delivery_issues : Array[String]
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ResumeResearchJobRequestV1 {
+  content : String
+} derive(@debug.Debug, @json.FromJson)
 
 pub(all) struct ReviewDecisionReceiptViewV1 {
   review_id : String
@@ -264,6 +473,31 @@ pub(all) struct ReviewWorkflowStatusV1 {
   detail : String
   decision_receipt : ReviewDecisionReceiptViewV1?
 } derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct ReviseResearchJobRequestV1 {
+  file_name : String
+  instruction : String
+} derive(@debug.Debug, @json.FromJson)
+
+pub(all) struct RisIntakeRequestV1 {
+  source : @research.BriefSourceInputV1
+  author_filter : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct RisIntakeV1 {
+  source : @research.BriefSourceInputV1
+  references : Array[@research.RisReferenceV1]
+  total_count : Int
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct RisSelectRequestV1 {
+  source : @research.BriefSourceInputV1
+  record_numbers : Array[Int]
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct StartResearchJobRequestV1 {
+  model_name : String
+} derive(@debug.Debug, @json.FromJson)
 
 pub(all) struct UiWorkspaceSnapshotV1 {
   contract_id : String

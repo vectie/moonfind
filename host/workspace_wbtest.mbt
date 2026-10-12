@@ -46,7 +46,7 @@ test "terminal review state does not require a live MoonClaw gateway" {
   assert_eq(execution_requires_moonclaw_gateway(Some(record)), false)
   assert_eq(
     execution_requires_moonclaw_gateway(
-      Some({ ..record, state: "runtime-pending" }),
+      Some({ ..record, state: "runtime-pending", }),
     ),
     true,
   )

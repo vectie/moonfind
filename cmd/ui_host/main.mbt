@@ -41,9 +41,6 @@ fn service_options() -> ServiceOptions raise {
   let run_id = environment_or_option(args, "--run-id", "MOONFIND_RUN_ID").unwrap_or(
     "",
   )
-  guard !run_id.is_blank() else {
-    fail("MoonFind UI host requires --run-id or MOONFIND_RUN_ID")
-  }
   let port_text = environment_or_option(args, "--port", "MOONFIND_UI_PORT").unwrap_or(
     "4313",
   )
@@ -66,9 +63,14 @@ fn service_options() -> ServiceOptions raise {
       moonclaw_gateway_base: environment_or_option(
         args, "--moonclaw-gateway", "MOONCLAW_GATEWAY_BASE",
       ),
-      moonclaw_gateway_token: environment_or_option(
-        args, "--moonclaw-gateway-token", "MOONCLAW_GATEWAY_TOKEN",
-      ),
+      moonclaw_gateway_token: match
+        option_value(args, "--moonclaw-gateway-token") {
+        Some(value) if !value.trim().is_blank() => Some(value.trim().to_owned())
+        _ =>
+          environment_or_option(
+            args, "--moonclaw-token", "MOONCLAW_GATEWAY_TOKEN",
+          )
+      },
       moonclaw_submit_url: environment_or_option(
         args, "--moonclaw-submit", "MOONCLAW_CAPABILITY_SUBMIT_URL",
       ),
@@ -124,6 +126,43 @@ async fn send_json(
     "application/json; charset=utf-8",
     value.stringify(indent=2),
   )
+}
+
+///|
+async fn send_file(
+  conn : @http.ServerConnection,
+  data : Bytes,
+  media_type : String,
+) -> Unit {
+  conn.send_response(200, "OK", extra_headers={
+    "Content-Type": media_type,
+    "Cache-Control": "no-store",
+    "Content-Disposition": if media_type == "text/html" ||
+      media_type == "image/svg+xml" {
+      "attachment"
+    } else {
+      "inline"
+    },
+    "X-Content-Type-Options": "nosniff",
+  })
+  conn.write(data)
+  conn.end_response()
+}
+
+///|
+async fn send_job_export(
+  conn : @http.ServerConnection,
+  data : Bytes,
+  job_id : String,
+) -> Unit {
+  conn.send_response(200, "OK", extra_headers={
+    "Content-Type": "application/zip",
+    "Cache-Control": "no-store",
+    "Content-Disposition": "attachment; filename=\"" + job_id + ".zip\"",
+    "X-Content-Type-Options": "nosniff",
+  })
+  conn.write(data)
+  conn.end_response()
 }
 
 ///|
@@ -239,8 +278,14 @@ async fn serve_static(
   conn : @http.ServerConnection,
 ) -> Bool {
   let relative = if request_path
-    is ("/" | "/index.html" | "/apps/moonfind/research") {
+    is ("/"
+    | "/index.html"
+    | "/apps/moonfind/research"
+    | "/apps/moonfind/briefs"
+    | "/apps/moonfind/jobs") {
     "index.html"
+  } else if request_path.has_prefix("/apps/moonfind/assets/") {
+    request_path["/apps/moonfind/".length():].to_owned()
   } else if request_path.has_prefix("/") {
     request_path[1:].to_owned()
   } else {
@@ -267,6 +312,377 @@ async fn handle_request(
 ) -> Unit {
   let path = route_path(request.path)
   match (request.meth, path) {
+    (Post, "/api/v1/briefs/csv/intake") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let intake : @host.CsvIntakeRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.intake_csv(intake).to_json())
+    }
+    (Post, "/api/v1/briefs/csv/select") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let selection : @host.CsvSelectRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.select_csv(selection).to_json())
+    }
+    (Post, "/api/v1/briefs/csl/intake") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let intake : @host.CslIntakeRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.intake_csl(intake).to_json())
+    }
+    (Post, "/api/v1/briefs/csl/select") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let selection : @host.CslSelectRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.select_csl(selection).to_json())
+    }
+    (Post, "/api/v1/briefs/bibtex/intake") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let intake : @host.BibtexIntakeRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.intake_bibtex(intake).to_json())
+    }
+    (Post, "/api/v1/briefs/bibtex/select") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let selection : @host.BibtexSelectRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.select_bibtex(selection).to_json())
+    }
+    (Post, "/api/v1/briefs/ris/intake") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let intake : @host.RisIntakeRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.intake_ris(intake).to_json())
+    }
+    (Post, "/api/v1/briefs/ris/select") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let selection : @host.RisSelectRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.select_ris(selection).to_json())
+    }
+    (Get, "/api/v1/briefs") => {
+      if reject_unsafe_origin(request, options.port, conn) {
+        return
+      }
+      send_json(conn, 200, "OK", @host.list_briefs(options.config).to_json())
+    }
+    (Post, "/api/v1/briefs") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let brief : @research.ResearchBriefV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(
+        conn,
+        200,
+        "OK",
+        @host.save_brief(options.config, brief).to_json(),
+      )
+    }
+    (Get, brief_path) if brief_path.has_prefix("/api/v1/briefs/") => {
+      if reject_unsafe_origin(request, options.port, conn) {
+        return
+      }
+      let parts = brief_path["/api/v1/briefs/".length():]
+        .split("/")
+        .map(StringView::to_owned)
+        .collect()
+      match parts {
+        [id, revision] =>
+          send_json(
+            conn,
+            200,
+            "OK",
+            @host.brief_status(options.config, id, revision).to_json(),
+          )
+        [id, revision, name] => {
+          let bytes = @host.export_brief(options.config, id, revision, name)
+          conn.send_response(200, "OK", extra_headers={
+            "Content-Type": if name == "dossier.zip" {
+              "application/zip"
+            } else {
+              "text/plain; charset=utf-8"
+            },
+            "Content-Length": bytes.length().to_string(),
+            "Content-Disposition": "attachment; filename=\"" + name + "\"",
+            "Cache-Control": "no-store",
+            "X-Content-Type-Options": "nosniff",
+          })
+          conn.write(bytes)
+          conn.end_response()
+        }
+        _ => send_error(conn, 400, "Bad Request", "Invalid brief route")
+      }
+    }
+    (Get, "/api/v1/jobs") => {
+      if reject_unsafe_origin(request, options.port, conn) {
+        return
+      }
+      let jobs = @host.list_research_jobs(options.config)
+      send_json(conn, 200, "OK", jobs.to_json())
+    }
+    (Post, "/api/v1/jobs") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let job_request : @host.CreateResearchJobRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      let created = @host.create_research_job(options.config, job_request)
+      send_json(conn, 201, "Created", created.to_json())
+    }
+    (Get, job_path) if job_path.has_prefix("/api/v1/jobs/") => {
+      if reject_unsafe_origin(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      let parts = tail.split("/").collect()
+      match parts {
+        [job_id, "delivery"] => {
+          let job = @host.research_job_view(options.config, job_id.to_owned())
+          match job.delivery_manifest {
+            Some(manifest) => send_json(conn, 200, "OK", manifest.to_json())
+            None =>
+              send_error(
+                conn, 404, "Not Found", "delivery has not been verified",
+              )
+          }
+        }
+        [job_id, "files", name] => {
+          let (data, media_type) = @host.research_job_file(
+            options.config,
+            job_id.to_owned(),
+            name.to_owned(),
+          )
+          send_file(conn, data, media_type)
+        }
+        [job_id, "files", name, "preview"] => {
+          let preview = @host.research_job_preview(
+            options.config,
+            job_id.to_owned(),
+            name.to_owned(),
+          )
+          send_json(conn, 200, "OK", preview.to_json())
+        }
+        [job_id, "sources", name] => {
+          let (data, media_type) = @host.research_job_source_file(
+            options.config,
+            job_id.to_owned(),
+            name.to_owned(),
+          )
+          send_file(conn, data, media_type)
+        }
+        [job_id, "export.zip"] => {
+          let data = @host.research_job_export(
+            options.config,
+            job_id.to_owned(),
+          )
+          send_job_export(conn, data, job_id.to_owned())
+        }
+        [job_id] => {
+          let job = @host.research_job_view(options.config, job_id.to_owned())
+          send_json(conn, 200, "OK", job.to_json())
+        }
+        _ => send_error(conn, 404, "Not Found", "research job route not found")
+      }
+    }
+    (Post, job_path) if job_path.has_prefix("/api/v1/jobs/") &&
+      job_path.has_suffix("/sources/text") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      match tail.split("/").collect() {
+        [job_id, "sources", "text"] => {
+          let source : @host.AddJobTextSourceRequestV1 = @json.from_json(
+            @json.parse(body.read_all().text()),
+          )
+          let job = @host.add_research_job_text_source(
+            options.config,
+            job_id.to_owned(),
+            source,
+          )
+          send_json(conn, 200, "OK", job.to_json())
+        }
+        _ =>
+          send_error(conn, 404, "Not Found", "research source route not found")
+      }
+    }
+    (Post, job_path) if job_path.has_prefix("/api/v1/jobs/") &&
+      job_path.has_suffix("/sources/arxiv") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      match tail.split("/").collect() {
+        [job_id, "sources", "arxiv"] => {
+          let source : @host.AddJobArxivSourceRequestV1 = @json.from_json(
+            @json.parse(body.read_all().text()),
+          )
+          let job = @host.add_research_job_arxiv_source(
+            options.config,
+            job_id.to_owned(),
+            source,
+          )
+          send_json(conn, 200, "OK", job.to_json())
+        }
+        _ =>
+          send_error(conn, 404, "Not Found", "research source route not found")
+      }
+    }
+    (Post, job_path) if job_path.has_prefix("/api/v1/jobs/") &&
+      job_path.has_suffix("/sources/url") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      match tail.split("/").collect() {
+        [job_id, "sources", "url"] => {
+          let source : @host.AddJobUrlSourceRequestV1 = @json.from_json(
+            @json.parse(body.read_all().text()),
+          )
+          let job = @host.add_research_job_url_source(
+            options.config,
+            job_id.to_owned(),
+            source,
+          )
+          send_json(conn, 200, "OK", job.to_json())
+        }
+        _ =>
+          send_error(conn, 404, "Not Found", "research source route not found")
+      }
+    }
+    (Post, job_path) if job_path.has_prefix("/api/v1/jobs/") &&
+      job_path.has_suffix("/revisions") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      match tail.split("/").collect() {
+        [job_id, "revisions"] => {
+          let revision : @host.ReviseResearchJobRequestV1 = @json.from_json(
+            @json.parse(body.read_all().text()),
+          )
+          let job = @host.revise_research_job_file(
+            options.config,
+            job_id.to_owned(),
+            revision,
+          )
+          send_json(conn, 201, "Created", job.to_json())
+        }
+        _ =>
+          send_error(
+            conn, 404, "Not Found", "research revision route not found",
+          )
+      }
+    }
+    (Post, job_path) if job_path.has_prefix("/api/v1/jobs/") &&
+      job_path.has_suffix("/resume") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      match tail.split("/").collect() {
+        [job_id, "resume"] => {
+          let response : @host.ResumeResearchJobRequestV1 = @json.from_json(
+            @json.parse(body.read_all().text()),
+          )
+          let job = @host.resume_research_job(
+            options.config,
+            job_id.to_owned(),
+            response,
+          )
+          send_json(conn, 200, "OK", job.to_json())
+        }
+        _ =>
+          send_error(conn, 404, "Not Found", "research resume route not found")
+      }
+    }
+    (Post, job_path) if job_path.has_prefix("/api/v1/jobs/") &&
+      job_path.has_suffix("/start") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      match tail.split("/").collect() {
+        [job_id, "start"] => {
+          let start : @host.StartResearchJobRequestV1 = @json.from_json(
+            @json.parse(body.read_all().text()),
+          )
+          let job = @host.start_research_job(
+            options.config,
+            job_id.to_owned(),
+            start,
+          )
+          send_json(conn, 200, "OK", job.to_json())
+        }
+        _ => send_error(conn, 404, "Not Found", "research job route not found")
+      }
+    }
+    (Post, job_path) if job_path.has_prefix("/api/v1/jobs/") &&
+      job_path.has_suffix("/session") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      let parts = tail.split("/").collect()
+      match parts {
+        [job_id, "session"] => {
+          let session : @host.JobSessionRequestV1 = @json.from_json(
+            @json.parse(body.read_all().text()),
+          )
+          let job = @host.record_research_job_session(
+            options.config,
+            job_id.to_owned(),
+            session,
+          )
+          send_json(conn, 200, "OK", job.to_json())
+        }
+        _ => send_error(conn, 404, "Not Found", "research job route not found")
+      }
+    }
+    (Post, job_path) if job_path.has_prefix("/api/v1/jobs/") &&
+      job_path.has_suffix("/delivery") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let tail = job_path["/api/v1/jobs/".length():].to_owned()
+      match tail.split("/").collect() {
+        [job_id, "delivery"] => {
+          let job = @host.verify_research_job_delivery(
+            options.config,
+            job_id.to_owned(),
+          )
+          send_json(conn, 200, "OK", job.to_json())
+        }
+        _ => send_error(conn, 404, "Not Found", "research job route not found")
+      }
+    }
     (Get, "/api/v1/series") =>
       send_json(conn, 200, "OK", @series.catalog().to_json())
     (Get, series_path) if series_path.has_prefix("/api/v1/series/") => {
@@ -295,6 +711,12 @@ async fn handle_request(
       }
     }
     (Get, "/api/v1/workspace") => {
+      if options.config.run_id.is_blank() {
+        send_error(
+          conn, 404, "Not Found", "no specialized research run is selected",
+        )
+        return
+      }
       let snapshot = @host.workspace_snapshot(options.config)
       send_json(conn, 200, "OK", snapshot.to_json())
     }
@@ -476,22 +898,32 @@ async fn handle_request(
 ///|
 async fn main {
   let options = service_options()
-  match @host.ensure_prepared_execution(options.config) {
-    Some(record) =>
-      println(
-        "MoonFind durable execution: \{record.state} revision \{record.revision}",
-      )
-    None =>
-      println(
-        "MoonFind UI host started without a prepared execution; the UI will fail closed.",
-      )
+  if options.config.run_id.is_blank() {
+    println(
+      "MoonFind offline brief studio: no execution run selected; brief capture is available without providers.",
+    )
+  } else {
+    match @host.ensure_prepared_execution(options.config) {
+      Some(record) =>
+        println(
+          "MoonFind durable execution: \{record.state} revision \{record.revision}",
+        )
+      None =>
+        println(
+          "MoonFind UI host started without a prepared execution; the UI will fail closed.",
+        )
+    }
   }
   let server = @http.Server(
     @socket.Addr::parse("127.0.0.1:\{options.port}"),
     reuse_addr=true,
   )
   println(
-    "MoonFind UI host: http://127.0.0.1:\{options.port}/apps/moonfind/research",
+    "MoonFind UI host: http://127.0.0.1:\{options.port}/apps/moonfind/" +
+    (if options.config.run_id.is_blank() { "briefs" } else { "research" }),
+  )
+  println(
+    "MoonFind research jobs: http://127.0.0.1:\{options.port}/apps/moonfind/jobs",
   )
   server.run_forever(
     (request, body, conn) => {

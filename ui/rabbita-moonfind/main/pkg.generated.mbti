@@ -11,9 +11,51 @@ import {
 // Errors
 
 // Types and methods
+type BibtexIntake derive(@debug.Debug, @json.FromJson)
+
+type BibtexMsg
+
+type BibtexReference derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type BibtexSelection derive(@debug.Debug, @json.FromJson)
+
+type BibtexView
+
+type BriefDraft derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type BriefInputSource derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type BriefListItem derive(@debug.Debug, @json.FromJson)
+
+type BriefMsg
+
+type BriefSnapshot derive(ToJson, @debug.Debug, @json.FromJson)
+
+type BriefSource derive(ToJson, @debug.Debug, @json.FromJson)
+
+type BriefStatus derive(@debug.Debug, @json.FromJson)
+
+type BriefView
+
 type CapabilityOperationReply derive(@debug.Debug, @json.FromJson)
 
 type CapabilityReceiptProjection derive(@debug.Debug, @json.FromJson)
+
+type ChoiceArchive derive(ToJson, @debug.Debug, @json.FromJson)
+
+type ChoiceDelta derive(ToJson, @debug.Debug)
+
+type ChoiceEvidence derive(ToJson, @debug.Debug, @json.FromJson)
+
+type ChoiceExperiment derive(ToJson, @debug.Debug, @json.FromJson)
+
+type ChoiceMsg derive(@debug.Debug)
+
+type ChoiceOption derive(ToJson, @debug.Debug, @json.FromJson)
+
+type ChoiceState derive(@debug.Debug)
+
+type ChoiceWorksheet derive(ToJson, @debug.Debug, @json.FromJson)
 
 type CompletedResult derive(@debug.Debug, @json.FromJson)
 
@@ -29,6 +71,36 @@ type CoworkSessionPayload derive(@debug.Debug, @json.FromJson)
 
 type CoworkSessionSummary derive(@debug.Debug, @json.FromJson)
 
+type CslIntake derive(@debug.Debug, @json.FromJson)
+
+type CslMsg
+
+type CslReference derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type CslSelection derive(@debug.Debug, @json.FromJson)
+
+type CslView
+
+type CsvCategory derive(Eq, ToJson, @debug.Debug)
+
+type CsvComparisonGroup derive(Eq, @debug.Debug)
+
+type CsvExtract derive(Eq, @debug.Debug)
+
+type CsvIntake derive(@debug.Debug, @json.FromJson)
+
+type CsvMsg
+
+type CsvNumericCell derive(Eq, @debug.Debug)
+
+type CsvNumericSummary derive(Eq, @debug.Debug)
+
+type CsvRow derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type CsvSelection derive(@debug.Debug, @json.FromJson)
+
+type CsvView
+
 type DeliveryFile derive(ToJson, @debug.Debug, @json.FromJson)
 
 type DeliveryManifest derive(ToJson, @debug.Debug, @json.FromJson)
@@ -38,6 +110,10 @@ type DeliveryRequest derive(Eq, @debug.Debug)
 type DeliveryStatus derive(ToJson, @debug.Debug, @json.FromJson)
 
 type DeliveryView
+
+type DossierHit derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type DossierResults derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 type DurableResearchWorkspace derive(@debug.Debug, @json.FromJson)
 
@@ -50,6 +126,50 @@ type EvidencePaper derive(ToJson, @debug.Debug, @json.FromJson)
 type EvidenceQuestion derive(ToJson, @debug.Debug, @json.FromJson)
 
 type EvidenceSummary derive(ToJson, @debug.Debug, @json.FromJson)
+
+type ExperimentDecision derive(ToJson, @debug.Debug, @json.FromJson)
+
+type ExperimentMsg derive(@debug.Debug)
+
+type ExperimentObservation derive(ToJson, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceCell derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceCohort derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceCohortCondition derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceCohortDraft derive(Eq, @debug.Debug)
+
+type JsonEvidenceCohortRow derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceComparison derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceCoverageBucket derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceCsv derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceFieldCoverage derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceLens derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceLensRow derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceMsg
+
+type JsonEvidencePairGroup derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidencePairRow derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidencePairValue derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidencePairs derive(Eq, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceRow derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceTable derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type JsonEvidenceView derive(Eq, @debug.Debug)
 
 type Model
 
@@ -85,11 +205,57 @@ type Msg
 
 type NativeModelRoute derive(@debug.Debug, @json.FromJson)
 
+type OfflineChoiceMsg
+
+type OfflineChoiceState
+
+type OfflineCitation derive(ToJson, @json.FromJson)
+
+type OfflineOption derive(ToJson, @json.FromJson)
+
+type OfflineVersion derive(ToJson, @json.FromJson)
+
+type OfflineWorksheet derive(ToJson, @json.FromJson)
+
 type QaQuestionRequest derive(Eq, @debug.Debug)
 
 type QaRestoreRequest derive(Eq, @debug.Debug)
 
+type ReadingNote derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type ReadingNotebook derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type ReadingNotesImport
+
+type ReadingNotesMsg
+
+type ReadingNotesState
+
+type ReadingReference derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type ReferenceCatalog
+
+type ReferenceChoice derive(Eq, @debug.Debug)
+
+type ReferenceListMsg
+
+type ReferenceShortlistMsg
+
+type ReferenceTimeline derive(Eq, ToJson, @debug.Debug)
+
+type ReferenceTimelineMsg
+
+type RequestedJobOutput derive(ToJson, @debug.Debug, @json.FromJson)
+
 type ResearchExecutionProjection derive(@debug.Debug, @json.FromJson)
+
+type ResearchJobBrief derive(@debug.Debug, @json.FromJson)
+
+type ResearchJobFile derive(@debug.Debug, @json.FromJson)
+
+type ResearchJobPreview derive(@debug.Debug, @json.FromJson)
+
+type ResearchJobView derive(@debug.Debug, @json.FromJson)
 
 type ResearchJourney derive(Eq, @debug.Debug)
 
@@ -97,13 +263,27 @@ type ResearchPhase derive(Eq, @debug.Debug)
 
 type ReviewDecisionReceipt derive(@debug.Debug, @json.FromJson)
 
-type ReviewDraft
+type ReviewDraft derive(ToJson, @json.FromJson)
 
 type ReviewPhase derive(Eq, @debug.Debug)
 
 type ReviewPrepareReply derive(@debug.Debug, @json.FromJson)
 
+type ReviewStorage
+
 type ReviewWorkflowStatus derive(@debug.Debug, @json.FromJson)
+
+type RisIntake derive(@debug.Debug, @json.FromJson)
+
+type RisMsg
+
+type RisReference derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type RisSelection derive(@debug.Debug, @json.FromJson)
+
+type RisView
+
+type SavedReviewDraft derive(ToJson, @json.FromJson)
 
 type SeriesExclusionProjection derive(Eq, @debug.Debug, @json.FromJson)
 
@@ -118,6 +298,14 @@ type SeriesUseCaseProjection derive(Eq, @debug.Debug, @json.FromJson)
 type SynthesisIdea derive(@debug.Debug, @json.FromJson)
 
 type SynthesisOutput derive(@debug.Debug, @json.FromJson)
+
+type TranscriptCapture derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type TranscriptCue derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type TranscriptMsg
+
+type TranscriptView derive(Eq, @debug.Debug)
 
 type WorkspaceSnapshot derive(@debug.Debug, @json.FromJson)
 

@@ -1,0 +1,5 @@
+{"collection":"synthetic", "observations":[
+ {"id":9007199254740993,"segment":"clinic","note":"García: slow handoff\nCheck timing 🌒","value":1.2300e+02,"unknown":null,"nested":{"private":"keep all fields"}},
+ {"id":9007199254740994,"segment":"school","note":"<script>literal</script>","value":-0,"unknown":"","tags":["a","b"]},
+ {"id":9007199254740993,"segment":"clinic","note":"Σωκράτης: fast handoff","value":1e400,"active":false}
+ ],"a/b":{"~items":[{"":"empty field","__proto__":"text","constructor":"also text"}]}}

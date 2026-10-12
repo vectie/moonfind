@@ -308,6 +308,65 @@ struct WorkspaceSnapshot {
 } derive(Debug, FromJson)
 
 ///|
+struct RequestedJobOutput {
+  output_id : String
+  title : String
+  kind : String
+  format : String
+  acceptance_criteria : Array[String]
+} derive(Debug, ToJson, FromJson)
+
+///|
+struct ResearchJobBrief {
+  contract_id : String
+  job_id : String
+  objective : String
+  audience : String
+  source_scope : Array[String]
+  requested_outputs : Array[RequestedJobOutput]
+  created_at : Int64
+} derive(Debug, FromJson)
+
+///|
+struct ResearchJobFile {
+  name : String
+  media_type : String
+  byte_length : Int64
+  digest : String
+  open_url : String
+} derive(Debug, FromJson)
+
+///|
+struct ResearchJobPreview {
+  contract_id : String
+  name : String
+  media_type : String
+  text : String?
+  truncated : Bool
+  byte_length : Int64
+} derive(Debug, FromJson)
+
+///|
+struct ResearchJobView {
+  contract_id : String
+  job : ResearchJobBrief
+  job_root : String
+  files : Array[ResearchJobFile]
+  sources : Array[ResearchJobFile]
+  revision_of : String?
+  missing_outputs : Array[String]
+  session_key : String?
+  run_id : String?
+  session_state : String?
+  session_preview : String?
+  run_summary : String?
+  moonclaw_gateway_base : String?
+  delivery_manifest : Json?
+  delivery_ready : Bool
+  delivery_issues : Array[String]
+} derive(Debug, FromJson)
+
+///|
 struct SeriesPhaseProjection {
   phase_id : String
   title : String
@@ -371,6 +430,13 @@ enum ReviewPhase {
 
 ///|
 struct Model {
+  offline_choices : OfflineChoiceState
+  offline_generation : Int
+  offline_choice_sessions : Map[String, OfflineChoiceState]
+  review_storage : ReviewStorage
+  brief : BriefView
+  choices : ChoiceState
+  choice_sessions : Map[String, ChoiceState]
   gateway_base : String
   gateway_published : Bool
   book_dir : String
@@ -398,6 +464,23 @@ struct Model {
   qa_response_context : String?
   qa_answered_question : String?
   qa_answer_text : String?
+  job_objective : String
+  job_audience : String
+  job_sources : String
+  job_outputs : String
+  job_criteria : String
+  job_source_name : String
+  job_source_content : String
+  job_arxiv_query : String
+  job_source_url : String
+  job_revision_instruction : String
+  job_revision_file : String
+  job_preview : ResearchJobPreview?
+  job_resume_content : String
+  jobs : Array[ResearchJobView]
+  selected_job_id : String
+  job_status : String
+  job_error : String?
   phase : ResearchPhase
   research_session : CoworkSessionDetail?
   qa_session : CoworkSessionDetail?
@@ -452,6 +535,10 @@ struct Model {
 
 ///|
 enum Msg {
+  OfflineChoices(OfflineChoiceMsg)
+  ReviewDraftAction(String, String, String)
+  BriefAction(BriefMsg)
+  EditChoices(ChoiceMsg)
   RefreshDelivery
   PrepareDelivery
   SelectDelivery(String)
@@ -462,6 +549,38 @@ enum Msg {
   SelectCatalogModel(Int, String)
   UseConfiguredDefault(Int)
   SavedSelectionRestored(String, String, Result[CoworkSessionDetail, String])
+  SetJobObjective(String)
+  SetJobAudience(String)
+  SetJobSources(String)
+  SetJobOutputs(String)
+  SetJobCriteria(String)
+  SetJobSourceName(String)
+  SetJobSourceContent(String)
+  AddJobTextSource
+  SetJobArxivQuery(String)
+  AddJobArxivSource
+  SetJobSourceUrl(String)
+  AddJobUrlSource
+  JobSourceAdded(Result[ResearchJobView, String])
+  SetJobRevisionInstruction(String)
+  SelectJobRevisionFile(String)
+  CreateJobRevision
+  JobRevisionCreated(Result[ResearchJobView, String])
+  PreviewJobFile(String)
+  JobPreviewLoaded(Result[ResearchJobPreview, String])
+  RefreshJobs
+  JobsLoaded(Result[Array[ResearchJobView], String])
+  CreateJob
+  JobCreated(Result[ResearchJobView, String])
+  SelectJob(String)
+  StartJob
+  JobStarted(Result[ResearchJobView, String])
+  SetJobResumeContent(String)
+  ResumeJob
+  JobResumed(Result[ResearchJobView, String])
+  JobRefreshed(Result[ResearchJobView, String])
+  VerifyJobDelivery
+  JobDeliveryVerified(Result[ResearchJobView, String])
   RefreshSeriesCatalog
   SeriesCatalogLoaded(Result[Array[SeriesUseCaseProjection], String])
   SelectSeries(String)
@@ -679,6 +798,9 @@ fn initial_model() -> Model {
   let book_dir = ""
   let (selected_series_id, template_error) = initial_series_selection()
   {
+    brief: initial_brief_view(),
+    choices: empty_choices(),
+    choice_sessions: {},
     gateway_base: browser_gateway_base(),
     gateway_published: false,
     book_dir,
@@ -706,6 +828,23 @@ fn initial_model() -> Model {
     qa_response_context: None,
     qa_answered_question: None,
     qa_answer_text: None,
+    job_objective: "",
+    job_audience: "Research team",
+    job_sources: "Open, permitted sources; supplied workspace files",
+    job_outputs: "report.md, evidence.csv",
+    job_criteria: "Answers the research objective; Includes evidence or method; States limitations",
+    job_source_name: "notes.md",
+    job_source_content: "",
+    job_arxiv_query: "",
+    job_source_url: "",
+    job_revision_instruction: "",
+    job_revision_file: "",
+    job_preview: None,
+    job_resume_content: "",
+    jobs: [],
+    selected_job_id: "",
+    job_status: "",
+    job_error: None,
     phase: Ready,
     research_session: None,
     qa_session: None,
@@ -714,6 +853,10 @@ fn initial_model() -> Model {
     review_pending_context: None,
     review_request_generation: 0,
     review_drafts: Map([]),
+    review_storage: empty_review_storage(),
+    offline_choices: empty_offline_choices(),
+    offline_generation: 0,
+    offline_choice_sessions: Map([]),
     review_context_notice: None,
     delivery: empty_delivery(0),
     result_page: 0,

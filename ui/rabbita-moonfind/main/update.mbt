@@ -20,12 +20,52 @@ fn with_review_error(model : Model, error : String) -> Model {
 }
 
 ///|
+fn selected_general_job(model : Model) -> ResearchJobView? {
+  model.jobs.filter(job => job.job.job_id == model.selected_job_id).get(0)
+}
+
+///|
+fn replace_general_job(
+  jobs : Array[ResearchJobView],
+  updated : ResearchJobView,
+) -> Array[ResearchJobView] {
+  let retained = jobs.filter(job => job.job.job_id != updated.job.job_id)
+  [updated] + retained
+}
+
+///|
+fn follow_general_job(
+  emit : @rabbita.Emit[Msg],
+  job : ResearchJobView,
+) -> @rabbita.Cmd {
+  if job.session_state
+    .map(state => state.contains("Succeeded"))
+    .unwrap_or(false) &&
+    job.missing_outputs.is_empty() &&
+    job.delivery_manifest is None {
+    return verify_general_job_delivery(emit, job.job.job_id)
+  }
+  match job.session_state {
+    Some(state) if state.contains("Running") || state.contains("Pending") =>
+      @rabbita.delay(refresh_general_job(emit, job.job.job_id), 3000)
+    _ => @rabbita.none
+  }
+}
+
+///|
 fn update(
   emit : @rabbita.Emit[Msg],
   msg : Msg,
   model : Model,
 ) -> (@rabbita.Cmd, Model) {
   let (command, next) = update_message(emit, msg, model)
+  let next = if review_result_context(next) == review_result_context(model) &&
+    review_draft(next).to_json() != review_draft(model).to_json() {
+    save_review_draft(next)
+  } else {
+    next
+  }
+  let next = sync_choices(next)
   // Every workspace reload hides the previous package immediately, including
   // refreshes initiated by other panels. Old asynchronous replies stay inert.
   if next.workspace_generation != model.workspace_generation {
@@ -45,10 +85,371 @@ fn update_message(
   model : Model,
 ) -> (@rabbita.Cmd, Model) {
   match msg {
+    OfflineChoices(action) =>
+      (@rabbita.none, update_offline_choices(model, action))
+    ReviewDraftAction(context, action, value) =>
+      (@rabbita.none, update_review_draft(model, context, action, value))
+    BriefAction(action) => update_brief(emit, action, model)
+    EditChoices(action) => (@rabbita.none, update_choices(model, action))
     RefreshDelivery
     | PrepareDelivery
     | SelectDelivery(_)
     | DeliveryLoaded(_, _) => update_delivery(emit, msg, model)
+    SetJobObjective(value) =>
+      (@rabbita.none, { ..model, job_objective: value, })
+    SetJobAudience(value) => (@rabbita.none, { ..model, job_audience: value, })
+    SetJobSources(value) => (@rabbita.none, { ..model, job_sources: value, })
+    SetJobOutputs(value) => (@rabbita.none, { ..model, job_outputs: value, })
+    SetJobCriteria(value) => (@rabbita.none, { ..model, job_criteria: value, })
+    SetJobSourceName(value) =>
+      (@rabbita.none, { ..model, job_source_name: value, })
+    SetJobSourceContent(value) =>
+      (@rabbita.none, { ..model, job_source_content: value, })
+    SetJobArxivQuery(value) =>
+      (@rabbita.none, { ..model, job_arxiv_query: value, })
+    SetJobSourceUrl(value) =>
+      (@rabbita.none, { ..model, job_source_url: value, })
+    SetJobRevisionInstruction(value) =>
+      (@rabbita.none, { ..model, job_revision_instruction: value, })
+    SelectJobRevisionFile(value) =>
+      (@rabbita.none, { ..model, job_revision_file: value, })
+    AddJobTextSource =>
+      match selected_general_job(model) {
+        Some(job) if !model.job_source_content.is_blank() =>
+          (
+            add_general_job_text_source(
+              emit,
+              job.job.job_id,
+              model.job_source_name,
+              model.job_source_content,
+            ),
+            {
+              ..model,
+              job_status: "Saving supplied source…",
+              job_error: None,
+            },
+          )
+        _ =>
+          (
+            @rabbita.none,
+            {
+              ..model,
+              job_error: Some("Select a job and add source content."),
+            },
+          )
+      }
+    AddJobArxivSource =>
+      match selected_general_job(model) {
+        Some(job) if !model.job_arxiv_query.is_blank() =>
+          (
+            add_general_job_arxiv_source(
+              emit,
+              job.job.job_id,
+              model.job_arxiv_query,
+            ),
+            {
+              ..model,
+              job_status: "Fetching arXiv metadata and abstracts…",
+              job_error: None,
+            },
+          )
+        _ =>
+          (
+            @rabbita.none,
+            {
+              ..model,
+              job_error: Some("Select a job and enter an arXiv query."),
+            },
+          )
+      }
+    AddJobUrlSource =>
+      match selected_general_job(model) {
+        Some(job) if !model.job_source_url.is_blank() =>
+          (
+            add_general_job_url_source(
+              emit,
+              job.job.job_id,
+              model.job_source_url,
+            ),
+            {
+              ..model,
+              job_status: "Capturing public source URL…",
+              job_error: None,
+            },
+          )
+        _ =>
+          (
+            @rabbita.none,
+            {
+              ..model,
+              job_error: Some("Select a job and enter a public HTTPS URL."),
+            },
+          )
+      }
+    JobSourceAdded(Ok(job)) =>
+      (
+        @rabbita.none,
+        {
+          ..model,
+          jobs: replace_general_job(model.jobs, job),
+          job_source_content: "",
+          job_status: "Source saved in input/ for the MoonClaw run.",
+          job_error: None,
+        },
+      )
+    JobSourceAdded(Err(error)) =>
+      (@rabbita.none, { ..model, job_error: Some(error), })
+    CreateJobRevision =>
+      match selected_general_job(model) {
+        Some(job) if !model.job_revision_file.is_blank() &&
+          !model.job_revision_instruction.is_blank() =>
+          (
+            create_general_job_revision(
+              emit,
+              job.job.job_id,
+              model.job_revision_file,
+              model.job_revision_instruction,
+            ),
+            {
+              ..model,
+              job_status: "Creating revision brief…",
+              job_error: None,
+            },
+          )
+        _ =>
+          (
+            @rabbita.none,
+            {
+              ..model,
+              job_error: Some("Choose an output and describe the revision."),
+            },
+          )
+      }
+    JobRevisionCreated(Ok(job)) =>
+      (
+        @rabbita.none,
+        {
+          ..model,
+          jobs: replace_general_job(model.jobs, job),
+          selected_job_id: job.job.job_id,
+          job_revision_instruction: "",
+          job_revision_file: "",
+          job_preview: None,
+          job_status: "Revision job saved with the previous file and sources. Start it with MoonClaw.",
+          job_error: None,
+        },
+      )
+    JobRevisionCreated(Err(error)) =>
+      (@rabbita.none, { ..model, job_error: Some(error), })
+    PreviewJobFile(name) =>
+      match selected_general_job(model) {
+        Some(job) =>
+          (
+            preview_general_job_file(emit, job.job.job_id, name),
+            { ..model, job_preview: None, job_error: None, },
+          )
+        None => (@rabbita.none, model)
+      }
+    JobPreviewLoaded(Ok(preview)) =>
+      (@rabbita.none, { ..model, job_preview: Some(preview), job_error: None, })
+    JobPreviewLoaded(Err(error)) =>
+      (@rabbita.none, { ..model, job_error: Some(error), })
+    RefreshJobs => (load_research_jobs(emit), { ..model, job_error: None, })
+    JobsLoaded(Ok(jobs)) => {
+      let selected = if jobs.any(job => job.job.job_id == model.selected_job_id) {
+        model.selected_job_id
+      } else {
+        jobs.get(0).map(job => job.job.job_id).unwrap_or("")
+      }
+      (
+        @rabbita.none,
+        { ..model, jobs, selected_job_id: selected, job_error: None, },
+      )
+    }
+    JobsLoaded(Err(error)) =>
+      (@rabbita.none, { ..model, job_error: Some(error), })
+    CreateJob =>
+      if model.job_objective.trim().is_blank() ||
+        model.model_name.trim().is_blank() ||
+        requested_job_outputs(model.job_outputs, model.job_criteria).is_empty() ||
+        requested_job_outputs(model.job_outputs, model.job_criteria).any(output => {
+          output.acceptance_criteria.is_empty() ||
+          output.acceptance_criteria.any(criterion => criterion.is_blank())
+        }) ||
+        requested_job_criteria(model.job_criteria).is_empty() {
+        (
+          @rabbita.none,
+          {
+            ..model,
+            job_error: Some(
+              "Describe the research, choose a MoonClaw model, name an output file, and state a success criterion.",
+            ),
+          },
+        )
+      } else {
+        (
+          create_general_job(emit, model),
+          { ..model, job_status: "Saving research brief…", job_error: None, },
+        )
+      }
+    JobCreated(Ok(job)) =>
+      (
+        @rabbita.none,
+        {
+          ..model,
+          jobs: replace_general_job(model.jobs, job),
+          selected_job_id: job.job.job_id,
+          job_status: "Brief saved. Start the MoonClaw job when ready.",
+          job_error: None,
+        },
+      )
+    JobCreated(Err(error)) =>
+      (@rabbita.none, { ..model, job_error: Some(error), })
+    SelectJob(job_id) =>
+      if model.jobs.any(job => job.job.job_id == job_id) {
+        (
+          refresh_general_job(emit, job_id),
+          {
+            ..model,
+            selected_job_id: job_id,
+            job_preview: None,
+            job_error: None,
+          },
+        )
+      } else {
+        (@rabbita.none, model)
+      }
+    StartJob =>
+      match selected_general_job(model) {
+        Some(_) if model.model_name.trim().is_blank() =>
+          (
+            @rabbita.none,
+            {
+              ..model,
+              job_error: Some(
+                "Choose a MoonClaw model route before starting this job.",
+              ),
+            },
+          )
+        Some(job) if job.moonclaw_gateway_base is Some(_) =>
+          (
+            start_general_job(emit, job.job.job_id, model.model_name),
+            {
+              ..model,
+              job_status: if job.session_key is Some(_) {
+                "Checking the saved MoonClaw run…"
+              } else {
+                "Planning and starting the MoonClaw job…"
+              },
+              job_error: None,
+            },
+          )
+        Some(_) =>
+          (
+            @rabbita.none,
+            {
+              ..model,
+              job_error: Some(
+                "Configure a reachable MoonClaw gateway to run this job.",
+              ),
+            },
+          )
+        None => (@rabbita.none, model)
+      }
+    SetJobResumeContent(value) =>
+      (@rabbita.none, { ..model, job_resume_content: value, })
+    ResumeJob =>
+      match selected_general_job(model) {
+        Some(job) if !model.job_resume_content.trim().is_blank() =>
+          (
+            resume_general_job(emit, job.job.job_id, model.job_resume_content),
+            {
+              ..model,
+              job_status: "Resuming MoonClaw run…",
+              job_error: None,
+            },
+          )
+        _ =>
+          (
+            @rabbita.none,
+            {
+              ..model,
+              job_error: Some(
+                "Enter the requested information to resume the run.",
+              ),
+            },
+          )
+      }
+    JobResumed(Ok(job)) =>
+      (
+        @rabbita.delay(refresh_general_job(emit, job.job.job_id), 3000),
+        {
+          ..model,
+          jobs: replace_general_job(model.jobs, job),
+          job_resume_content: "",
+          job_status: "MoonClaw run resumed. Waiting for updated outputs…",
+          job_error: None,
+        },
+      )
+    JobResumed(Err(error)) =>
+      (@rabbita.none, { ..model, job_error: Some(error), })
+    JobStarted(Ok(job)) =>
+      (
+        follow_general_job(emit, job),
+        {
+          ..model,
+          jobs: replace_general_job(model.jobs, job),
+          job_status: "MoonClaw run started. Refresh outputs to follow progress and collect completed files.",
+          job_error: None,
+        },
+      )
+    JobStarted(Err(error)) =>
+      (
+        @rabbita.none,
+        {
+          ..model,
+          job_error: Some(
+            "MoonClaw start did not complete. Refresh this job before retrying: " +
+            error,
+          ),
+        },
+      )
+    JobRefreshed(Ok(job)) =>
+      (
+        follow_general_job(emit, job),
+        {
+          ..model,
+          jobs: replace_general_job(model.jobs, job),
+          job_error: None,
+        },
+      )
+    JobRefreshed(Err(error)) =>
+      (@rabbita.none, { ..model, job_error: Some(error), })
+    VerifyJobDelivery =>
+      match selected_general_job(model) {
+        Some(job) =>
+          (
+            verify_general_job_delivery(emit, job.job.job_id),
+            {
+              ..model,
+              job_status: "Verifying output bytes and delivery evidence…",
+              job_error: None,
+            },
+          )
+        None => (@rabbita.none, model)
+      }
+    JobDeliveryVerified(Ok(job)) =>
+      (
+        @rabbita.none,
+        {
+          ..model,
+          jobs: replace_general_job(model.jobs, job),
+          job_status: "Delivery manifest is ready for researcher review.",
+          job_error: None,
+        },
+      )
+    JobDeliveryVerified(Err(error)) =>
+      (@rabbita.none, { ..model, job_error: Some(error), })
     RefreshSeriesCatalog =>
       (load_series_catalog(emit), { ..model, series_error: None, })
     SeriesCatalogLoaded(Ok(catalog)) => {

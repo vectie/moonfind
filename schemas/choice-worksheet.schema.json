@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "moonfind://choice-worksheet/v1",
+  "title": "User-authored evidence-to-choice worksheet or decision brief",
+  "oneOf": [
+    { "$ref": "#/$defs/worksheet" },
+    {
+      "type": "object",
+      "required": ["contract_id", "boundary", "evidence_status", "company_decision_recorded", "worksheet"],
+      "properties": {
+        "contract_id": { "const": "moonfind.decision-brief.v1" },
+        "boundary": { "type": "string" },
+        "evidence_status": { "type": "string" },
+        "company_decision_recorded": { "const": false },
+        "worksheet": { "$ref": "#/$defs/worksheet" }
+      }
+    }
+  ],
+  "$defs": {
+    "strings": { "type": "array", "items": { "type": "string" } },
+    "source": {
+      "type": "object",
+      "required": ["paper_id", "versioned_id", "title", "abstract_text", "abs_url", "pdf_url", "source_digest"],
+      "properties": {
+        "paper_id": { "type": "string" }, "versioned_id": { "type": "string" },
+        "title": { "type": "string" }, "abstract_text": { "type": "string" },
+        "abs_url": { "type": "string" }, "pdf_url": { "type": "string" },
+        "source_digest": { "type": "string" },
+        "published_at": { "type": ["string", "null"] },
+        "updated_at": { "type": ["string", "null"] },
+        "retrieved_at": { "type": ["string", "null"], "pattern": "^-?[0-9]+$", "description": "Epoch milliseconds encoded as a decimal string, matching the host's MoonBit Int64 JSON convention" }
+      }
+    },
+    "claim": {
+      "type": "object",
+      "required": ["claim_id", "statement", "paper_ids", "evidence_location", "confidence", "counterevidence"],
+      "properties": {
+        "claim_id": { "type": "string" }, "statement": { "type": "string" },
+        "paper_ids": { "$ref": "#/$defs/strings" }, "evidence_location": { "type": "string" },
+        "confidence": { "type": "string" }, "counterevidence": { "type": "string" }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "required": ["paper_id", "one_sentence", "problem", "method", "evidence", "limitations", "claims", "open_questions"],
+      "properties": {
+        "paper_id": { "type": "string" }, "one_sentence": { "type": "string" },
+        "problem": { "type": "string" }, "method": { "type": "string" }, "evidence": { "type": "string" },
+        "limitations": { "$ref": "#/$defs/strings" }, "open_questions": { "$ref": "#/$defs/strings" },
+        "claims": { "type": "array", "items": { "$ref": "#/$defs/claim" } }
+      }
+    },
+    "option": {
+      "type": "object",
+      "required": ["id", "name", "assessments", "source_id", "claim_id", "contradiction", "unknowns", "cost_of_error", "experiment"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 }, "name": { "type": "string" },
+        "assessments": { "$ref": "#/$defs/strings", "minItems": 1, "maxItems": 6 },
+        "source_id": { "type": "string" }, "claim_id": { "type": "string" },
+        "contradiction": { "type": "string" }, "unknowns": { "type": "string" },
+        "cost_of_error": { "type": "string" }, "experiment": { "type": "string" },
+        "retained_source": { "anyOf": [{ "$ref": "#/$defs/source" }, { "type": "null" }] },
+        "retained_claim": { "anyOf": [{ "$ref": "#/$defs/claim" }, { "type": "null" }] },
+        "evidence_review_note": { "type": ["string", "null"] }
+      }
+    },
+    "worksheet": {
+      "type": "object",
+      "required": ["contract_id", "revision", "next_option", "evidence", "question", "audience", "commitment_ref", "criteria", "options", "chosen_option_id", "reasoning", "next_action"],
+      "properties": {
+        "contract_id": { "const": "moonfind.choice-worksheet.v1" },
+        "revision": { "type": "integer", "minimum": 1 },
+        "next_option": { "type": "integer", "minimum": 3, "maximum": 1000000 },
+        "evidence": {
+          "type": "object", "required": ["run_id", "question", "papers", "summaries"],
+          "properties": {
+            "run_id": { "type": "string" }, "question": { "type": "string" },
+            "papers": { "type": "array", "items": { "$ref": "#/$defs/source" } },
+            "summaries": { "type": "array", "items": { "$ref": "#/$defs/summary" } }
+          }
+        },
+        "question": { "type": "string" }, "audience": { "type": "string" }, "commitment_ref": { "type": "string" },
+        "criteria": { "$ref": "#/$defs/strings", "minItems": 1, "maxItems": 6 },
+        "options": { "type": "array", "minItems": 2, "maxItems": 4, "items": { "$ref": "#/$defs/option" } },
+        "chosen_option_id": { "type": "string" }, "reasoning": { "type": "string" }, "next_action": { "type": "string" },
+        "history": { "type": ["array", "null"], "maxItems": 20, "items": { "$ref": "#/$defs/archive" }, "description": "Complete non-recursive earlier worksheets in strictly increasing revision order; no automatic eviction" }
+      }
+    },
+    "archive": {
+      "type": "object",
+      "required": ["revision", "next_option", "evidence", "question", "audience", "commitment_ref", "criteria", "options", "chosen_option_id", "reasoning", "next_action"],
+      "properties": {
+        "revision": { "type": "integer", "minimum": 1 },
+        "next_option": { "type": "integer", "minimum": 3, "maximum": 1000000 },
+        "evidence": { "$ref": "#/$defs/worksheet/properties/evidence" },
+        "question": { "type": "string" }, "audience": { "type": "string" }, "commitment_ref": { "type": "string" },
+        "criteria": { "$ref": "#/$defs/strings", "minItems": 1, "maxItems": 6 },
+        "options": { "type": "array", "minItems": 2, "maxItems": 4, "items": { "$ref": "#/$defs/option" } },
+        "chosen_option_id": { "type": "string" }, "reasoning": { "type": "string" }, "next_action": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{"id":"clinic-2","interview":{"outcome":"resolved"},"metrics":{"count":1.00},"private_note":"changed outside comparison"}
+
+{"id":"clinic-1","interview":{"outcome":"completed"},"metrics":{"count":9007199254740994},"private_note":"new private note"}
+{"id":"shape","interview":{"outcome":null},"metrics":{"count":null}}
+{"id":"new-site","interview":{"outcome":"planned"},"metrics":{"count":3}}

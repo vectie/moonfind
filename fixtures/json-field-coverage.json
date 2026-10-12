@@ -1,0 +1,9 @@
+{
+  "observations": [
+    {"id":"clinic-1","outcome":null,"count":0,"confirmed":false,"tags":[],"detail":{}},
+    {"id":"clinic-2","outcome":"","count":9007199254740993,"note":"Synthetic missing follow-up"},
+    {"id":"school-3","count":"0","outcome":"unknown"},
+    {"id":"clinic-4","note":"Synthetic outcome field absent"},
+    {"id":"clinic-5","outcome":" "}
+  ]
+}

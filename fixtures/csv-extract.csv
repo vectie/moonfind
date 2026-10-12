@@ -1,0 +1,6 @@
+id,segment,note,private
+001,clinic,"García: ""handoff"", 20 minutes
+Needs timing check.",secret-one
+002,school,"=HYPERLINK(""https://example.invalid"",""link"")",secret-two
+003,clinic,"月面 <script>alert(1)</script>Second line",secret-three
+004,library,,secret-four

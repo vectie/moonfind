@@ -6,7 +6,7 @@ fn journal_catalog() -> @integration.CapabilityCatalogV1 {
     compiled_at: "2026-07-31T00:00:00Z",
     conformant: true,
     products: [
-      { product_id: "moonfind", pack_id: "moonfind", pack_version: "0.1.0" },
+      { product_id: "moonfind", pack_id: "moonfind", pack_version: "0.1.0", },
     ],
     operations: [
       {

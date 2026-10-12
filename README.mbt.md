@@ -1,14 +1,132 @@
 # MoonFind
 
-> **Domain pack · evidence-backed research alpha.** Read the
+> **General research domain pack · evidence-backed delivery alpha.** Read the
 > [product contract](docs/PRODUCT_CONTRACT.md) for provider licensing,
 > hostile-document isolation, the closed loop and release gates.
 
-MoonFind is a MoonSuite domain pack for evidence-backed AutoResearch. It tracks research questions, acquires and normalizes papers, asks MoonClaw to create cited summaries and falsifiable ideas, uses MoonTown to challenge bridges across paper-books, and routes reviewed outcomes to MoonBook Bookkeeper for Three-Gap learning.
+MoonFind is a MoonSuite domain pack for general, evidence-backed research jobs.
+The product target is to turn a brief into usable files with source links,
+verification receipts, and explicit gaps. The general job path saves a brief,
+plans and runs it through MoonClaw, collects finished files, and issues a
+delivery manifest after checking bytes and submitted acceptance evidence.
+The existing path tracks research questions, acquires and normalizes papers,
+asks MoonClaw to create cited summaries and falsifiable ideas, uses MoonTown to
+challenge bridges across paper-books, and routes reviewed outcomes to MoonBook
+Bookkeeper for Three-Gap learning. See the [reprioritized implementation
+plan](docs/IMPLEMENTATION_PLAN.md).
 
-The first specialization is humanoid robotics model research over arXiv. Domain semantics stay in `humanoid/`; the reusable research graph stays in `research/`. The implementation is MoonBit-native and the application UI is Rabbita. There is no Python runtime or secondary agent runtime.
+The first specialization is humanoid robotics model research over arXiv. Domain semantics stay in `humanoid/`; general job and delivery contracts stay in `research/`. The implementation is MoonBit-native and the application UI is Rabbita. There is no Python runtime or secondary agent runtime. The [ClawsGO comparison](docs/CLAWSGO_COMPARISON.md) explains the new priorities.
 
-## Product loop
+For general offline preparation, the [research brief studio](docs/OFFLINE_BRIEFS.md)
+captures a question, scope, requested outputs and exact local source bytes. It
+supports one or more sources, immutable saved revisions and complete dossier
+exports without a research run or provider. A prepared brief is not executed
+research or approval of its requested outputs and acceptance criteria.
+
+From a saved offline brief, [compare choices using its exact local source dossier](docs/OFFLINE_CHOICES.md).
+Record alternatives, criteria, uncertainty and a next experiment without creating
+a research run. Save/reopen, explicitly continue across saved source revisions,
+and export the complete user-authored worksheet and history as Markdown or JSON.
+
+In the research studio, [exact-result review drafts](docs/REVIEW_DRAFTS.md)
+autosave selected synthesis IDs, rationale and Three-Gap fields in this browser.
+Reload resumes only the same trusted Book, run and source digest. Backup,
+restore, clear and storage-error controls are available beside the form;
+restoring a draft never submits a review or restores approval authority.
+
+## Start a general research job
+
+```bash
+cd ui/rabbita-moonfind && npm run build && cd ../..
+moon run cmd/ui_host --target native -- --workspace "$HOME/Research" --port 4313
+```
+
+Open `http://127.0.0.1:4313/apps/moonfind/jobs`. Set
+`MOONCLAW_GATEWAY_BASE` or pass `--moonclaw-gateway` to run a saved brief;
+if the gateway requires authentication, also set `MOONCLAW_GATEWAY_TOKEN`.
+Each job lives below `.moonsuite/products/moonfind/jobs/<job-id>/`. Add pasted
+text/CSV/JSON/BibTeX, fetch arXiv metadata and abstracts, capture a public
+HTTPS page or PDF, or put local files in its `input/` directory before starting.
+Captured URLs include a retrieval record and digest. MoonClaw plans the brief, runs in a
+separate workspace with the brief and inputs mounted, and writes final files
+to its `outputs/`. Refreshing a completed job collects those files into the
+MoonFind job's `outputs/` directory. The UI shows actual files, sizes, digests,
+and missing requested filenames. Text files have inline previews; images can
+be previewed in the job screen; PDFs open in the browser. The **Download
+complete ZIP bundle** action includes the brief, source snapshots, final
+files, evidence files, revision record, and delivery records when present.
+The **Revise** action creates a child job with the prior file and original
+sources in `input/`, preserving the old version. MoonFind saves the Cowork session before
+planning and records the proposal and run IDs for reconnection. If MoonClaw
+pauses for missing information, the job screen shows its reason and accepts a
+response through **Resume run**; the same run continues.
+Success criteria can be shared across outputs or prefixed with
+`filename => criterion` to target one requested file.
+
+To verify a delivery, write `delivery-evidence.json` beside `job.json`. It
+names each requested output, real relative evidence files, and one `passed`
+check for every exact acceptance criterion in the brief. For example:
+
+```json
+{
+  "contract_id": "moonfind.delivery-evidence.v1",
+  "job_id": "job-123",
+  "outputs": [{
+    "output_id": "report.md",
+    "evidence_refs": ["evidence/sources.md"],
+    "checks": [{
+      "criterion": "Answers the research objective",
+      "status": "passed",
+      "evidence_ref": "evidence/sources.md"
+    }]
+  }]
+}
+```
+
+The **Verify delivery** action checks file presence, references, requested
+criteria, and actual output bytes before writing `delivery-manifest.json`.
+It marks the bundle ready for researcher review, not scientifically accepted.
+If an output file changes, the UI marks the manifest stale until verification
+runs again. The [delivery evidence schema](schemas/delivery-evidence.schema.json)
+describes the input contract.
+
+The general path is deliberately open to new job types and output formats.
+Researchers can explore and keep intermediate work in the MoonClaw run
+workspace; final files go in `outputs/`. The specialized arXiv and robotics workflows remain
+available for governed evidence and review.
+
+arXiv intake here contains metadata and abstracts, not article full text.
+Plain arXiv topics become quoted phrase searches; advanced field queries are
+accepted as entered. See the [arXiv API query guide](https://info.arxiv.org/help/api/user-manual.html#51-details-of-query-construction).
+Captured public URLs are snapshots supplied for the job, not a license grant
+or a claim that their contents were independently verified. Researchers should
+review source use, citations, and conclusions before accepting delivery.
+
+## Specialized evidence and learning loop
+
+Use [JSON evidence cohorts](docs/JSON_EVIDENCE_COHORTS.md) to select source
+records satisfying one or two exact nested-field conditions. Preview All/Any
+results and unresolved paths separately, then retain original records through
+the existing provenance extract, NDJSON or add-to-brief controls.
+
+Use the [nested JSON field lens](docs/JSON_NESTED_FIELD_LENS.md) in the local
+evidence explorer to inspect paths such as `/interview/outcome`, distinguish
+missing values from blocked parent shapes, and select exact original records
+for the existing provenance extract or NDJSON output.
+
+Use [JSON snapshot comparison](docs/JSON_SNAPSHOT_COMPARISON.md) to compare two
+loaded captures by a unique record key and chosen nested fields, inspect exact
+before/after values and locators, and download a bounded reading report.
+
+Use [projected JSON/JSONL CSV output](docs/JSON_PROJECTED_CSV.md) to take selected
+records at explicit nested field pointers into a spreadsheet, with source
+locators and distinct missing, blocked, null and empty-value kinds.
+
+The local JSON/JSONL evidence explorer also offers
+[selected-record NDJSON downloads](docs/SELECTED_NDJSON_OUTPUT.md) for
+line-oriented tools. Preview the exact chosen objects, including hidden
+selections, with original numeric/string tokens and no added provenance envelope.
+Keep the original dossier when you need capture identity and source lineage.
 
 ```text
 Research watch
@@ -193,6 +311,14 @@ desired composition JSON is not itself proof of those external facts.
 
 ## Rabbita UI
 
+The offline brief studio at `/apps/moonfind/briefs` accepts local BibTeX
+bibliographies as citation-keyed cards. Search by title, key, author, year, venue
+or keyword; select references; save/reopen the brief; and export the original
+bibliography plus selected metadata and a readable reference section. Continue
+into an offline comparison to record uncertainties and the next research step.
+See [BibTeX bibliography workflow](docs/BIBTEX_BIBLIOGRAPHIES.md) and the synthetic
+[`local-bibliography.bib`](fixtures/local-bibliography.bib) sample.
+
 ```bash
 cd ui/rabbita-moonfind
 npm install
@@ -200,4 +326,38 @@ npm run build
 npm run dev
 ```
 
-The workspace answers one primary question: _which cross-paper humanoid model idea is worth falsifying next, and why?_ Papers, bridges, counter-hypotheses, falsifiers, open evidence gaps, and the Bookkeeper state remain visible together.
+The primary UI now starts with a general research brief and output files. When
+a specialized run is selected, the same workspace also shows the humanoid
+question: _which cross-paper model idea is worth falsifying next, and why?_
+Papers, bridges, counter-hypotheses, falsifiers, open evidence gaps, and the
+Bookkeeper state remain visible together.
+
+The same offline studio also accepts **CSL JSON** reference-manager exports.
+Search item IDs, citation keys, authors/editors, dates or DOI; choose references;
+and continue through the saved brief, dossier and editable comparison. Original
+bytes, exact IDs and metadata/abstract availability stay visible. See the
+[CSL JSON guide](docs/CSL_JSON_BIBLIOGRAPHIES.md) and
+[synthetic library](fixtures/local-bibliography.csl.json).
+
+For tabular sources, **Import CSV table** explores local interview, observation
+or evidence rows. Search all cells or one column, select rows and output columns,
+then save/reopen the chosen evidence table and export a readable dossier with
+the complete original CSV. See the [CSV evidence guide](docs/CSV_EVIDENCE_TABLES.md)
+and [synthetic interview table](fixtures/local-evidence.csv).
+
+For JSON observations, **Explore loaded JSON evidence** opens an object array at
+the root or a JSON Pointer. Search/select records, preserve exact number tokens
+and source locators, then download an extract or add it to the saved brief. See
+the [JSON evidence guide](docs/JSON_EVIDENCE_EXPLORER.md) and
+[synthetic observations](fixtures/json-evidence.json).
+
+### Annotated reading reports
+
+Search browser-local reading notes and retained reference metadata, choose
+attached or detached snapshots, preview and download a human-readable Markdown
+report with the matching notes, supplied abstracts and provenance. See
+[the annotated reading report walkthrough](docs/ANNOTATED_READING_REPORT.md).
+
+## Local interview quotations
+
+Import WebVTT or SubRip (SRT) transcripts and reuse time-coded quotations in the brief studio. See [SubRip interview evidence](docs/SUBRIP_TRANSCRIPTS.md) for SRT intake, literal cue identifiers and provenance. See [WebVTT transcript workflow](docs/WEBVTT_TRANSCRIPTS.md) for the text adapter, locators, limits and save/reopen workflow.

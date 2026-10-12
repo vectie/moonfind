@@ -1,0 +1,35 @@
+///|
+import {
+  "moonbitlang/async@0.22.4",
+  "moonbitlang/async@0.22.4/fs",
+  "moonbitlang/core/env",
+}
+
+///|
+/// Package the compiled, self-contained Rabbita JS without installing a bundler.
+/// Arguments: repository root, compiled main.js, destination static directory.
+async fn main {
+  let args = @env.args()
+  guard args.length() == 4 else {
+    fail("Expected repository, compiled main.js and destination")
+  }
+  let ui = args[1] + "/ui/rabbita-moonfind"
+  let destination = args[3]
+  if !@fs.exists(destination) {
+    @fs.mkdir(destination, recursive=true)
+  }
+  let index = @fs.read_file(ui + "/index.html")
+    .text()
+    .replace_all(old="src=\"/bootstrap.js\"", new="src=\"/main.js\"")
+    .replace_all(
+      old="</head>",
+      new="<link rel=\"stylesheet\" href=\"/styles.css\" />\n  </head>",
+    )
+  @fs.write_file(destination + "/index.html", index)
+  @fs.write_file(
+    destination + "/styles.css",
+    @fs.read_file(ui + "/styles.css").binary(),
+  )
+  @fs.write_file(destination + "/main.js", @fs.read_file(args[2]).binary())
+  println("Static MoonFind UI staged at " + destination)
+}

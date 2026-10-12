@@ -9,6 +9,9 @@ struct EvidencePaper {
   abs_url : String
   pdf_url : String
   source_digest : String
+  published_at : String?
+  updated_at : String?
+  retrieved_at : Int64?
 } derive(Debug, ToJson, FromJson)
 
 ///|

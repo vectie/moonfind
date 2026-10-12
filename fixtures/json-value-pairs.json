@@ -1,0 +1,17 @@
+{
+  "fixture_notice": "Synthetic observations for local workflow tests; not research findings.",
+  "observations": [
+    {"id":"clinic-1","site":"clinic","interview":{"outcome":"resolved"}},
+    {"id":"school-1","site":"school","interview":{"outcome":"unresolved"}},
+    {"id":"school-2","site":"school","interview":{"outcome":"resolved"}},
+    {"id":"clinic-2","site":"clinic","interview":{"outcome":"unresolved"}},
+    {"id":9007199254740993,"site":"sch\u006fol","interview":{"outcome":"unresolved"},"note":"Preserve original number and escape tokens."},
+    {"id":"school-3","site":"school","interview":{"outcome":null}},
+    {"id":"school-4","site":"school","interview":{}},
+    {"id":"unknown-site","interview":{"outcome":"unresolved"}},
+    {"id":"school-5","site":"school","interview":null},
+    {"id":"clinic-3","site":"clinic","interview":{"outcome":["resolved"]}},
+    {"id":"clinic-4","site":"clinic","interview":{"outcome":[]}},
+    {"id":"null-site","site":null,"interview":{"outcome":"unresolved"}}
+  ]
+}

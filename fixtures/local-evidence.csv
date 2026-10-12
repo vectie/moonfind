@@ -1,0 +1,6 @@
+id,segment,observation,confidence,cost
+001,clinic,"García: ""handoff takes 20 minutes"", synthetic interview
+Needs timing check.",reported,10.00
+002,school,A school mentioned clinic software but gave no timing data.,unknown,20
+003,clinic,"月面 clinic: workflow was fast | exception <script>alert(1)</script>",contradiction,
+004,library,No interview has happened.,unknown,0

@@ -43,28 +43,30 @@ test "command-ready research waits for an explicit model route" {
   let model = {
     ..initial_model(),
     gateway_published: true,
+    gateway_base: "http://127.0.0.1:4313",
+    workspace: Some(route_workspace()),
+    book_dir: "/trusted/book",
+    trusted_book_dir: "/trusted/book",
     research_execution: Some(execution),
   }
   let (_, held) = update(_ => @rabbita.none, StartResearch, model)
-  assert_eq(held.phase, Ready)
-  assert_true(
-    held.error.unwrap_or("").contains("Choose a MoonClaw model route"),
-  )
+  assert_eq(held.phase, Failed)
+  assert_true(held.error.unwrap_or("").contains("Choose a model explicitly"))
   let reply : CapabilityOperationReply = {
     contract_id: "moonfind.capability-operation-reply.v1",
     operation: "reconcile",
     blocked: false,
     message: "ready",
-    execution,
+    execution: { ..execution, revision: 2, },
   }
   let (_, reconciled) = update(
     _ => @rabbita.none,
-    CapabilitySubmitted(Ok(reply)),
+    CapabilitySubmitted(execution, Ok(reply)),
     model,
   )
-  assert_eq(reconciled.phase, Ready)
+  assert_eq(reconciled.phase, Failed)
   assert_true(
-    reconciled.notice.unwrap_or("").contains("Choose a MoonClaw model route"),
+    reconciled.error.unwrap_or("").contains("Choose a model explicitly"),
   )
   let (_, selected) = update(
     _ => @rabbita.none,

@@ -8,6 +8,7 @@ import {
   "moonbitlang/core/json",
   "moonbitlang/core/string",
   "vectie/moonfind/host",
+  "vectie/moonfind/research",
   "vectie/moonfind/moontown",
   "vectie/moonfind/series",
 }

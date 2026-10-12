@@ -1,0 +1,10 @@
+{
+  "observations": [
+    {"site":"clinic","interview":{"outcome":"slow, needs \"review\""},"metrics":{"count":9007199254740993},"private_note":"not projected"},
+    {"site":"school","interview":{"outcome":"resolved"},"metrics":{"count":1.00},"private_note":"not projected"},
+    {"site":"clinic","interview":{"outcome":"=HYPERLINK(\"https://example.invalid\",\"do not execute\")"},"metrics":{"count":-0},"private_note":"not projected"},
+    {"site":"clinic","interview":null,"metrics":{"count":null},"private_note":"not projected"},
+    {"site":"clinic","interview":{},"private_note":"not projected"},
+    {"site":"clinic","interview":{"outcome":""},"metrics":{"count":"0012"},"private_note":"not projected"}
+  ]
+}

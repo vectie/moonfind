@@ -8,6 +8,8 @@ import {
 // Values
 pub async fn append_execution_record(String, @integration.ResearchExecutionRecordV1) -> String
 
+pub fn digest_bytes(Bytes) -> String
+
 pub fn digest_declared_artifact_bytes(Array[(String, Bytes)]) -> String raise
 
 pub fn digest_json(Json) -> String
@@ -35,4 +37,3 @@ pub async fn write_run_artifact(String, String, String, Json) -> Unit
 // Type aliases
 
 // Traits
-

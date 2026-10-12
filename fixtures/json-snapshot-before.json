@@ -1,0 +1,8 @@
+{
+  "observations": [
+    {"id":"clinic-1","interview":{"outcome":"planned"},"metrics":{"count":9007199254740993},"private_note":"not compared or exported"},
+    {"id":"clinic-2","interview":{"outcome":"resolved"},"metrics":{"count":1.00},"private_note":"original note"},
+    {"id":"retired","interview":{"outcome":"unresolved"},"metrics":{"count":0}},
+    {"id":"shape","interview":{},"metrics":{"count":null}}
+  ]
+}

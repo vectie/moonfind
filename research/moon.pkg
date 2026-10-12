@@ -1,5 +1,6 @@
 import {
   "moonbitlang/core/json",
+  "moonbitlang/x/unicode",
 }
 
 supported_targets = "native"

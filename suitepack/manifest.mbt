@@ -29,16 +29,19 @@ pub fn manifest() -> @pack.MoonPackManifest {
   {
     id: "moonfind",
     version: "0.1.0",
-    display_name: "Moonfind Evidence-Backed AutoResearch",
+    display_name: "Moonfind Research Jobs",
     product_id: "moonfind",
     kind: DomainPack,
-    required_runtime_extensions: ["moonclaw", "moontown", "moonbook"],
+    required_runtime_extensions: ["moonclaw"],
     book_templates: [
       @pack.contract_ref(
         "moonfind-research-book", "1.0.0", "book/research-book.md",
       ),
     ],
     schemas: [
+      schema("research-job"),
+      schema("delivery-manifest"),
+      schema("delivery-evidence"),
       schema("research-watch"),
       schema("local-input-coverage"),
       schema("paper-record"),
@@ -203,6 +206,7 @@ pub fn manifest() -> @pack.MoonPackManifest {
       ),
     ],
     app_entrypoints: [
+      @pack.app_entrypoint("research-jobs", "/apps/moonfind/jobs", "researcher"),
       @pack.app_entrypoint(
         "research-studio", "/apps/moonfind/research", "research-operator",
       ),

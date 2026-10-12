@@ -34,3 +34,17 @@ test "review preparation surfaces typed host errors without weakening success de
     Err(error) => fail("valid review receipt was rejected: \{error}")
   }
 }
+
+///|
+test "research job criteria can target each requested file" {
+  let outputs = requested_job_outputs(
+    "summary.md, comparison.csv", "Uses only the supplied data; summary.md => States the limitation; comparison.csv => Contains group means and counts",
+  )
+  assert_eq(outputs.length(), 2)
+  assert_eq(outputs[0].acceptance_criteria, [
+    "Uses only the supplied data", "States the limitation",
+  ])
+  assert_eq(outputs[1].acceptance_criteria, [
+    "Uses only the supplied data", "Contains group means and counts",
+  ])
+}

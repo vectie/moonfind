@@ -1,0 +1,167 @@
+///|
+import {
+  "moonbitlang/async@0.22.4",
+  "moonbitlang/async@0.22.4/fs",
+  "moonbitlang/async@0.22.4/process",
+  "moonbitlang/async@0.22.4/shell",
+  "moonbitlang/core/env",
+  "moonbitlang/core/json",
+}
+
+///|
+/// Launch the real host and run the compiled UI workflow in the same process
+/// environment. Arguments: repo, host executable, static UI, JS target, evidence.
+async fn main {
+  let args = @env.args()
+  guard args.length() == 6 else {
+    fail("Expected repo, host, static UI, JS target and evidence")
+  }
+  let evidence = args[5]
+  let workspace = @fs.tmpdir(prefix="moonfind-csv-api")
+  let fixture = args[1] + "/fixtures/local-evidence.csv"
+  let base = "http://127.0.0.1:4421"
+  @async.with_task_group(group => {
+    let log = @process.redirect_to_file(evidence + "/native-host.log")
+    let host = @process.spawn(
+      group,
+      args[2],
+      ["--workspace", workspace, "--ui-root", args[3], "--port", "4421"],
+      stdout=log,
+      stderr=log,
+    )
+    defer host.cancel()
+    @async.sleep(300)
+    let page = @shell.Cmd("curl", [
+      "--fail",
+      "--silent",
+      "--show-error",
+      "--max-time",
+      "10",
+      base + "/apps/moonfind/briefs",
+    ]).output()
+    page.check()
+    assert_true(page.stdout().contains("/main.js"))
+    @fs.write_file(evidence + "/served-index.html", page.stdout())
+    let hex = StringBuilder()
+    for byte in @fs.read_file(fixture).binary() {
+      hex.write_string(byte.to_hex())
+    }
+    let intake_body : Json = {
+      "source": {
+        "name": "local-evidence.csv",
+        "origin": "Local example fixture",
+        "captured_at": "2026-10-08T14:00:00Z",
+        "kind": "local-file",
+        "content_hex": hex.to_string(),
+      },
+      "query": "CLINIC",
+      "column_number": 2,
+    }
+    let filtered = @shell.Cmd("curl", [
+      "--fail",
+      "--silent",
+      "--show-error",
+      "-H",
+      "Content-Type: application/json",
+      "--data-binary",
+      intake_body.stringify(),
+      base + "/api/v1/briefs/csv/intake",
+    ]).output()
+    filtered.check()
+    guard @json.parse(filtered.stdout())
+      is { "total_count": Number(4, ..), "rows": Array(filtered_cards), .. } else {
+      fail("Missing filtered CSV rows")
+    }
+    assert_eq(filtered_cards.length(), 2)
+    assert_true(filtered_cards[0] is { "record_number": Number(2, ..), .. })
+    assert_true(filtered_cards[1] is { "record_number": Number(4, ..), .. })
+    @fs.write_file(evidence + "/api-column-filter.json", filtered.stdout())
+    let out = @shell.Cmd(
+      "moon",
+      [
+        "-C",
+        args[1] + "/ui/rabbita-moonfind",
+        "test",
+        "main/csv_wbtest.mbt",
+        "main/csl_wbtest.mbt",
+        "--frozen",
+        "--target",
+        "js",
+        "--strip",
+        "-j",
+        "1",
+        "--target-dir",
+        args[4],
+      ],
+      env={
+        "MOONFIND_BRIEF_NATIVE_URL": base,
+        "MOONFIND_CSV_FIXTURE": fixture,
+        "MOONFIND_CSL_FIXTURE": args[1] +
+        "/fixtures/local-bibliography.csl.json",
+      },
+    ).output(timeout_ms=120000, max_output_bytes=8000000)
+    @fs.write_file(
+      evidence + "/ui-native-test.log",
+      out.stdout() + out.stderr(),
+    )
+    out.check()
+    let lines = out
+      .stdout()
+      .split("\n")
+      .filter(line => line.has_prefix("MOONFIND_CSV_NATIVE="))
+      .collect()
+    assert_eq(
+      lines.length(),
+      1,
+      msg="The native workflow must actually run, not skip",
+    )
+    let result = @json.parse(
+      lines[0]["MOONFIND_CSV_NATIVE=".length():].to_owned(),
+    )
+    guard result is { "revision_id": String(revision), .. } else {
+      fail("Missing saved revision")
+    }
+    let route = base + "/api/v1/briefs/csv-ui-fixture/" + revision
+    @shell.Cmd("curl", [
+      "--fail",
+      "--silent",
+      "--show-error",
+      route + "/dossier.zip",
+      "-o",
+      evidence + "/api-dossier.zip",
+    ]).run()
+    @shell.Cmd("curl", [
+      "--fail",
+      "--silent",
+      "--show-error",
+      route + "/brief.md",
+      "-o",
+      evidence + "/api-brief.md",
+    ]).run()
+    let retained = @shell.Cmd("unzip", [
+      "-p",
+      evidence + "/api-dossier.zip",
+      "sources/source-1.csv",
+    ]).output()
+    retained.check()
+    assert_eq(retained.stdout_bytes(), @fs.read_file(fixture).binary())
+    let selected = @shell.Cmd("unzip", [
+      "-p",
+      evidence + "/api-dossier.zip",
+      "sources/source-2.json",
+    ]).output()
+    selected.check()
+    guard @json.parse(selected.stdout()) is { "rows": Array(references), .. } else {
+      fail("Missing selected rows")
+    }
+    assert_eq(references.length(), 2)
+    @fs.write_file(evidence + "/api-selection.json", selected.stdout())
+    @fs.write_file(
+      evidence + "/CSV_API_RESULT.json",
+      result.stringify(indent=2) + "\n",
+    )
+    println(
+      "CSV real-host UI/API workflow passed: 4 imported, 2 selected, 3 projected columns, saved/reopened; exported original bytes match fixture.",
+    )
+  })
+}

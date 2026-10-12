@@ -97,7 +97,7 @@ pub fn digest_text(value : String) -> String {
 }
 
 ///|
-fn digest_bytes(value : Bytes) -> String {
+pub fn digest_bytes(value : Bytes) -> String {
   let bytes = @crypto.sha256(value)
   let builder = StringBuilder::new()
   for byte in bytes {

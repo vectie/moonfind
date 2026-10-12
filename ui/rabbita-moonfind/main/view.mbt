@@ -9,6 +9,7 @@ using @html {
   h1,
   h2,
   h3,
+  img,
   header,
   input,
   label,
@@ -477,6 +478,7 @@ fn review_panel(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
     style=surface() + ["padding:18px", "display:grid", "gap:11px"],
     [
       completed_result_panel(emit, model),
+      review_draft_panel(emit, model),
       delivery_panel(emit, model),
       retained_review_panel(emit, model),
       match model.review_context_notice {
@@ -1239,6 +1241,19 @@ fn moonflow_receiver_panel(
 
 ///|
 fn view(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
+  if browser_brief_mode() {
+    return main_(
+      id="moonfind-brief-workspace",
+      style=[
+        "min-height:100vh", "background:#07101f", "color:#edf5ff", "font-family:Inter,system-ui,sans-serif",
+        "padding:clamp(14px,3vw,34px)",
+      ],
+      div(style=["max-width:1180px", "margin:0 auto"], [
+        brief_panel(emit, model.brief),
+        offline_choices_panel(emit, model),
+      ]),
+    )
+  }
   main_(
     id="moonfind-primary-workspace",
     style=[
@@ -1256,16 +1271,16 @@ fn view(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
             ],
           [
             div([
-              eyebrow("MOONFIND / LOCAL CORPUS RESEARCH"),
+              eyebrow("MOONFIND / RESEARCH JOBS"),
               h1(
                 style=["margin:5px 0 4px", "font-size:clamp(27px,4vw,44px)"],
                 model.workspace
                 .map(workspace => workspace.title)
-                .unwrap_or("MoonFind research studio"),
+                .unwrap_or("Moonfind research studio"),
               ),
               p(
                 style=["margin:0", "color:#9cb0cd", "max-width:72ch"],
-                "Current durable evidence, exact MoonClaw execution, typed MoonTown challenge, and named-human MoonBook review in one fail-closed operator path.",
+                "Start a research job, follow the MoonClaw work, and open the files it delivers. Specialized evidence and review tools remain available for saved runs.",
               ),
             ]),
             div(style=["display:grid", "gap:8px", "justify-items:end"], [
@@ -1280,12 +1295,31 @@ fn view(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
                 ],
                 phase_text(model.phase),
               ),
-              small(style=["color:#7f95b3"], "MoonBook · pending review"),
+              small(
+                style=["color:#7f95b3"],
+                if model.workspace is Some(_) {
+                  "MoonBook · pending review"
+                } else {
+                  "Local research workspace"
+                },
+              ),
             ]),
           ],
         ),
-        render_research_compass(emit, model),
-        render_series_catalog(emit, model),
+        brief_panel(emit, model.brief),
+        offline_choices_panel(emit, model),
+        choices_panel(emit, model),
+        render_general_jobs(emit, model),
+        if model.workspace is Some(_) {
+          render_research_compass(emit, model)
+        } else {
+          @html.nothing
+        },
+        if model.workspace is Some(_) {
+          render_series_catalog(emit, model)
+        } else {
+          @html.nothing
+        },
         match (model.notice, model.error) {
           (_, Some(error)) =>
             div(
@@ -1307,37 +1341,41 @@ fn view(emit : @rabbita.Emit[Msg], model : Model) -> @rabbita.Html {
             )
           _ => div("")
         },
-        div(
-          style=[
-            "display:grid", "grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr))",
-            "gap:16px", "align-items:start",
-          ],
-          [
-            div(style=["display:grid", "gap:16px"], [
-              workflow_steps(model),
-              evidence_panel(model),
-              moontown_handoff_panel(emit, model),
-              moonflow_receiver_panel(emit, model),
-              model.research_session
-              .map(session => {
-                section(style=surface() + ["padding:18px"], [
-                  eyebrow("LIVE RUN"),
-                  run_detail(session),
-                ])
-              })
-              .unwrap_or(div("")),
-            ]),
-            div(style=["display:grid", "gap:16px"], [
-              setup_panel(emit, model),
-              section(style=surface() + ["padding:18px"], [
-                eyebrow("PLAN PREVIEW"),
-                plan_panel(model.research_session),
+        if model.workspace is Some(_) {
+          div(
+            style=[
+              "display:grid", "grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr))",
+              "gap:16px", "align-items:start",
+            ],
+            [
+              div(style=["display:grid", "gap:16px"], [
+                workflow_steps(model),
+                evidence_panel(model),
+                moontown_handoff_panel(emit, model),
+                moonflow_receiver_panel(emit, model),
+                model.research_session
+                .map(session => {
+                  section(style=surface() + ["padding:18px"], [
+                    eyebrow("LIVE RUN"),
+                    run_detail(session),
+                  ])
+                })
+                .unwrap_or(div("")),
               ]),
-              review_panel(emit, model),
-              qa_panel(emit, model),
-            ]),
-          ],
-        ),
+              div(style=["display:grid", "gap:16px"], [
+                setup_panel(emit, model),
+                section(style=surface() + ["padding:18px"], [
+                  eyebrow("PLAN PREVIEW"),
+                  plan_panel(model.research_session),
+                ]),
+                review_panel(emit, model),
+                qa_panel(emit, model),
+              ]),
+            ],
+          )
+        } else {
+          @html.nothing
+        },
       ],
     ),
   )

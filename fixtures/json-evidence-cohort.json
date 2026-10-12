@@ -1,0 +1,15 @@
+{
+  "synthetic": true,
+  "observations": [
+    {"id":"school-1","site":"school","interview":{"outcome":"unresolved","visits":1}},
+    {"id":"clinic-1","site":"clinic","interview":{"outcome":"unresolved","visits":1.0}},
+    {"id":"school-2","site":"school","interview":{"outcome":"resolved","visits":1e0}},
+    {"id":"school-3","site":"school","interview":{}},
+    {"id":"school-4","site":"school","interview":null},
+    {"id":"school-5","site":"school","interview":{"outcome":null}},
+    {"id":"unknown-site","interview":{"outcome":"unresolved"}},
+    {"id":"school-6","site":"school","interview":{"outcome":"unresolved","visits":9007199254740993}},
+    {"id":"clinic-2","site":"clinic","interview":{"outcome":"resolved"}},
+    {"id":"unknown-interview"}
+  ]
+}

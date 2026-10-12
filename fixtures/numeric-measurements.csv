@@ -1,0 +1,10 @@
+value,group
+"10",keep
+" 20.5 ",omit
+"",keep
+"unknown",omit
+"-2",keep
+"1e1",omit
+"0",keep
+"1,200",omit
+"<script>月</script>",keep

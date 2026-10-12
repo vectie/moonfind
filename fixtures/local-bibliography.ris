@@ -1,0 +1,25 @@
+TY  - JOUR
+TI  - 月面 robotics 🌒
+AU  - García, Ana
+AU  - 王, 明
+PY  - 2025/08/01
+DO  - 10.1234/lunar.1
+UR  - https://example.org/lunar
+AB  - First abstract line.
+      第二行 with Unicode.
+ER  -
+
+TY  - CONF
+T1  - Tactile mapping
+A1  - Smith, Jo
+Y1  - 2024/01/02
+N2  - Conference abstract.
+ER  -
+
+TY  - BOOK
+TI  - Références locales
+AU  - García, Ana
+AU  - Müller, Éva
+PY  - 2023
+AB  - Book abstract.
+ER  -

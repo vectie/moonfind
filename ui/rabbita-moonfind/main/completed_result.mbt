@@ -67,7 +67,10 @@ struct ReviewDraft {
   recognition_summary : String
   decisiveness_severity : Int
   decisiveness_summary : String
-}
+} derive(ToJson, FromJson)
+
+///|
+extend ReviewDraft with ToJson::{to_json}
 
 ///|
 fn review_draft(model : Model) -> ReviewDraft {
@@ -108,12 +111,16 @@ fn adopt_review_context(model : Model, snapshot : WorkspaceSnapshot) -> Model {
     trusted_book_dir: snapshot.book_workspace,
     moontown_result: snapshot.moontown_result,
   }
-  if review_result_context(next) == review_result_context(model) ||
-    model.workspace is None {
+  if review_result_context(next) == review_result_context(model) {
+    return next
+  }
+  if model.workspace is None && current_synthesis(next) is None {
     return next
   }
   let drafts = model.review_drafts.copy()
-  drafts[review_result_context(model)] = review_draft(model)
+  if model.workspace is Some(_) {
+    drafts[review_result_context(model)] = review_draft(model)
+  }
   let restored = drafts.get(review_result_context(next))
   let draft = restored.unwrap_or({
     outcome: "",
@@ -126,7 +133,7 @@ fn adopt_review_context(model : Model, snapshot : WorkspaceSnapshot) -> Model {
     decisiveness_severity: 1,
     decisiveness_summary: "Record what reviewed rule or experiment is still required before action.",
   })
-  apply_review_draft(
+  let adopted = apply_review_draft(
     {
       ..next,
       review_drafts: drafts,
@@ -137,16 +144,22 @@ fn adopt_review_context(model : Model, snapshot : WorkspaceSnapshot) -> Model {
         if restored is Some(_) {
           "Restored your draft for this exact run and synthesis. Restoring a draft does not submit it."
         } else {
-          "The run or synthesis changed. Your previous review draft is kept for that exact result during this visit; this result starts with an empty decision."
+          "The run or synthesis changed. Drafts remain separate for each exact result; check the browser save status below. This result never inherits another result's decision."
         },
       ),
     },
     draft,
   )
+  restore_review_storage(adopted, restored)
 }
 
 ///|
 fn result_review_issues(model : Model) -> Array[String] {
+  if model.trusted_book_dir.is_blank() {
+    return [
+      "Reload a trusted Book workspace before saving or preparing this review.",
+    ]
+  }
   guard current_synthesis(model) is Some(output) else {
     return [
       "Reload a readable, correlated MoonTown synthesis before preparing its review.",
@@ -159,7 +172,8 @@ fn result_review_issues(model : Model) -> Array[String] {
 
 ///|
 fn toggle_result_idea(model : Model, context : String, id : String) -> Model {
-  guard context == review_result_context(model) &&
+  guard !model.trusted_book_dir.is_blank() &&
+    context == review_result_context(model) &&
     model.review_phase != ReviewPreparing &&
     model.review_workflow
     .map(value => value.state == "ready-for-human-review")
@@ -224,7 +238,8 @@ fn completed_result_panel(
             min=0,
             max=(output.ideas.length() - 1) / 10,
           )
-          let editable = model.review_phase != ReviewPreparing &&
+          let editable = !model.trusted_book_dir.is_blank() &&
+            model.review_phase != ReviewPreparing &&
             model.review_workflow
             .map(value => value.state == "ready-for-human-review")
             .unwrap_or(false)

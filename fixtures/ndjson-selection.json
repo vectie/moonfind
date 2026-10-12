@@ -1,0 +1,23 @@
+{
+  "observations": [
+    {
+      "id": "clinic-1",
+      "count": 9007199254740993,
+      "ratio": 1.2300,
+      "negative_zero": -0,
+      "large_exponent": 1e+400,
+      "note": "  synthetic clinic observation\r\nkeep spaces  ",
+      "escaped": "quote: \" slash: \\ unicode: \u0041",
+      "nested": { "array": [ null, true, "comma, brace} and tab\t" ] }
+    },
+    { "id": "school-2", "private": "excluded synthetic record" },
+    {
+      "id": "clinic-3",
+      "note": "contradictory synthetic observation",
+      "empty": "",
+      "nullable": null,
+      "unicode": "海 🌙",
+      "literal_instruction": "<script>never execute</script> https://example.invalid"
+    }
+  ]
+}

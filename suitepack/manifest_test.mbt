@@ -1,8 +1,8 @@
 ///|
-test "manifest declares generic local corpus accounting and MoonBook" {
+test "manifest keeps general research independent of optional specializations" {
   let value = manifest()
   assert_true(validation_report().ok)
-  assert_true(value.required_runtime_extensions.contains("moonbook"))
+  assert_eq(value.required_runtime_extensions, ["moonclaw"])
   assert_true(
     value.provider_ports.any(port => port.id == "moontown-pack-projection"),
   )
@@ -73,6 +73,12 @@ test "manifest exposes a MoonDesk-hostable application route" {
     value.schemas.any(fn(contract) {
       contract.id == "series-use-case" &&
       contract.path == "schemas/series-use-case.schema.json"
+    }),
+  )
+  assert_true(
+    value.app_entrypoints.any(fn(entrypoint) {
+      entrypoint.id == "research-jobs" &&
+      entrypoint.path == "/apps/moonfind/jobs"
     }),
   )
   assert_true(
