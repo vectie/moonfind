@@ -118,7 +118,7 @@ test "JSON evidence pointer traverses escaped fields empty keys and array indexe
 test "JSON evidence rejects unsupported shapes malformed inputs and ambiguous duplicate keys" {
   for
     raw in [
-      "{", "[1]", "[null]", "[[]]", "{}", "true", "[{},]", "[{\"a\":1,\"a\":2}]",
+      "{", "[1]", "[null]", "[[]]", "{\"a\":1}", "true", "[{},]", "[{\"a\":1,\"a\":2}]",
       "[{\"a\":1,\"\\u0061\":2}]", "[{\"nested\":{\"a\":1,\"a\":2}}]",
     ] {
     assert_true(json_records_rejected(json_records_source(raw), ""))

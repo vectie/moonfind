@@ -1,0 +1,3 @@
+Interview B (synthetic exercise, not a customer finding)
+Contradiction: daily access is required.
+An experiment is still needed.

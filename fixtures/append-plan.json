@@ -1,0 +1,31 @@
+{
+  "contract_id": "moonfind.csv-append-plan.v1",
+  "columns": [
+    "respondent",
+    "response"
+  ],
+  "sources": [
+    {
+      "id": "east",
+      "mapping": [
+        "person",
+        "answer"
+      ],
+      "origin": "Synthetic east survey",
+      "captured_at": "2026-10-14",
+      "restrictions": "Synthetic; retain locally",
+      "access": "permitted"
+    },
+    {
+      "id": "west",
+      "mapping": [
+        "id",
+        "response"
+      ],
+      "origin": "Synthetic west survey",
+      "captured_at": "2026-10-14",
+      "restrictions": "Synthetic; retain locally",
+      "access": "permitted"
+    }
+  ]
+}

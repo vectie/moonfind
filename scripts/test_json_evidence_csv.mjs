@@ -227,7 +227,7 @@ test('source wiring only: explorer exposes editable projection settings, current
   assert.match(view, /emit\(BriefAction\(JsonEvidence\(DownloadCsv\)\)\)/);
   assert.match(view, /Import value columns as text/);
   assert.equal(view.includes('innerHTML'), false);
-  assert.match(source, /source.content_hex, state.pointer, table.format == "jsonl", pointer/);
+  assert.match(source, /json_evidence_parse_mode\(\s*source\.content_hex,\s*state\.pointer,\s*table\.format == "jsonl",\s*pointer,?\s*\)/);
 });
 
 test('source wiring only: pending and current-source guards remain in force; live projection cannot reuse a stale preview', () => {
@@ -235,7 +235,7 @@ test('source wiring only: pending and current-source guards remain in force; liv
   assert.ok(reducer.indexOf('if view.pending') < reducer.indexOf('DownloadCsv =>'));
   assert.ok(reducer.indexOf('let view = sync_json_evidence(view)') < reducer.indexOf('DownloadCsv =>'));
   assert.match(source, /ignore\(json_evidence_export\(view\)\)/);
-  assert.match(reducer, /CsvFields\(csv_fields\) => \{\s*\.\.view, json_evidence: \{ \.\.state, csv_fields, \}, error: None/);
+  assert.match(reducer, /CsvFields\(csv_fields\)\s*=>\s*\{\s*\.\.view,\s*json_evidence:\s*\{\s*\.\.state,\s*csv_fields,\s*\},\s*error:\s*None,?\s*\}/);
   assert.match(reducer, /DownloadCsv => \{\s*let csv = json_evidence_csv\(view\)\s*let error = json_evidence_csv_download\(csv.text\)/);
   assert.match(reducer, /csv_fields: "\[\]"/);
 });

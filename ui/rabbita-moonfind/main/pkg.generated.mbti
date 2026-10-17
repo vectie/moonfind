@@ -87,7 +87,15 @@ type CsvComparisonGroup derive(Eq, @debug.Debug)
 
 type CsvExtract derive(Eq, @debug.Debug)
 
-type CsvIntake derive(@debug.Debug, @json.FromJson)
+type CsvIntake derive(ToJson, @debug.Debug, @json.FromJson)
+
+type CsvJoinMsg
+
+type CsvJoinOutput
+
+type CsvJoinPreview derive(Eq, @debug.Debug, @json.FromJson)
+
+type CsvJoinView
 
 type CsvMsg
 
@@ -117,11 +125,25 @@ type DossierResults derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 type DurableResearchWorkspace derive(@debug.Debug, @json.FromJson)
 
+type EndnoteField derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type EndnoteIntake derive(@debug.Debug, @json.FromJson)
+
+type EndnoteMsg
+
+type EndnoteReference derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type EndnoteSelection derive(@debug.Debug, @json.FromJson)
+
+type EndnoteView
+
 type EvidenceClaim derive(ToJson, @debug.Debug, @json.FromJson)
 
 type EvidenceIdea derive(ToJson, @debug.Debug, @json.FromJson)
 
 type EvidencePaper derive(ToJson, @debug.Debug, @json.FromJson)
+
+type EvidencePassage derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 type EvidenceQuestion derive(ToJson, @debug.Debug, @json.FromJson)
 
@@ -205,6 +227,18 @@ type Msg
 
 type NativeModelRoute derive(@debug.Debug, @json.FromJson)
 
+type NbibField derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type NbibIntake derive(@debug.Debug, @json.FromJson)
+
+type NbibMsg
+
+type NbibReference derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type NbibSelection derive(@debug.Debug, @json.FromJson)
+
+type NbibView
+
 type OfflineChoiceMsg
 
 type OfflineChoiceState
@@ -216,6 +250,12 @@ type OfflineOption derive(ToJson, @json.FromJson)
 type OfflineVersion derive(ToJson, @json.FromJson)
 
 type OfflineWorksheet derive(ToJson, @json.FromJson)
+
+type PassageMemo derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type PassageMemoMsg
+
+type PassageMemoState
 
 type QaQuestionRequest derive(Eq, @debug.Debug)
 
@@ -285,6 +325,14 @@ type RisView
 
 type SavedReviewDraft derive(ToJson, @json.FromJson)
 
+type ScreeningDecision derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type ScreeningLog derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+type ScreeningMsg
+
+type ScreeningState
+
 type SeriesExclusionProjection derive(Eq, @debug.Debug, @json.FromJson)
 
 type SeriesGraphProjection derive(Eq, @debug.Debug, @json.FromJson)
@@ -301,9 +349,15 @@ type SynthesisOutput derive(@debug.Debug, @json.FromJson)
 
 type TranscriptCapture derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
+type TranscriptCorrection derive(Eq, ToJson, @debug.Debug)
+
 type TranscriptCue derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 type TranscriptMsg
+
+type TranscriptRevision derive(Eq, @debug.Debug)
+
+type TranscriptRevisionMsg
 
 type TranscriptView derive(Eq, @debug.Debug)
 

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Synthetic field research bulletin</title>
+    <link>https://example.invalid/research</link>
+    <description>Three synthetic observations for a local import demonstration.</description>
+    <lastBuildDate>Tue, 13 Oct 2026 09:00:00 +0200</lastBuildDate>
+    <item>
+      <title>Clinic handoffs improved in a small pilot</title>
+      <link>https://example.invalid/clinic?site=a&amp;phase=1</link>
+      <description><![CDATA[<p>Clinic participants reported shorter handoffs. No controlled comparison.</p>]]></description>
+      <pubDate>Mon, 12 Oct 2026 18:30:00 +0530</pubDate>
+      <author>researcher@example.invalid (Synthetic author)</author>
+      <guid isPermaLink="false">observation-001</guid>
+      <category domain="setting">clinic</category>
+      <category>pilot</category>
+      <content:encoded><![CDATA[<p>Extension text is retained only in the original XML.</p>]]></content:encoded>
+    </item>
+    <item>
+      <title>Clinic comparison found no difference</title>
+      <link>https://example.invalid/clinic-comparison</link>
+      <description>Conflicting synthetic finding: no measured improvement.</description>
+      <guid isPermaLink="false">observation-001</guid>
+      <category domain="setting">clinic</category>
+      <enclosure url="https://example.invalid/audio.mp3" length="100" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>School interview notes</title>
+      <description></description>
+      <pubDate>date supplied without validation</pubDate>
+      <source url="https://example.invalid/original-feed">Original synthetic bulletin</source>
+    </item>
+  </channel>
+</rss>

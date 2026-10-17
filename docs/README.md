@@ -1,5 +1,11 @@
 # MoonFind documentation
 
+- [Literature screening](LITERATURE_SCREENING.md): record include/exclude/undecided
+  reasons, revise decisions, work through unscreened citations and export results.
+
+- [Local PubMed/MEDLINE NBIB citations](NBIB_INTAKE.md): inspect local citation
+  cards, select references and reuse the editable brief, reading list and exports.
+
 - [Series use cases](SERIES_USE_CASES.md) — curated user-goal graphs and the
   Lunar Habitat Decision Series.
 

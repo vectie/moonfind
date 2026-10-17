@@ -25,7 +25,7 @@ extern "js" fn json_evidence_coverage_json(
   #| try {
   #|   const table=JSON.parse(table_json);
   #|   const kinds=['missing','null','empty-string','string','number','boolean','array','object'];
-  #|   if(!table || !['json-array','jsonl'].includes(table.format) || !Array.isArray(table.columns) || table.columns.length>32 || table.columns.some(c=>typeof c!=='string') || new Set(table.columns).size!==table.columns.length || !Array.isArray(table.rows) || table.rows.length>512) throw Error('Explore a current JSON or JSONL table first.');
+  #|   if(!table || !['json-array','json-object','jsonl'].includes(table.format) || !Array.isArray(table.columns) || table.columns.length>32 || table.columns.some(c=>typeof c!=='string') || new Set(table.columns).size!==table.columns.length || !Array.isArray(table.rows) || table.rows.length>512) throw Error('Explore a current JSON or JSONL table first.');
   #|   for(const [index,row] of table.rows.entries()) {
   #|     if(!row || row.record_number!==index+1 || !Array.isArray(row.cells) || row.cells.length!==table.columns.length) throw Error('Evidence table changed; explore the source again.');
   #|     for(const cell of row.cells) if(!cell || !kinds.includes(cell.kind) || cell.kind==='empty-string' || typeof cell.text!=='string') throw Error('Evidence cell type is unavailable; explore the source again.');

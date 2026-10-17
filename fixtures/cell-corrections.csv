@@ -1,0 +1,6 @@
+id,segment,observation,confidence
+001,clinc,slow handoff,low
+002,retail,"quoted ""claim"",
+needs check"," medium "
+003,clinc,"same category, kept",low
+004,clinic,already correct,

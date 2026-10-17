@@ -51,6 +51,7 @@ fn csv_panel(emit : @rabbita.Emit[Msg], view : BriefView) -> @rabbita.Html {
         "Import an interview, observation or evidence table. Search a column, select useful rows, and choose columns for your brief. The complete original file is retained too, including unselected data. Selection is not redaction or verification.",
       ),
       action_button("Import CSV table", emit(BriefAction(Csv(Choose)))),
+      csv_join_panel(emit, view),
       match view.csv.intake {
         None =>
           p(

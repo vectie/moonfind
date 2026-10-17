@@ -5,6 +5,16 @@ subset for a research brief. No gateway, model or remote source is required.
 This prepares the supplied evidence; it does not validate the observations or
 produce a research answer.
 
+For a bibliography CSV, use the separate
+[explicit CSV-to-CSL mapping CLI](CSV_BIBLIOGRAPHY_MAPPING.md) to map source IDs,
+titles, types and optional literal metadata into ordinary reference cards.
+The CSV evidence table explorer itself does not infer bibliographic fields.
+
+For a wide survey or experiment export, use the
+[explicit question-answer reshape CLI](CSV_SURVEY_UNPIVOT.md) before importing.
+It emits ordinary CSV with exact source cell locators and retains original bytes
+and a mapping companion; empty answers follow your explicit policy.
+
 ## Try the included synthetic interviews
 
 1. Open `/apps/moonfind/briefs` and complete the question, objective, audience,
@@ -56,8 +66,12 @@ Use UTF-8 `.csv` with comma delimiters and unique nonblank header names. Optiona
 BOM, CRLF, LF, CR, double-quoted fields and doubled quote escapes are supported.
 Every data record must have the header's number of fields. Unsupported quoting
 or ragged rows return a repairable error without adding sources to the brief.
-For another delimiter, export comma-delimited CSV first. There is no automatic numeric inference, source-row sorting or cell editing in
-this workflow. Explicit numeric-column count/min/max/sum/mean with source-record
+For another delimiter, export comma-delimited CSV first. There is no automatic
+numeric inference or source-row sorting. To correct particular cells before
+importing, use the [explicit working-copy correction CLI](CSV_CELL_CORRECTIONS.md).
+It requires a source digest and exact record/column/old/new values, previews the
+changes, and retains the original bytes beside a new corrected CSV. The explorer
+does not edit imported source cells inline. Explicit numeric-column count/min/max/sum/mean with source-record
 drill-down is available in [Numeric summaries](CSV_NUMERIC_SUMMARIES.md). Exact
 text-category counts are described in [Category counts](CSV_CATEGORY_COUNTS.md).
 

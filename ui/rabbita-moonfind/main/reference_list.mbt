@@ -158,6 +158,76 @@ fn reference_selection(
         })
       }
     }
+    "endnote-selection.json" => {
+      let selection : EndnoteSelection = @json.from_json(json)
+      guard selection.contract_id == "moonfind.endnote-selection.v1" else {
+        fail("Unsupported EndNote selection contract")
+      }
+      for r in selection.references {
+        references.push({
+          source_slot: slot,
+          selection_name: source.name,
+          source_name: selection.source_name,
+          source_digest: selection.source_digest,
+          format: "endnote",
+          record_number: r.record_number,
+          item_id: "",
+          item_id_kind: "",
+          citation_key: "",
+          reference_type: r.reference_type,
+          title: r.title,
+          authors: r.authors,
+          editors: r.editors,
+          issued: r.year,
+          venue: r.venue,
+          keywords: r.keywords,
+          doi: r.doi,
+          doi_match_key: reference_doi_key(r.doi),
+          url: r.url,
+          abstract_text: r.abstract_text,
+          availability: if r.abstract_text.is_blank() {
+            "metadata-only"
+          } else {
+            "metadata-and-abstract"
+          },
+        })
+      }
+    }
+    "nbib-selection.json" => {
+      let selection : NbibSelection = @json.from_json(json)
+      guard selection.contract_id == "moonfind.nbib-selection.v1" else {
+        fail("Unsupported PubMed NBIB selection contract")
+      }
+      for r in selection.references {
+        references.push({
+          source_slot: slot,
+          selection_name: source.name,
+          source_name: selection.source_name,
+          source_digest: selection.source_digest,
+          format: "nbib",
+          record_number: r.record_number,
+          item_id: r.pmid,
+          item_id_kind: "pmid",
+          citation_key: "",
+          reference_type: r.reference_type,
+          title: r.title,
+          authors: r.authors,
+          editors: r.editors,
+          issued: r.year,
+          venue: r.venue,
+          keywords: r.keywords,
+          doi: r.doi,
+          doi_match_key: reference_doi_key(r.doi),
+          url: r.url,
+          abstract_text: r.abstract_text,
+          availability: if r.abstract_text.is_blank() {
+            "metadata-only"
+          } else {
+            "metadata-and-abstract"
+          },
+        })
+      }
+    }
     _ => ()
   }
   let seen : Map[Int, Bool] = Map([])
@@ -179,7 +249,11 @@ fn reference_catalog(view : BriefView) -> ReferenceCatalog {
   let issues : Array[String] = []
   for index, source in view.draft.sources {
     if source.name
-      is ("bibtex-selection.json" | "csl-selection.json" | "ris-selection.json") {
+      is ("bibtex-selection.json"
+      | "csl-selection.json"
+      | "ris-selection.json"
+      | "endnote-selection.json"
+      | "nbib-selection.json") {
       try {
         let added = reference_selection(source, index + 1)
         for reference in added {

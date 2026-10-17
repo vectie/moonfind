@@ -12,7 +12,7 @@ fn reference_list_panel(
     [
       h3("Unified bibliography reading list"),
       p(
-        "Add selected references from BibTeX, RIS or CSL JSON to this brief, or reopen a saved brief. Search all retained selections together and inspect same-DOI candidates. References stay separate; matching DOI text does not establish that records describe the same work. Metadata and supplied abstracts are not read full text.",
+        "Add selected references from BibTeX, RIS, EndNote, PubMed NBIB or CSL JSON to this brief, or reopen a saved brief. Search all retained selections together and inspect same-DOI candidates. References stay separate; matching DOI text does not establish that records describe the same work. Metadata and supplied abstracts are not read full text.",
       ),
       field_label(
         "Search retained references",
@@ -48,6 +48,7 @@ fn reference_list_panel(
       ),
       ul(catalog.issues.map(issue => li(issue))),
       reference_shortlist_panel(emit, view, catalog),
+      screening_panel(emit, view),
       reading_notes_panel(emit, view),
       if matches.is_empty() {
         p(

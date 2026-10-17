@@ -1,0 +1,5 @@
+﻿respondent_id,segment,handoff_minutes,handoff_notes,private_note
+001,clinic,12,"Slow, needs review
+第二行 says ""uncertain""",Unselected private context
+001,lab,,=NOT_EVALUATED(),Repeated label stays separate
+003,clinic,0,Fast,Unselected respondent retained

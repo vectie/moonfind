@@ -384,6 +384,42 @@ async fn handle_request(
       )
       send_json(conn, 200, "OK", @host.select_ris(selection).to_json())
     }
+    (Post, "/api/v1/briefs/endnote/intake") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let intake : @host.EndnoteIntakeRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.intake_endnote(intake).to_json())
+    }
+    (Post, "/api/v1/briefs/endnote/select") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let selection : @host.EndnoteSelectRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.select_endnote(selection).to_json())
+    }
+    (Post, "/api/v1/briefs/nbib/intake") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let intake : @host.NbibIntakeRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.intake_nbib(intake).to_json())
+    }
+    (Post, "/api/v1/briefs/nbib/select") => {
+      if reject_unsafe_write(request, options.port, conn) {
+        return
+      }
+      let selection : @host.NbibSelectRequestV1 = @json.from_json(
+        @json.parse(body.read_all().text()),
+      )
+      send_json(conn, 200, "OK", @host.select_nbib(selection).to_json())
+    }
     (Get, "/api/v1/briefs") => {
       if reject_unsafe_origin(request, options.port, conn) {
         return

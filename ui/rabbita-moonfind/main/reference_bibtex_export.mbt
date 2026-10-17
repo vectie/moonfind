@@ -17,6 +17,16 @@ extern "js" fn reference_bibtex_link(value : String) -> String =
 fn reference_bibtex_type(r : ReadingReference) -> String {
   let kind = csv_lower(r.reference_type)
   match (r.format, kind) {
+    ("nbib", "journal article") => "article"
+    ("nbib", "book") => "book"
+    ("nbib", "book chapter") => "incollection"
+    ("endnote", "journal article" | "magazine article") => "article"
+    ("endnote", "book" | "edited book") => "book"
+    ("endnote", "book section") => "incollection"
+    ("endnote", "conference paper") => "inproceedings"
+    ("endnote", "conference proceeding") => "proceedings"
+    ("endnote", "report") => "techreport"
+    ("endnote", "unpublished work") => "unpublished"
     ("bibtex", "article")
     | ("ris", "jour" | "mgzn")
     | ("csl", "article-journal" | "article-magazine") => "article"

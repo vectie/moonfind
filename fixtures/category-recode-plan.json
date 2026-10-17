@@ -1,0 +1,8 @@
+{
+  "contract_id": "moonfind.csv-recode-plan.v1",
+  "column": "response",
+  "output_column": "response_group",
+  "mappings": [{"from":"Y","to":"agree"},{"from":"yes","to":"agree"},{"from":"N","to":"disagree"},{"from":"","to":"unanswered"}],
+  "unmatched": "keep",
+  "source": {"origin":"Synthetic category editing example","captured_at":"2026-10-14","restrictions":"Invented sample; no real respondents","access":"permitted"}
+}

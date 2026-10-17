@@ -1,0 +1,7 @@
+id,response,context
+001,Y,first
+002,yes,second
+003,N,third
+004,unknown,fourth
+005,,fifth
+006, yes,sixth

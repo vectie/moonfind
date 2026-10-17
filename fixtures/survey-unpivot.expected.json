@@ -1,0 +1,42 @@
+[
+  [
+    "source_record",
+    "source_column",
+    "context:respondent_id",
+    "context:segment",
+    "question",
+    "answer"
+  ],
+  [
+    "2",
+    "3",
+    "001",
+    "clinic",
+    "handoff_minutes",
+    "12"
+  ],
+  [
+    "2",
+    "4",
+    "001",
+    "clinic",
+    "handoff_notes",
+    "Slow, needs review\r\n第二行 says \"uncertain\""
+  ],
+  [
+    "3",
+    "3",
+    "001",
+    "lab",
+    "handoff_minutes",
+    ""
+  ],
+  [
+    "3",
+    "4",
+    "001",
+    "lab",
+    "handoff_notes",
+    "=NOT_EVALUATED()"
+  ]
+]

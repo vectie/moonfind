@@ -204,6 +204,8 @@ test "CSV UI resets safely while selections survive filters and clearing is expl
       comparison_column: 0,
       numeric_scope: "all",
       numeric_detail: "numeric",
+      numeric_lower: "",
+      numeric_upper: "",
       extract_scope: "selected",
     },
   }

@@ -1,0 +1,670 @@
+{
+  "consumer_sha256": "831f79da21c3b3d27fb456a8d67c46a176584c14b27a6932af052f697b1ebb0e",
+  "baseline": "accepted R704 source",
+  "files": [
+    {
+      "path": "ui/rabbita-moonfind/bootstrap.js",
+      "sha256": "66b07d84b4e3cdce38c1535f48b02f969c770d063192cad174f1159a3bb53276"
+    },
+    {
+      "path": "ui/rabbita-moonfind/index.html",
+      "sha256": "7f85eee9754df6da55812064cecc4b47f9e694a8c646a5387afec1873caad6a0"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/bibtex.mbt",
+      "sha256": "e3f18a1e8df7063f5be043d36f72a5520cdfd99c80f3c6ce387556852d70ce29"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/bibtex_view.mbt",
+      "sha256": "463143a4d326396af2a05faabb23018598605baaf055366a88bea8b7dd77ca3c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/bibtex_wbtest.mbt",
+      "sha256": "2c2c7843cd45b72613b599201e2e3150b4ab001f891694cd9ece52e26afe4d6a"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/bookmark_source.mbt",
+      "sha256": "17bf8e0403ab77fcbef64ab3bdb2c9b8a8aaa8fe4f6122e50b0262234b7c04e9"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/bookmark_source_boundaries_wbtest.mbt",
+      "sha256": "4a3fee2c212aa3a620b1f35f62e3c1a90dfaf82407519a8286b4cd82b474b52c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/bookmark_source_wbtest.mbt",
+      "sha256": "ae731316246c3ca405e81ca89357bc629b24b957cc7bba0a623dc75430432071"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/brief.mbt",
+      "sha256": "a9430891c84d4216fba796012b74eb72c6aa542f8a0f57c2d5271236e22905ed"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/brief_view.mbt",
+      "sha256": "8f9ef9792f98ba3dd4c7a0fd2a240a0b8ecb3653471f0efe8b985567537af8af"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/brief_wbtest.mbt",
+      "sha256": "b5f3e5abd7ba73b2d480cd029f5b732e2e0075b8436d3743e19e6303547ba69e"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/choices.mbt",
+      "sha256": "d6553b97043be16ef38744c7f14df02d1fcedef389dfb7a036dee5de4060c4bb"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/choices_continuation.mbt",
+      "sha256": "4bd833929c671db5e6c9e40a91d338df2dafeb1bfda5acd572e690c69548074a"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/choices_continuation_view.mbt",
+      "sha256": "98d2867ca30fdd69cb541a39782104ab6cc71beaffe309c72f90f24343fbf7ee"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/choices_continuation_wbtest.mbt",
+      "sha256": "aaa0b3fa0b3a30ce87f84e2ee8dd37e9f01ef15ea2ad3ae38898bcb6f8123cb4"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/choices_export.mbt",
+      "sha256": "eacc295ec2659b6c7e1ad602588b01e93f85a6e7e0e75d7780e0f3729ed0c1a4"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/choices_storage.mbt",
+      "sha256": "0f610202f2f456d969e5c3e3a0b5cfd96e7baf8efbc3e7ea136a969fccd1f2f1"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/choices_view.mbt",
+      "sha256": "a8f550286f317c332852a3d400d2d522a9c5013e03e7a9eccb5a90d34bd7526f"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/choices_wbtest.mbt",
+      "sha256": "7411ce839a8f0a5be23bf93dd39b8d0f7ebcfe8c6e9529b97d9efbfea0c9849c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/completed_result.mbt",
+      "sha256": "0f1cb844d9d12091b60a522a80814ebe926acacabbbc2ceae0e9bb16b16cbc4b"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/completed_result_wbtest.mbt",
+      "sha256": "3ad7f4beeeb941bcc64ba2cdd72d92bf24217f7285ff873a093a489b639875f2"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csl.mbt",
+      "sha256": "2502260bdc2dc97b8693984134c073dd37a2f0dee120a8fa716add609769de38"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csl_view.mbt",
+      "sha256": "1f56f068db24a438deefcfb0d15f886d5639a0247033392d5ad5fa17fc1f6f66"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csl_wbtest.mbt",
+      "sha256": "2674a0a2aa6679077690245542266841ae2f44fe8d1b5f7c6ffa2edd59a4bc0c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv.mbt",
+      "sha256": "3dd425574380a23e4d1716cbc8dc4f0bb712882e5a0dfed7213a0dbd8ac2a32f"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_categories.mbt",
+      "sha256": "f8e0d171c65c0d20fb297527fbb900ee6c5f29d07ca4e941878c9e8e46bbd5ff"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_categories_wbtest.mbt",
+      "sha256": "61201831e929606cdff5273771bb535a705048129aafe4da84ac51da45cfff2c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_comparison.mbt",
+      "sha256": "a2c3972fcf7e46e7285a9584647cfc583d1af369e13f1dff3977f0c2ce62109c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_comparison_wbtest.mbt",
+      "sha256": "c435b4ab41252317cffb8d37f0fdbd3a2b465918f6019d7ce41ce69044e8aef1"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_extract.mbt",
+      "sha256": "05d29af49f9f259d043c96ad1dae7e89a323d2499fceace2a4d5a2405eb812cd"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_extract_view.mbt",
+      "sha256": "a6b6075721b40afbb8509202a4a40c530cf36d5816a05b35740ce594741c420f"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_extract_wbtest.mbt",
+      "sha256": "96a0cbaeeddc7ffdd2972c41ed7d821443808301135e15aa304d4535e1625621"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_join.mbt",
+      "sha256": "aff34d05a8bd1ea0776998a830e682ab0c0437a4a89ebe6cecdd75054ad788ba"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_join_view.mbt",
+      "sha256": "f5a979e573a3d820acb5e539f58124c4ed51a1c4e0bee6254a012d54b6de8fff"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_join_wbtest.mbt",
+      "sha256": "f60d4571258d29ed18e927112eaab418f8fdbb4f22cab0ad367e3c853a54ff16"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_numeric.mbt",
+      "sha256": "93c0bad2d34089f2dd3575a9757a3c7fd5263034d06aa85ee4ad1a50b56d3d65"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_numeric_view.mbt",
+      "sha256": "fcbee5497fe3e4b42e60cb6daccbde26ba4f8c741505acd915dd468efc4c58ad"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_numeric_wbtest.mbt",
+      "sha256": "96d693b2531fc77422eb67c9a17d73037d7aa64fef14f0739b0d416b7fda31e2"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_selection_validation.mbt",
+      "sha256": "436368556f88f5c130b368be861fc5c5a7994187ddcf1c8f0dbf7fea185216be"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_view.mbt",
+      "sha256": "7de73222e990ba18ab5b9f345e79012d664d4b306ac3a20e864334ae987df1c3"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/csv_wbtest.mbt",
+      "sha256": "f293ef38f8e437db25f11021ef5a4d34175211a497a5d9362a1e04d5893fafb7"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/delivery.mbt",
+      "sha256": "6c7551000a2404ac9d8fca45d94e169846dfb9df66f1a64c1a31010de4eb928b"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/delivery_views.mbt",
+      "sha256": "58816489d89c15137f84fcc1a6a408b64f1ac364471216ac1013109f32f01340"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/delivery_wbtest.mbt",
+      "sha256": "c5c90862591d75963c3bfedf38f56549272517279875f9d545734484fc7f812d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/dossier_search.mbt",
+      "sha256": "d844f794d01e8b0dac97ac7ea41e6e887b067a8947fa154e7327d258f1e4c438"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/dossier_search_wbtest.mbt",
+      "sha256": "ca9a1faf23770caeb4448e350e12fcde63654a55ff1ddcbe3e2be2747538382c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/email_source.mbt",
+      "sha256": "2361c7ee543db252177b15f62e05204fae50c34278e7e4c14a271f98f2b6cbd8"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/email_source_wbtest.mbt",
+      "sha256": "5babff2696763ff2cf26a11747293a756b499ac1619ec41f0dbbbba58dcf47f1"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/endnote.mbt",
+      "sha256": "da1e632361c1ebc185fcaf35d44f548243d5d1b0cd3585427266551a74e98d38"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/endnote_view.mbt",
+      "sha256": "da2f06311b74dda04528fb8381e05b4d0849a15ced55e3185caa32bbe8c9c95d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/endnote_wbtest.mbt",
+      "sha256": "e323de939860fa2595ceaf8afe890c76f5f9c02e4e9a518dc0c3c3801c74c217"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/evidence.mbt",
+      "sha256": "6c215b082c33a7c9305d61179b668f1f7a205f0d14c70e40735be29440cb7069"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/evidence_qa_wbtest.mbt",
+      "sha256": "a79bbffc1feab94fda30e05574bb1dc82cf1cbf812ae1e4cbb270dba9edcab32"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/evidence_views.mbt",
+      "sha256": "03bf93d2ab2fc24cbb4819e741eca9533d99b4f0be984d728e1fca30d5370809"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/experiments.mbt",
+      "sha256": "8e2007ea124f683b892c5650bbb0b3f2509f1f265a144637080b73ca8c0be17c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/experiments_export.mbt",
+      "sha256": "b13d50c95b034aab52a9ebdb5d32f303c73f826655ebd634906e2252e958c72f"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/experiments_view.mbt",
+      "sha256": "70274bf3c53a271779ad3abf62cf7cd6f6e2cfdf9fe313c05eeaf96a1c1d992d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/experiments_wbtest.mbt",
+      "sha256": "9ec01d7275864a8545c2d92e21f34f73c057e1045234047e19a1f73ebb79422b"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/gateway.mbt",
+      "sha256": "920cc7b2229c4176c8e8401f29970d43e1c481151a3fd57fb2cfc0ebecd0b321"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/gateway_wbtest.mbt",
+      "sha256": "18469c558d216ce24d381a4d5b92de2cd3f7730b1a2dd9e7f24a161c276fca42"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/job_views.mbt",
+      "sha256": "69554367bee751a34d210ea1a367169fdc87c9cad79be1b60fb057e411ad0ed4"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/journey.mbt",
+      "sha256": "7084b0c9aa0e8f96da6358185fe933d41012226c8bfa5a57f80d3ab893456239"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/journey_wbtest.mbt",
+      "sha256": "be47e048571825693fef2952fe2537a8ce5409c3e7a5151dffc2a20db789324d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence.mbt",
+      "sha256": "bb9882d2aaad64ab74235bec67943fc6b98c8a4630af1a066404a421da6296df"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_cohort.mbt",
+      "sha256": "65f294df1912ecb96e96c6694d76ccffadd244c825c59f3e444d0fa0f3de6ca2"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_cohort_view.mbt",
+      "sha256": "86021d01c7a0f88f63ff5de36fc305af2dd6bf104c730706b22d89e12a531c5c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_compare.mbt",
+      "sha256": "d20423ecf9d87f72796862a55fa65b4e5a2f3df7c56d690edd136dfa3cc44c01"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_compare_view.mbt",
+      "sha256": "17b7ccbdde4f7886580d56180e05ade324c2b167035a280fb91660f44654c103"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_coverage.mbt",
+      "sha256": "ba0e63b000c01d417e17bef0a609793d5d0eb1e3d8090ba9cf671b42ae7b1751"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_csv.mbt",
+      "sha256": "301ce5709f8bf90fee07db09c92ed5b35aea57582a85bdce9a586245235a246f"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_csv_view.mbt",
+      "sha256": "6f2107f3e768ad6c71bd979ce324e9de85fd81cca5a7c6dffc5dc6318db5cac9"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_lens.mbt",
+      "sha256": "c1727e7e20da6e4064b6da71ecba7f243b7bce720561883f8e8999445d401984"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_ndjson.mbt",
+      "sha256": "8db56993ada90c262446d334da3787f481163b48c06b2087fbe78f6f019e1dfd"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_pairs.mbt",
+      "sha256": "8083985b485f93ccea72a65c01e50c1c17ea2d5f654d8d949f9265b1f5addc20"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_pairs_view.mbt",
+      "sha256": "7ab15ef9cf235a9c2a8c4ca9e96bb6725e9aab4871fab26a2f33156f9bd58d13"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_view.mbt",
+      "sha256": "94afe154ae374d66215885caf13bc87a8e624fefa008eda45621688d00362edb"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_evidence_wbtest.mbt",
+      "sha256": "37379de1c1c949ab57155b8d8c1e8d46ab3ae9afab0e4cfa9801041762f86158"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_lines.mbt",
+      "sha256": "62776f70124df115516311d07c4b07ee3d01467fcbc3301e9754545e4d1ede8e"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/json_lines_wbtest.mbt",
+      "sha256": "953e79b6a81ffa66909a0a592f8c2e7ecc2d057d4e8cc109d4c20a38b211a538"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/main.mbt",
+      "sha256": "c5655fb5de8e22364783f5623584892ddedc6c3dc2b0e43dff141ee34162e9be"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/model.mbt",
+      "sha256": "f2603d5e2081ccb30764b70e5c05865505e0fa95785360d6e1c7f4ecf555cf21"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/model_picker.mbt",
+      "sha256": "36111308c393f98c9c7bd19ae2b527e9b3e97f1c9533ee5f993103524ad5b621"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/model_picker_contract_fixture_wbtest.mbt",
+      "sha256": "bbfb46df4c29ff3f7a320c83c5cb1c6906b216ade65ab696f0c989c5c1d31774"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/model_picker_wbtest.mbt",
+      "sha256": "946966e87418a7383e15afbbaabaeb6064173c69fc7255000a2dc0f2e8a67680"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/model_route.mbt",
+      "sha256": "458d6e0432f4edec122f430a7498ebb5f2d2190413c1716e34d70593fdfeae9e"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/model_route_wbtest.mbt",
+      "sha256": "d104c232f07dd3f6e3190f2ffee1c942a676662b06aadd9b5f49a0af764b868e"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/model_wbtest.mbt",
+      "sha256": "f2048af8a9ac43ad4dd7caa41d0f0b441592202f89acdaf34efb01b50b4234d3"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/moon.pkg",
+      "sha256": "6b5d90635fd506fffb6218dfb17c37b8686e353be1f0124d78b6d1c028ff61ba"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/nbib.mbt",
+      "sha256": "97517df76cd51e27ab8f22b8dd8077724deb972344f00c7dca9ac2bd8fe418b0"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/nbib_view.mbt",
+      "sha256": "092a141719a01d880851b25bea8a2c3a619192abc73d8af516c6a2bf66a479c1"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/nbib_wbtest.mbt",
+      "sha256": "2719c632bb43983c4dbf25b2236b7bf42a02cc40755e3fb8f71d42d38a1d5d22"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/offline_adversarial_wbtest.mbt",
+      "sha256": "2d67ee29a650f43a9472f30419f950199a5882d9b13b304bbf83761ed2bf154b"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/offline_choices.mbt",
+      "sha256": "4fbd794f1cb11d4963bafff210f85711ed03f7972bf468b6a89cc423f7c6cdae"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/offline_choices_native_wbtest.mbt",
+      "sha256": "3c88e02b0033fe5b8eccb0877d0f2f049cd6c8e9318eabc6ccec2e26bda41b09"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/offline_choices_storage.mbt",
+      "sha256": "255d66598f152d8ca529f5d08d5338b0d9f249fcb81026763638f0b4d33610f2"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/offline_choices_view.mbt",
+      "sha256": "4b502aab3aff169910cc7fa67e62a8326bb3d25ccaa6ac0e375cab1fc4444f2c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/offline_choices_wbtest.mbt",
+      "sha256": "1efd1279ee3e69a1abc402e2675d9dfa9e47513c0ae714511fee0d0d520edd85"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/offline_readonly_native_wbtest.mbt",
+      "sha256": "7b8b1d0102f2998dceded19f82dbf920b7ec3bcc00aff7c9f4a7d7f6ba1f135b"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/passage_memo.mbt",
+      "sha256": "75b76f51c1a3771438f4180a6713ef1a3dc43a4ca6319c150c73e0efd8afdeff"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/passage_memo_view.mbt",
+      "sha256": "eee65a726a36564a08a8bdfdd9d649aea1ddf8702a7fc9d06190dc6d8fa752b2"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/passage_memo_wbtest.mbt",
+      "sha256": "c001f02a0eee186bd9b43dacf692c9b0ccfca704cc89727875d34632ca6ac898"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/pkg.generated.mbti",
+      "sha256": "780f4b5a881145838b4fb6fdfbbc4499ff96f340e92fb105e5a5de2d274d2cdf"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/qa_restore.mbt",
+      "sha256": "6cd4e0fcb61c28a12b95db4c47576ef6bfaad8db26d238673801771c918f8d7d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/qa_restore_wbtest.mbt",
+      "sha256": "49832e5863f76a1b6a82f4f592978d74b0d9628ff21233c7868c4b011c58e1a8"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_notes.mbt",
+      "sha256": "05136c67178f342c057084c66674ddeed7b37ecbf38cbe261918418943cb4ff0"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_notes_transfer.mbt",
+      "sha256": "73f178e162901f133fd52ccecc3b8d5e9e1aa3bd9721d7caeaa8f5c1fccf0206"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_notes_transfer_view.mbt",
+      "sha256": "3d65f80c2e9f8f82f066bd447f81b845166652dabe58dcfc34fad7eff7634882"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_notes_transfer_wbtest.mbt",
+      "sha256": "5f3927902c31190c743159aa892fbb6a7ced2f12eb6971f99665992630263c92"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_notes_view.mbt",
+      "sha256": "abbb541be62dd46febe469dae8c4da61e534978827fed06178bffa05c4897557"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_notes_wbtest.mbt",
+      "sha256": "96b4c35e2443c649494c35f3e8ec2311fdb5d66c5bef632a67ca04fa16448129"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_report.mbt",
+      "sha256": "9bf8960e9d950b6b4e8689ca307629c26f5c6519d0f34833086bdcea817b7ad6"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_report_view.mbt",
+      "sha256": "cd793b743e69da2a15424293f1f7c97ee2d9e8120d65e0412bf2537af6ad9182"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reading_report_wbtest.mbt",
+      "sha256": "19785441631857b4d3d6d56603b1d4761fe565ac02918421a6fdcf94318c8a90"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_bibtex_export.mbt",
+      "sha256": "414ecc0e0147ee2f9a66e86ee330581fb9a4078fb4b4b6650d7f05626b6ccf3d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_bibtex_export_wbtest.mbt",
+      "sha256": "b8521abd909591cd79d87affd463154e2851746488fdc913e872212014a8ba93"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_csl_export.mbt",
+      "sha256": "bf9af1c8e37435ba222ff6e965030cea236efae3af03052485e38b46d4055f1d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_csl_export_wbtest.mbt",
+      "sha256": "e822d204f87067596c16f12bbcafde5ba3f82a6b93a8fd184b507b2aff09e696"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_list.mbt",
+      "sha256": "7426a0f1d4c645a24c6e16322f05dc5307533512148f49ae2952e47a10fa08de"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_list_export.mbt",
+      "sha256": "cad84205a79fbd44f8b716130d24b66fd11e719814aa294539eb024a7d917770"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_list_view.mbt",
+      "sha256": "9ca9b5578ec75b529b014461fbec54e1ddd2f1410607b7e342302675bae185e6"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_list_wbtest.mbt",
+      "sha256": "8d3f28e0169c2dd738d733b07b012c613ee83eb24f4cee8eb2127b98f50ad9d4"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_ris.mbt",
+      "sha256": "1130a9ff0a1e87dcc7b1e4e77b374421aa785c00d9ba79cd28f434bfe4296bba"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_ris_wbtest.mbt",
+      "sha256": "2fef31aaff357633fd0b436b670d472ccb3fe4900038b37ec5946b5c63fc1467"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_shortlist.mbt",
+      "sha256": "dfb6bc9ec098359dff45c46757bf61839cac1f405aa6880084a250179a8e3c1d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_shortlist_view.mbt",
+      "sha256": "c785905e9259c25b87aa449c73ea2093d06f4f36b1abf0c3e209ccf0a36cb0ce"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_shortlist_wbtest.mbt",
+      "sha256": "233f6aed7c803dc0b5a67d6f98ccfdd4060900436d0a1b03458cf430e9db2bed"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_timeline.mbt",
+      "sha256": "7467b03dfd4227755a0e789ed736bf718904146ffd3c5099c018379a77fb0509"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_timeline_view.mbt",
+      "sha256": "4f1df65295bc37e8720c273abe449cee1461d87d2bd5e75e26f8f9d47049b426"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/reference_timeline_wbtest.mbt",
+      "sha256": "c5136122b172719731195038ed657225605ee65cbc160aa143c87da4f62c8209"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/review_draft_adversarial_wbtest.mbt",
+      "sha256": "505262cec0e76c38b9a9418e85d603225b2a96a63190a56b29011c094a2edb5d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/review_draft_native_wbtest.mbt",
+      "sha256": "abda37a2f56c68cd983466ccdf2842ec9f64be72344fa4307f7e8fd67fbcc091"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/review_draft_storage.mbt",
+      "sha256": "1470994a2ed5174f88e875ca6ded3ffeca5438fcee451415337920320012e74c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/review_draft_storage_wbtest.mbt",
+      "sha256": "c0731a3df266f646a1490a819b0062f24f84296f5a38ca6168aa042daaf65670"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/review_receipt.mbt",
+      "sha256": "b943055bd12613a4e1df88303493f1afad1ab26739817d428549a7114851b7b1"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/review_receipt_wbtest.mbt",
+      "sha256": "f77a157a850aca103e7bd73ed0920423c47071ba33b21cbac0733ec23dce1b9c"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/ris.mbt",
+      "sha256": "988a4793b2356ada0bded4843f56943130cbe2f683755a00f57babc69e08cbdd"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/ris_view.mbt",
+      "sha256": "0e96aaf7fe280205e02f88367fb29195e30198e5672ef4aabeaada8b4588fad7"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/ris_wbtest.mbt",
+      "sha256": "10fb5782e02f4297a8d565d3ac4f385d6e7dc9f79f588619e900c499fc7afc85"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/rss_source.mbt",
+      "sha256": "b13f1abf89f02967b98911f9dcee5d9776cdbccd8a01b4890821a6ad825141ef"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/rss_source_boundaries_wbtest.mbt",
+      "sha256": "f1bcc0c3444d4f12704e6ec3021cbae5ec1b465729aae75e7979e02518a90d4f"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/rss_source_wbtest.mbt",
+      "sha256": "a5c213d7f8fb40feb862074382cd25d5f06cb75ffc6763e60d903883c7c5c2cd"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/screening.mbt",
+      "sha256": "6f94c50fd52a6c98a2f959c73e121b2a3bc53e9c21bef779bd79f84b57c0975e"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/screening_export.mbt",
+      "sha256": "42eeda0694b690fdbbc278c00c5b8948e832049f1b1b741a62c933b5c854299b"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/screening_mounted_wbtest.mbt",
+      "sha256": "88a17dbbee4779049d83179a0690dc952565b2127d3982406212115b0806f670"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/screening_storage.mbt",
+      "sha256": "2d50fa39fe3301d7ff2d69490e6df77696e04ab7be9c7a0b22e183c0fe4538c8"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/screening_view.mbt",
+      "sha256": "bb2fab7cdbe2b8a6ea4a9d962eaa008b972c26ea2e3c57f36fa89855d8d74c5d"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/screening_wbtest.mbt",
+      "sha256": "8110d663ddbc20a4e293f45a73c900e3235063d98bfe27978882c9812aea8625"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/series_views.mbt",
+      "sha256": "ab0d8dc53a2aca189088e03ad78c2d4ff140e54082ccfc2d926da420ca8526f6"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/slack_source.mbt",
+      "sha256": "e6356f3d6168e2364f2d5d267fd27f2aa371b13924ddbc2478968005fcce57ae"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/slack_source_wbtest.mbt",
+      "sha256": "8acbd3110949f143a1c7f2536fa5e114cce4ca1f03fed983f1cfbbe819f21201"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/srt_transcript_wbtest.mbt",
+      "sha256": "1da092e17ca1bb8ccd4ed40041801471d88c85f2a5617aa0c821038ff91e8bd1"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/template_launch_wbtest.mbt",
+      "sha256": "2b65cbf17a0ae2374be10dd3396fdfa87379e7e05f99e380703eb3e3f1e19800"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/transcript.mbt",
+      "sha256": "38c6167d16227afccb7081839fdc8d696fd94a2c4744264d6444162ef7e76a06"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/transcript_revision.mbt",
+      "sha256": "5e0f5d0132c9c9609c1de9714631a0caa30695127e26a61c6828405fa93cb1c5"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/transcript_revision_view.mbt",
+      "sha256": "8842b0607a03fd879a5deeb45b4be2bb2588e541f50ee1afd77ce52c09f54f54"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/transcript_revision_wbtest.mbt",
+      "sha256": "e847a9a10d401584e4bf9a2e5ae63f8a2ce678441910de9b1b5ea09434737af0"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/transcript_view.mbt",
+      "sha256": "478e75b52ed505bb364c27f0b0c220266c984de06559de02974f896e4e207201"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/transcript_wbtest.mbt",
+      "sha256": "f53b5b9289148af6f5e47565240377caa0e75e86abd657a219705495c74df3f7"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/ui_icons.mbt",
+      "sha256": "f4098e13f96552aaaf9bb404a054e7d84358a125abe0d03fbf799002dc0fb262"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/update.mbt",
+      "sha256": "6f6bdc5708bc74aed22212ec9ac4d1e6415306ebd5d3bc7a86043c6b5aed8cd0"
+    },
+    {
+      "path": "ui/rabbita-moonfind/main/view.mbt",
+      "sha256": "0e4c22fef6fb917475aa92ed8b9bad60f39d9d3e0c94d9c7e9ba43bb6f1ee1e7"
+    },
+    {
+      "path": "ui/rabbita-moonfind/moon.mod",
+      "sha256": "fcc73125812811c135dc0e859300b4a6ea35c4dc2f2a850bc5d599d208487700"
+    },
+    {
+      "path": "ui/rabbita-moonfind/package-lock.json",
+      "sha256": "38f6e50113bd5153d49a71712c573cc52c81430b64c30264e9573c155ca33bfb"
+    },
+    {
+      "path": "ui/rabbita-moonfind/package.json",
+      "sha256": "83178dcf02d3bad08ada3f4adca9039efa018189d6b76ee2d7a719f4128efd18"
+    },
+    {
+      "path": "ui/rabbita-moonfind/styles.css",
+      "sha256": "70cf72c3d0dc484a500c9a1916bbbbce3fe51e7e18c51e9946dde4262e258ba2"
+    },
+    {
+      "path": "ui/rabbita-moonfind/vite.config.js",
+      "sha256": "3d62fcc3446c219db60e6bb8fe9adbeb10aefc8f0ecca9db20711773b8d550ce"
+    }
+  ]
+}

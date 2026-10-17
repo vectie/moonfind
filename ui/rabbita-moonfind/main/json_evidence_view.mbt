@@ -10,7 +10,7 @@ fn json_evidence_panel(
     [
       h3("Explore loaded JSON evidence"),
       p(
-        "Import a JSONL / NDJSON file, add a JSON file or paste JSON using the source controls below. Explore an array of objects, search its fields, and select records for a reusable extract. Original source bytes stay in the brief. This does not fetch sources or verify claims.",
+        "Import a JSONL / NDJSON file, add a JSON file or paste JSON using the source controls below. Explore an array or keyed object of observations, search its fields, and select records for a reusable extract. Each member value must be an object. Original source bytes stay in the brief. This does not fetch sources or verify claims.",
       ),
       action_button(
         "Import JSONL / NDJSON file",
@@ -35,7 +35,7 @@ fn json_evidence_panel(
         ),
       ),
       field_label(
-        "JSON Pointer to array",
+        "JSON Pointer to array or keyed observations",
         text_field(
           state.pointer,
           "Empty for root, or /observations (escape / as ~1 and ~ as ~0)",
@@ -43,7 +43,7 @@ fn json_evidence_panel(
         ),
       ),
       action_button(
-        "Explore JSON array",
+        "Explore JSON records",
         emit(BriefAction(JsonEvidence(Explore))),
       ),
       action_button(
@@ -51,7 +51,7 @@ fn json_evidence_panel(
         emit(BriefAction(JsonEvidence(ExploreLines))),
       ),
       p(
-        "JSONL uses one object per physical line; blank lines are skipped. The array pointer applies only to Explore JSON array. Imports retain exact original bytes as .txt sources for save/reopen.",
+        "JSONL uses one object per physical line; blank lines are skipped. The container pointer applies only to Explore JSON records. For keyed objects, member names remain escaped source pointers in source order, never synthetic record fields. Save and reopen the brief, choose the retained source and re-enter this pointer to continue exploring.",
       ),
       p(
         "Up to 32 KiB, 512 object records, 32 distinct top-level fields and 32 nesting levels. Nested objects and arrays are literal JSON. Fields keep their first-seen order; numbers keep their exact spelling. Missing, null and empty text are distinct.",
@@ -198,7 +198,7 @@ fn json_evidence_panel(
               emit(BriefAction(JsonEvidence(DownloadNdjson))),
             ),
             p(
-              "NDJSON contains every field of selected records, including hidden selections, in original source order. One object per line; only structural whitespace is removed. Number and string escape spellings are preserved. No envelope, locators, origin or digest is added. Keep the original dossier or JSON extract for provenance. Review private fields before sharing; consumers may round numeric values.",
+              "NDJSON contains every field of selected records, including hidden selections, in original source order. One object per line; only structural whitespace is removed. Number and string escape spellings are preserved. No envelope, keyed member names, locators, origin or digest is added. Keep the original dossier or JSON extract for provenance and keyed identity. Review private fields before sharing; consumers may round numeric values.",
             ),
             json_evidence_csv_panel(emit, view),
             action_button(

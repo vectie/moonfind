@@ -29,6 +29,10 @@ pub fn filter_csl(Array[CslReferenceV1], String) -> Array[CslReferenceV1]
 
 pub fn filter_csv(CsvTableV1, String, Int) -> Array[CsvRowV1] raise
 
+pub fn filter_endnote_author(Array[EndnoteReferenceV1], String) -> Array[EndnoteReferenceV1]
+
+pub fn filter_nbib_author(Array[NbibReferenceV1], String) -> Array[NbibReferenceV1]
+
 pub fn filter_ris_author(Array[RisReferenceV1], String) -> Array[RisReferenceV1]
 
 pub fn local_input_coverage_contract_version() -> String
@@ -38,6 +42,10 @@ pub fn parse_bibtex(String) -> Array[BibtexReferenceV1] raise
 pub fn parse_csl(String) -> Array[CslReferenceV1] raise
 
 pub fn parse_csv(String) -> CsvTableV1 raise
+
+pub fn parse_endnote(String) -> Array[EndnoteReferenceV1] raise
+
+pub fn parse_nbib(String) -> Array[NbibReferenceV1] raise
 
 pub fn parse_ris(String) -> Array[RisReferenceV1] raise
 
@@ -175,6 +183,33 @@ pub(all) struct DeliveryManifest {
   delivered_at : Int64
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
+pub(all) struct EndnoteFieldV1 {
+  tag : String
+  value : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct EndnoteReferenceV1 {
+  record_number : Int
+  reference_type : String
+  title : String
+  authors : Array[String]
+  editors : Array[String]
+  year : String
+  venue : String
+  keywords : String
+  doi : String
+  url : String
+  abstract_text : String
+  fields : Array[EndnoteFieldV1]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct EndnoteSelectionV1 {
+  contract_id : String
+  source_name : String
+  source_digest : String
+  references : Array[EndnoteReferenceV1]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct HumanResearchReview {
   review_id : String
   run_id : String
@@ -231,6 +266,34 @@ pub(all) enum LocalInputStatus {
   Duplicate
   Unsupported
   Failed
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct NbibFieldV1 {
+  tag : String
+  value : String
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct NbibReferenceV1 {
+  record_number : Int
+  pmid : String
+  reference_type : String
+  title : String
+  authors : Array[String]
+  editors : Array[String]
+  year : String
+  venue : String
+  keywords : String
+  doi : String
+  url : String
+  abstract_text : String
+  fields : Array[NbibFieldV1]
+} derive(Eq, ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct NbibSelectionV1 {
+  contract_id : String
+  source_name : String
+  source_digest : String
+  references : Array[NbibReferenceV1]
 } derive(Eq, ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct PaperClaim {

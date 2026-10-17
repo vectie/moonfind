@@ -1,0 +1,8 @@
+{
+  "studies": [
+    {"study":"alpha","readings":{"10":{"value":9007199254740993},"2":{"value":1.2300e+02},"a/b~":{"value":-0},"":{"value":"\u0061"}}},
+    {"study":"beta","readings":{"10":{"value":1e400},"\u0032":{"value":null},"a/b~":{}}},
+    {"study":"empty","readings":{}},
+    {"study":"missing"}
+  ]
+}

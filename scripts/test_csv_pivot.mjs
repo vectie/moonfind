@@ -1,0 +1,58 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync,writeFileSync,mkdirSync,mkdtempSync } from 'node:fs';
+import { resolve,join,dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
+import vm from 'node:vm';
+import { createPivotBundle as build } from './csv_pivot.mjs';
+import { parseCsv } from './csv_bibliography.mjs';
+const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
+const evidence=process.env.MOONFIND_PIVOT_EVIDENCE; assert.ok(evidence);mkdirSync(evidence,{recursive:true});
+const input=Buffer.from('person,question,response\r\n001,quality,4\r\n002,quality,3\r\n001,comment,"hello, 月"\r\n002,quality,5\r\n003,comment,"line\nnext"\r\n');
+const plan=()=>({contract_id:'moonfind.csv-pivot-plan.v1',row_column:'person',column_column:'question',value_column:'response',duplicate_policy:'last',source:{origin:'Synthetic survey',captured_at:'2026-10-14',restrictions:'Synthetic local only',access:'permitted'}});
+test('pivot preserves exact strings, stable first-seen order, missing cells and selected source records',()=>{
+ const result=build(input,plan()),table=parseCsv(result.files['pivoted.csv']);
+ assert.deepEqual(table.columns,['person','quality','comment']);
+ assert.deepEqual(table.rows.map(r=>r.values),[['001','4','hello, 月'],['002','5',''],['003','','line\nnext']]);
+ assert.deepEqual(result.preview.cell_mapping[2],{output_record:3,output_column:2,source_records:[3,5],selected_record:5});
+ assert.deepEqual(result.files['source.csv'],input);
+ for(const [name,bytes] of Object.entries(result.files))writeFileSync(join(evidence,name),bytes);
+});
+test('duplicate policies are explicit and output header collisions refused',()=>{
+ assert.throws(()=>build(input,{...plan(),duplicate_policy:'error'}),/Duplicate cell/);
+ assert.equal(parseCsv(build(input,{...plan(),duplicate_policy:'first'}).files['pivoted.csv']).rows[1].values[1],'3');
+ assert.throws(()=>build(input,{...plan(),duplicate_policy:'sum'}),/policy/);
+ assert.throws(()=>build(Buffer.from('person,question,response\na,person,1'),plan()));
+ assert.throws(()=>build(Buffer.from('person,question,response\na,,1'),plan()),/nonblank/);
+ assert.throws(()=>build(input,{...plan(),row_column:'missing'}),/headers/);
+ assert.throws(()=>build(input,{...plan(),source:{...plan().source,access:'denied'}}),/permitted/);
+});
+test('real CLI preview conversion feeds the ordinary CSV parser and retains original',()=>{
+ const dir=mkdtempSync(join(evidence,'cli-'));writeFileSync(join(dir,'input.csv'),input);writeFileSync(join(dir,'plan.json'),JSON.stringify(plan()));
+ const call=(...args)=>spawnSync(process.execPath,[join(root,'scripts/csv_pivot.mjs'),...args],{encoding:'utf8'});
+ const common=['--csv',join(dir,'input.csv'),'--plan',join(dir,'plan.json')];
+ assert.equal(call('inspect','--csv',join(dir,'input.csv')).status,0);
+ const preview=call('preview',...common);assert.equal(preview.status,0,preview.stderr);assert.equal(JSON.parse(preview.stdout).output_count,3);
+ const out=join(dir,'out'),result=call('convert',...common,'--out-dir',out);assert.equal(result.status,0,result.stderr);
+ assert.deepEqual(readFileSync(join(out,'source.csv')),input);assert.deepEqual(readFileSync(join(out,'pivoted.csv')),build(input,plan()).files['pivoted.csv']);
+ assert.equal(call('convert',...common,'--out-dir',out).status,1);
+});
+test('retained production explorer imports pivot, filters respondent and extracts matching row',()=>{
+ const retained=process.env.MOONFIND_RETAINED_UI;assert.ok(retained);
+ const bytes=readFileSync(retained),hash=createHash('sha256').update(bytes).digest('hex');assert.equal(hash,'831f79da21c3b3d27fb456a8d67c46a176584c14b27a6932af052f697b1ebb0e');
+ const pins=JSON.parse(readFileSync(join(root,'fixtures/retained_ui_inputs.json'),'utf8'));assert.equal(pins.consumer_sha256,hash);
+ for(const pin of pins.files)assert.equal(createHash('sha256').update(readFileSync(join(root,pin.path))).digest('hex'),pin.sha256);
+ const code=bytes.toString(),end=code.lastIndexOf('\n(() => {');assert.ok(end>0);
+ const context=vm.createContext({console,TextEncoder,TextDecoder,URL,Blob,Buffer,setTimeout,clearTimeout});vm.runInContext(code.slice(0,end),context,{timeout:5000});
+ const prefix='_M0FP36vectie18moonfind_2drabbita4main',ctor='_M0DTP36vectie18moonfind_2drabbita4main6CsvMsg',run=s=>vm.runInContext(s,context,{timeout:2000});
+ const output=build(input,plan()).files['pivoted.csv'],table=parseCsv(output);
+ context.payload=JSON.stringify({...table,total_count:table.rows.length,source:{name:'pivoted.csv',origin:'Synthetic pivot; sidecar retained',captured_at:'2026-10-14',kind:'local-file',content_hex:output.toString('hex')}});
+ run(`var view=${prefix}20initial__brief__view();view.pending=true;var parsed=_M0FPC14json13parse_2einner(new _M0TPC16string10StringView(payload,0,payload.length),100);if(parsed.$tag!==1)throw Error('parse failed');var reply=new _M0DTPC16result6ResultGRPB4JsonRPC15error5ErrorE2Ok(parsed._0);view=${prefix}17update__csv__view(undefined,new ${ctor}8Imported(view.generation,reply),view)._1;`);
+ assert.equal(run('view.error'),undefined);assert.equal(run('view.csv.intake.rows.length'),3);
+ run(`view=${prefix}17update__csv__view(undefined,new ${ctor}12SearchColumn(1),view)._1;view=${prefix}17update__csv__view(undefined,new ${ctor}6Filter('002'),view)._1;view=${prefix}17update__csv__view(undefined,new ${ctor}14SelectMatching(),view)._1;`);
+ const extracted=run(`${prefix}18csv__extract__text(view.csv)`);assert.equal(extracted.$tag,1);assert.deepEqual(parseCsv(Buffer.from(extracted._0)).rows.map(r=>r.values),[['002','5','']]);
+ writeFileSync(join(evidence,'explorer-selected.csv'),extracted._0);
+ writeFileSync(join(evidence,'explorer-consumer.json'),JSON.stringify({retained_ui:retained,sha256:hash,executed:['Imported','SearchColumn','Filter','SelectMatching','csv_extract_text'],limitations:'Supplied intake JSON; browser bootstrap omitted, no live host or installed save/reopen.'},null,2));
+});

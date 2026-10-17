@@ -123,6 +123,8 @@ fn brief_panel(emit : @rabbita.Emit[Msg], view : BriefView) -> @rabbita.Html {
         ],
       ),
       ris_panel(emit, view),
+      endnote_panel(emit, view),
+      nbib_panel(emit, view),
       bibtex_panel(emit, view),
       csl_panel(emit, view),
       csv_panel(emit, view),
@@ -130,11 +132,37 @@ fn brief_panel(emit : @rabbita.Emit[Msg], view : BriefView) -> @rabbita.Html {
       transcript_panel(emit, view),
       reference_list_panel(emit, view),
       h3("Capture local sources"),
-      dossier_panel(emit, view),
+      action_button(
+        "Import research bookmarks (.html)",
+        emit(BriefAction(ChooseBookmarks)),
+      ),
       p(
-        "UTF-8 .txt, .md, .csv, .json, .bib or .ris. Up to 8 sources, 32 KiB each and 128 KiB total. Use the RIS, BibTeX or CSL JSON bibliography import above for reference cards and selection. Exact bytes, names, origin and capture time are retained. Duplicate names and content stay separate.",
+        "Choose a UTF-8 Netscape bookmark export up to 32 KiB. Exact HTML and a structured reading queue use two source slots. Explore folders, select links, and download JSON or CSV above. Folder paths, duplicates, descriptions and timestamps remain supplied metadata; destinations have not been read. All URLs, including bookmarklets, stay inert text. No browser access, link fetching or subscription. Review private URLs and titles before sharing.",
+      ),
+      dossier_panel(emit, view),
+      passage_memo_panel(emit, view),
+      p(
+        "UTF-8 .txt, .md, .csv, .json, .bib, .ris, .enw or .nbib. Up to 8 sources, 32 KiB each and 128 KiB total. Use the RIS, EndNote/PubMed NBIB tagged text, BibTeX or CSL JSON bibliography import above for reference cards and selection. Exact bytes, names, origin and capture time are retained. Duplicate names and content stay separate.",
       ),
       action_button("Choose local files", emit(BriefAction(ChooseFiles))),
+      action_button(
+        "Import saved RSS feed (.rss / .xml)",
+        emit(BriefAction(ChooseRss)),
+      ),
+      p(
+        "Import a UTF-8 RSS 2.0 file up to 32 KiB. The unchanged XML and structured items use two source slots; items open in the JSON explorer above for search, selection and CSV output. Titles, authors, dates, descriptions and links remain supplied metadata. Markup and URLs are inert. No article fetching, feed refresh or subscription. Atom, RDF, DTD and external entities are unsupported; extension fields remain in the original.",
+      ),
+      action_button(
+        "Import Slack channel export (.json)",
+        emit(BriefAction(ChooseSlackExport)),
+      ),
+      p(
+        "Import one local Slack channel-export JSON into two source slots: unchanged original and searchable conversation with record locators, thread parents, missing-context warnings and supplied sender IDs. No Slack connection, user lookup or attachment download. Private export fields remain in the original; review both captures before saving or sharing.",
+      ),
+      action_button("Import local email (.eml)", emit(BriefAction(ChooseEmail))),
+      p(
+        "Import one local email up to 32 KiB into two source slots: exact original and searchable readable plain text. UTF-8/US-ASCII, base64 and quoted-printable bodies, mixed/alternative MIME are supported. HTML and attachments are not extracted or opened. The original retains all headers (including private recipients) and encoded attachments. Review both captures before saving or sharing. No mailbox access or sender verification.",
+      ),
       field_label(
         "Pasted source filename",
         text_field(
@@ -184,6 +212,8 @@ fn brief_panel(emit : @rabbita.Emit[Msg], view : BriefView) -> @rabbita.Html {
               ),
             ]),
             ris_retained_selection(source),
+            endnote_retained_selection(source),
+            nbib_retained_selection(source),
             bibtex_retained_selection(source),
             csl_retained_selection(source),
             csv_retained_selection(source),

@@ -19,6 +19,21 @@ extern "js" fn reference_ris_year(value : String) -> String =
 fn reference_ris_type(r : ReadingReference) -> String {
   let kind = csv_lower(r.reference_type)
   match (r.format, kind) {
+    ("nbib", "journal article") => "JOUR"
+    ("nbib", "book") => "BOOK"
+    ("nbib", "book chapter") => "CHAP"
+    ("endnote", "journal article") => "JOUR"
+    ("endnote", "book" | "edited book") => "BOOK"
+    ("endnote", "book section") => "CHAP"
+    ("endnote", "conference paper") => "CPAPER"
+    ("endnote", "conference proceeding") => "CONF"
+    ("endnote", "thesis") => "THES"
+    ("endnote", "report") => "RPRT"
+    ("endnote", "web page" | "blog") => "ELEC"
+    ("endnote", "newspaper article") => "NEWS"
+    ("endnote", "magazine article") => "MGZN"
+    ("endnote", "dataset") => "DATA"
+    ("endnote", "unpublished work") => "UNPB"
     ("bibtex", "article") | ("csl", "article-journal") => "JOUR"
     ("bibtex", "book") | ("csl", "book") => "BOOK"
     ("bibtex", "inbook" | "incollection") | ("csl", "chapter") => "CHAP"

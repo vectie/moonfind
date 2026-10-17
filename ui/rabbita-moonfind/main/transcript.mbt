@@ -24,10 +24,12 @@ struct TranscriptView {
   capture : TranscriptCapture?
   query : String
   selected : Array[Int]
+  revision : TranscriptRevision
 } derive(Debug, Eq)
 
 ///|
 enum TranscriptMsg {
+  Revise(TranscriptRevisionMsg)
   Choose
   FileLoaded(Int, String)
   Open(Int)
@@ -41,7 +43,14 @@ enum TranscriptMsg {
 
 ///|
 fn empty_transcript_view() -> TranscriptView {
-  { slot: 0, source: None, capture: None, query: "", selected: [], }
+  {
+    slot: 0,
+    source: None,
+    capture: None,
+    query: "",
+    selected: [],
+    revision: empty_transcript_revision(),
+  }
 }
 
 ///|
@@ -251,6 +260,11 @@ fn update_transcript(
   let state = view.transcript
   let next = try {
     match action {
+      Revise(action) => update_transcript_revision(action, view)
+      Choose | Open(_) | FileLoaded(_, _) if transcript_revision_pending(state) =>
+        fail(
+          "Retain or discard transcript corrections before opening another source. Cancel the current cue edit if needed.",
+        )
       Choose => {
         let generation = view.generation
         return (
@@ -299,6 +313,7 @@ fn update_transcript(
             capture: Some(capture),
             query: "",
             selected: [],
+            revision: empty_transcript_revision(),
           },
         }
       }
@@ -318,6 +333,7 @@ fn update_transcript(
             capture: Some(capture),
             query: "",
             selected: [],
+            revision: empty_transcript_revision(),
           },
           error: None,
         }

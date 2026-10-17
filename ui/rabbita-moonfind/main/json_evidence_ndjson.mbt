@@ -9,7 +9,7 @@ extern "js" fn json_evidence_ndjson_text(
   #|(table_json,selected_json) => {
   #| try {
   #|   const table=JSON.parse(table_json), selected=JSON.parse(selected_json);
-  #|   if(!table || !['json-array','jsonl'].includes(table.format) || !Array.isArray(table.rows) || table.rows.length>512)throw Error('Explore a current JSON or JSONL table before exporting NDJSON.');
+  #|   if(!table || !['json-array','json-object','jsonl'].includes(table.format) || !Array.isArray(table.rows) || table.rows.length>512)throw Error('Explore a current JSON or JSONL table before exporting NDJSON.');
   #|   if(!Array.isArray(selected) || !selected.length || selected.length>512 || selected.some(n=>!Number.isInteger(n)||n<1||n>table.rows.length))throw Error('Select at least one current JSON record before exporting NDJSON.');
   #|   const chosen=new Set(selected), lines=[];
   #|   let bytes=0;
