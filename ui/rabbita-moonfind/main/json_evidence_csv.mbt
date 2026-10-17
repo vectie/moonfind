@@ -36,7 +36,7 @@ extern "js" fn json_evidence_csv_text(
   #|     if(!response.table||!response.lens||!response.lens.pointer)throw Error('Explore current fields before exporting CSV.');
   #|   }
   #|   const table=responses[0].table, fields=responses.map(response=>response.lens.pointer);
-  #|   if(!['json-array','jsonl'].includes(table.format)||!Array.isArray(table.rows)||table.rows.length>512)throw Error('Explore a current JSON or JSONL source.');
+  #|   if(!['json-array','json-object','jsonl'].includes(table.format)||!Array.isArray(table.rows)||table.rows.length>512)throw Error('Explore a current JSON or JSONL source.');
   #|   if(new Set(fields).size!==fields.length)throw Error('Choose each field pointer once.');
   #|   for(const response of responses){
   #|     if(JSON.stringify(response.table)!==JSON.stringify(table)||response.lens.rows.length!==table.rows.length)throw Error('Every CSV field must inspect the same current source records.');
@@ -52,7 +52,7 @@ extern "js" fn json_evidence_csv_text(
   #|       if(value.record_number!==record.record_number||value.source_line!==record.source_line||value.record_pointer!==record.pointer)throw Error('Source record identity changed. Explore again.');
   #|     }
   #|     if(!chosen.has(record.record_number))continue;
-  #|     const cells=[String(record.record_number),table.format==='jsonl'?String(record.source_line):'',table.format==='json-array'?record.pointer:''];
+  #|     const cells=[String(record.record_number),table.format==='jsonl'?String(record.source_line):'',table.format!=='jsonl'?record.pointer:''];
   #|     for(const value of values){
   #|       if(!['missing','blocked','null','empty-string','string','number','boolean','array','object'].includes(value.kind)||typeof value.text!=='string'||typeof value.raw!=='string')throw Error('Unsupported source field value.');
   #|       let text=value.kind==='missing'||value.kind==='blocked'?'':value.kind==='string'||value.kind==='empty-string'?value.text:value.raw;

@@ -1,0 +1,13 @@
+{
+  "contract_id": "moonfind.csv-unpivot-plan.v1",
+  "context_columns": ["segment", "respondent_id"],
+  "question_columns": ["handoff_notes", "handoff_minutes"],
+  "record_numbers": [3, 2],
+  "empty_policy": "keep",
+  "source": {
+    "origin": "Synthetic local survey for MoonFind demonstration",
+    "captured_at": "2026-10-13",
+    "restrictions": "Invented example only; no customer claims or private personal data",
+    "access": "permitted"
+  }
+}

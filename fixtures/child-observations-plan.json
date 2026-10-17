@@ -1,0 +1,16 @@
+{
+  "contract_id": "moonfind.json-children-plan.v1",
+  "source_digest": "sha256:d48cfb0504b70cddcaf61808a9a5d1d8735025fd6c72b79d53fc78c7584a7971",
+  "parent_pointer": "/studies",
+  "children_pointer": "/readings",
+  "child_mode": "records",
+  "empty_arrays": "skip",
+  "missing_arrays": "skip",
+  "fields": [
+    {"scope":"parent","pointer":"/study","name":"study"},
+    {"scope":"child","pointer":"/label","name":"label"},
+    {"scope":"child","pointer":"/value","name":"value"},
+    {"scope":"child","pointer":"/note","name":"note"}
+  ],
+  "source": {"origin":"Synthetic repeated study observations","captured_at":"2026-10-14","restrictions":"Synthetic example; local review only","access":"permitted"}
+}

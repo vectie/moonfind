@@ -1,0 +1,9 @@
+{
+  "studies": [
+    {"study":"alpha","readings":[{"label":"baseline","value":9007199254740993,"note":"=1+1"},{"label":"follow-up","value":1.2300e+02}]},
+    {"study":"beta","readings":[{"label":"baseline","value":-0,"note":null},{"label":"follow-up","value":1e400,"note":"\u0061"}]},
+    {"study":"empty","readings":[]},
+    {"study":"unreported"}
+  ],
+  "private_unselected": "Retained with the complete original; not redacted."
+}

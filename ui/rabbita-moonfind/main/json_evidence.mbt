@@ -162,15 +162,19 @@ extern "js" fn json_evidence_parse_mode(
   #|     else if(node.kind==='array'&&/^(0|[1-9][0-9]*)$/.test(key)&&Number(key)<node.items.length)node=node.items[Number(key)];
   #|     else throw Error('JSON Pointer does not identify a value in this capture.');
   #|   }
-  #|   if(node.kind!=='array')throw Error('Choose a JSON array of object records.');
+  #|   const keyed=node.kind==='object';
+  #|   const recordKeys=keyed?Array.from(node.members.keys()):[];
+  #|   if(keyed)node={kind:'array',items:Array.from(node.members.values())};
+  #|   if(node.kind!=='array')throw Error('Choose a JSON array or keyed object of object records.');
   #|   if(node.items.length>512)throw Error('Explore at most 512 JSON records.');
   #|   const columns=[];
   #|   for(const record of node.items){
-  #|     if(record.kind!=='object')throw Error('Every array record must be an object.');
+  #|     if(record.kind!=='object')throw Error('Every array or keyed member record must be an object.');
   #|     for(const key of record.members.keys())if(!columns.includes(key)){columns.push(key);if(columns.length>32)throw Error('Explore at most 32 distinct JSON fields.');}
   #|   }
-  #|   const rows=node.items.map((record,index)=>({record_number:index+1,source_line:lines?lineNumbers[index]:0,pointer:lines?'':pointer+'/'+index,raw:record.raw,cells:columns.map(key=>{const value=record.members.get(key);return value?{kind:value.kind,text:value.kind==='string'?value.value:value.raw}:{kind:'missing',text:''};})}));
-  #|   const result={table:{format:lines?'jsonl':'json-array',columns,rows}};
+  #|   const escapeKey=key=>key.replace(/~/g,'~0').replace(/\//g,'~1');
+  #|   const rows=node.items.map((record,index)=>({record_number:index+1,source_line:lines?lineNumbers[index]:0,pointer:lines?'':pointer+'/'+(keyed?escapeKey(recordKeys[index]):index),raw:record.raw,cells:columns.map(key=>{const value=record.members.get(key);return value?{kind:value.kind,text:value.kind==='string'?value.value:value.raw}:{kind:'missing',text:''};})}));
+  #|   const result={table:{format:lines?'jsonl':keyed?'json-object':'json-array',columns,rows}};
   #|   if(field_pointer!==''){
   #|     const kinds=['missing','blocked','null','empty-string','string','number','boolean','array','object'];
   #|     const buckets=kinds.map(kind=>({kind,count:0,records:[]}));
@@ -298,7 +302,7 @@ fn json_evidence_export(view : BriefView) -> String raise {
     },
     "source_record_count": table.rows.length(),
     "selected_record_count": records.length(),
-    "boundary": "Selected original JSON object records with zero-based source JSON Pointers for JSON arrays or one-based physical source lines for JSONL. Original numeric tokens and object bytes are preserved; no truth or full-text verification is implied. The complete source stays in the brief but is not included in this extract. Review all fields before sharing.",
+    "boundary": "Selected original JSON object records with escaped member JSON Pointers for keyed objects, zero-based array indexes or one-based physical source lines for JSONL. Keyed member identity is retained in source_pointer, not inserted into record fields. Original numeric tokens and object bytes are preserved; no truth or full-text verification is implied. The complete source stays in the brief but is not included in this extract. Review all fields before sharing.",
   }
   let header = metadata.stringify(indent=2)
   let body = records

@@ -1,0 +1,13 @@
+{
+  "contract_id": "moonfind.csv-pivot-plan.v1",
+  "row_column": "person",
+  "column_column": "question",
+  "value_column": "response",
+  "duplicate_policy": "last",
+  "source": {
+    "origin": "Synthetic survey responses",
+    "captured_at": "2026-10-14",
+    "restrictions": "Synthetic example; local use",
+    "access": "permitted"
+  }
+}

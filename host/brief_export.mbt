@@ -53,6 +53,8 @@ fn brief_readable(snapshot : BriefSnapshotV1) -> String {
     )
   }
   out.write_string(ris_readable_selections(brief))
+  out.write_string(endnote_readable_selections(brief))
+  out.write_string(nbib_readable_selections(brief))
   out.write_string(bibtex_readable_selections(brief))
   out.write_string(csl_readable_selections(brief))
   out.write_string(csv_readable_selections(brief))

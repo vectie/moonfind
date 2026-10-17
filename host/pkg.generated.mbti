@@ -41,6 +41,10 @@ pub fn intake_csl(CslIntakeRequestV1) -> CslIntakeV1 raise
 
 pub fn intake_csv(CsvIntakeRequestV1) -> CsvIntakeV1 raise
 
+pub fn intake_endnote(EndnoteIntakeRequestV1) -> EndnoteIntakeV1 raise
+
+pub fn intake_nbib(NbibIntakeRequestV1) -> NbibIntakeV1 raise
+
 pub fn intake_ris(RisIntakeRequestV1) -> RisIntakeV1 raise
 
 pub async fn list_briefs(Config) -> Array[BriefListItemV1]
@@ -84,6 +88,10 @@ pub fn select_bibtex(BibtexSelectRequestV1) -> Array[@research.BriefSourceInputV
 pub fn select_csl(CslSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
 
 pub fn select_csv(CsvSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
+
+pub fn select_endnote(EndnoteSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
+
+pub fn select_nbib(NbibSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
 
 pub fn select_ris(RisSelectRequestV1) -> Array[@research.BriefSourceInputV1] raise
 
@@ -273,6 +281,22 @@ pub(all) struct DeliveryStatusV1 {
   versions : Array[String]
 } derive(ToJson, @debug.Debug, @json.FromJson)
 
+pub(all) struct EndnoteIntakeRequestV1 {
+  source : @research.BriefSourceInputV1
+  author_filter : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct EndnoteIntakeV1 {
+  source : @research.BriefSourceInputV1
+  references : Array[@research.EndnoteReferenceV1]
+  total_count : Int
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct EndnoteSelectRequestV1 {
+  source : @research.BriefSourceInputV1
+  record_numbers : Array[Int]
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
 pub(all) struct JobFileV1 {
   name : String
   media_type : String
@@ -366,6 +390,22 @@ pub(all) struct NativeModelRouteV1 {
   default_model : String
   models : Array[String]
   blocker : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct NbibIntakeRequestV1 {
+  source : @research.BriefSourceInputV1
+  author_filter : String
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct NbibIntakeV1 {
+  source : @research.BriefSourceInputV1
+  references : Array[@research.NbibReferenceV1]
+  total_count : Int
+} derive(ToJson, @debug.Debug, @json.FromJson)
+
+pub(all) struct NbibSelectRequestV1 {
+  source : @research.BriefSourceInputV1
+  record_numbers : Array[Int]
 } derive(ToJson, @debug.Debug, @json.FromJson)
 
 pub(all) struct ResearchJobViewV1 {

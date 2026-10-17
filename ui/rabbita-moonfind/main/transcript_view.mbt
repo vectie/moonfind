@@ -64,6 +64,7 @@ fn transcript_panel(
             p(
               "Selections survive searches and export in original source order. Overlapping cues stay separate. Speaker labels are only the first leading WebVTT voice annotation; inspect raw cue text for any additional speakers. SubRip numeric identifiers and payload are literal; speaker names are not inferred.",
             ),
+            transcript_revision_panel(emit, view),
             action_button(
               "Select matching cues",
               emit(BriefAction(Transcript(SelectMatching))),
@@ -108,6 +109,10 @@ fn transcript_panel(
                       }) +
                       cue.number.to_string(),
                       emit(BriefAction(Transcript(Toggle(cue.number)))),
+                    ),
+                    action_button(
+                      "Correct cue \{cue.number}",
+                      emit(BriefAction(Transcript(Revise(Begin(cue.number))))),
                     ),
                   ],
                 )

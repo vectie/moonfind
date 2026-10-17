@@ -17,11 +17,35 @@ plan](docs/IMPLEMENTATION_PLAN.md).
 
 The first specialization is humanoid robotics model research over arXiv. Domain semantics stay in `humanoid/`; general job and delivery contracts stay in `research/`. The implementation is MoonBit-native and the application UI is Rabbita. There is no Python runtime or secondary agent runtime. The [ClawsGO comparison](docs/CLAWSGO_COMPARISON.md) explains the new priorities.
 
+For repeated measurements or responses, [expand nested JSON arrays or keyed child maps into individual CSV observations](docs/JSON_CHILD_OBSERVATIONS.md) with explicit parent/key/value fields, exact original tokens and source-bound lineage, then filter/select them in the ordinary CSV explorer.
+
 For general offline preparation, the [research brief studio](docs/OFFLINE_BRIEFS.md)
 captures a question, scope, requested outputs and exact local source bytes. It
 supports one or more sources, immutable saved revisions and complete dossier
 exports without a research run or provider. A prepared brief is not executed
 research or approval of its requested outputs and acceptance criteria.
+
+For a saved news or research bulletin, [import a local RSS 2.0 feed](docs/LOCAL_RSS_RESEARCH.md).
+Preserve the original XML, search structured items in the JSON explorer, select
+contradictory descriptions and take chosen title/link/date/author fields into CSV.
+The importer does not fetch articles, subscribe to feeds or verify source claims.
+
+For a collected reading queue, [import a saved browser bookmark export](docs/RESEARCH_BOOKMARKS.md).
+Keep exact HTML beside structured folder paths, titles, duplicate links and
+descriptions. Explore a folder or search term, then carry selected links into
+JSON/CSV or the brief dossier. Bookmark destinations remain unread and inert.
+
+For a known transcription error, [correct specific CSV cells in a working copy](docs/CSV_CELL_CORRECTIONS.md).
+Inspect logical records, review digest-bound old/new cell values, then import the
+new CSV while retaining the exact original and per-cell correction provenance.
+
+For inconsistent local category labels, [recode explicit values into a new CSV column](docs/CSV_CATEGORY_RECODING.md).
+Preview each mapping, choose how unmatched values are handled, and explore the
+derived table while retaining every original column and the exact source file.
+
+For repeated local observations, [consolidate CSV rows with explicit exact keys](docs/CSV_RECORD_CONSOLIDATION.md).
+Preview each group and conflicting values, choose keep-first, keep-last or error,
+and import the new table with retained source-record identity and original bytes.
 
 From a saved offline brief, [compare choices using its exact local source dossier](docs/OFFLINE_CHOICES.md).
 Record alternatives, criteria, uncertainty and a next experiment without creating
@@ -345,6 +369,12 @@ then save/reopen the chosen evidence table and export a readable dossier with
 the complete original CSV. See the [CSV evidence guide](docs/CSV_EVIDENCE_TABLES.md)
 and [synthetic interview table](fixtures/local-evidence.csv).
 
+For wide survey or experiment exports, [reshape selected question columns into
+a question-answer CSV](docs/CSV_SURVEY_UNPIVOT.md), then import the result in
+the same CSV explorer. Explicit context, cell locators, empty-answer policy and
+original-byte provenance keep repeated respondent labels and missing responses
+inspectable without manual copying. The offline CLI does not run research.
+
 For JSON observations, **Explore loaded JSON evidence** opens an object array at
 the root or a JSON Pointer. Search/select records, preserve exact number tokens
 and source locators, then download an extract or add it to the saved brief. See
@@ -361,3 +391,15 @@ report with the matching notes, supplied abstracts and provenance. See
 ## Local interview quotations
 
 Import WebVTT or SubRip (SRT) transcripts and reuse time-coded quotations in the brief studio. See [SubRip interview evidence](docs/SUBRIP_TRANSCRIPTS.md) for SRT intake, literal cue identifiers and provenance. See [WebVTT transcript workflow](docs/WEBVTT_TRANSCRIPTS.md) for the text adapter, locators, limits and save/reopen workflow.
+
+### Explore local evidence passages
+
+Select a dossier search hit or an explicit line range from any loaded capture,
+collect supporting and conflicting passages, annotate them, and download a readable
+evidence memo. Exact source snapshots survive later capture changes. See the
+[Evidence passage memo workflow](docs/EVIDENCE_PASSAGE_MEMO.md) for the synthetic
+walkthrough, browser persistence and output boundaries.
+
+Correct supplied WebVTT/SRT cue text without overwriting the original, download a
+usable revised transcript, and reuse it in time-coded quotations. See
+[Transcript correction working copies](docs/TRANSCRIPT_CORRECTIONS.md).

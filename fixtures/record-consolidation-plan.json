@@ -1,0 +1,12 @@
+{
+  "contract_id": "moonfind.csv-consolidate-plan.v1",
+  "key_columns": ["participant", "visit"],
+  "duplicate_policy": "keep-last",
+  "empty_keys": "error",
+  "source": {
+    "origin": "Synthetic appended survey observations; two declared source waves",
+    "captured_at": "2026-10-14",
+    "restrictions": "Synthetic local demonstration only",
+    "access": "permitted"
+  }
+}

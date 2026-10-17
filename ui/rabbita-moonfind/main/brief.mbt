@@ -65,6 +65,10 @@ struct BriefListItem {
 
 ///|
 struct BriefView {
+  screening : ScreeningState
+  screening_sessions : Map[String, ScreeningState]
+  passage_memo : PassageMemoState
+  passage_memo_sessions : Map[String, PassageMemoState]
   transcript : TranscriptView
   json_evidence : JsonEvidenceView
   reading_notes : ReadingNotesState
@@ -79,8 +83,11 @@ struct BriefView {
   search_fold : Bool
   search_open : (Int, Int)?
   ris : RisView
+  endnote : EndnoteView
+  nbib : NbibView
   bibtex : BibtexView
   csl : CslView
+  csv_join : CsvJoinView
   csv : CsvView
   draft : BriefDraft
   generation : Int
@@ -97,6 +104,8 @@ struct BriefView {
 
 ///|
 enum BriefMsg {
+  Screening(String, Int, ScreeningMsg)
+  PassageMemo(String, String, PassageMemoMsg)
   Transcript(TranscriptMsg)
   JsonEvidence(JsonEvidenceMsg)
   ReadingNotes(String, Int, ReadingNotesMsg)
@@ -106,14 +115,23 @@ enum BriefMsg {
   SearchOpen(Int, Int)
   SearchExport
   Ris(RisMsg)
+  Endnote(EndnoteMsg)
+  Nbib(NbibMsg)
   Bibtex(BibtexMsg)
   Csl(CslMsg)
+  CsvJoin(CsvJoinMsg)
   Csv(CsvMsg)
   New
   Edit(String, String)
   PasteField(String, String)
   AddPaste
   ChooseFiles
+  ChooseEmail
+  ChooseSlackExport
+  ChooseRss
+  RssLoaded(Int, String)
+  ChooseBookmarks
+  BookmarksLoaded(Int, String)
   FilesLoaded(Int, String)
   RemoveSource(Int)
   Save
@@ -157,7 +175,7 @@ extern "js" fn brief_choose_files(
   #|      if (files.length > 8 || files.reduce((n, f) => n + f.size, 0) > 131072) throw new Error('Choose at most 8 sources and 128 KiB total');
   #|      const sources = [];
   #|      for (const file of files) {
-  #|        if (file.size > 32768 || !/\.(txt|md|csv|json|bib|ris)$/i.test(file.name)) throw new Error('Only UTF-8 text, Markdown, CSV, JSON, BibTeX or RIS up to 32 KiB each is supported');
+  #|        if (file.size > 32768 || !/\.(txt|md|csv|json|bib|ris|enw|nbib)$/i.test(file.name)) throw new Error('Only UTF-8 text, Markdown, CSV, JSON, BibTeX, RIS, EndNote or PubMed NBIB tagged text up to 32 KiB each is supported');
   #|        const bytes = new Uint8Array(await file.arrayBuffer());
   #|        const text = new TextDecoder('utf-8', {fatal: true, ignoreBOM: true}).decode(bytes);
   #|        if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(text)) throw new Error('Binary control bytes are unsupported');
@@ -212,36 +230,45 @@ fn initial_brief_view() -> BriefView {
       )
   }
   let draft = restored.unwrap_or_else(blank_brief)
-  sync_reading_notes({
-    reading_notes: restore_reading_notes(draft),
-    reading_note_sessions: {},
-    ris: empty_ris_view(),
-    reference_shortlist: [],
-    reference_source_generation: 0,
-    reference_query: "",
-    reference_duplicates: false,
-    reference_doi_filter: "",
-    reference_timeline: initial_reference_timeline(),
-    search_query: "",
-    search_fold: false,
-    search_open: None,
-    bibtex: empty_bibtex_view(),
-    csl: empty_csl_view(),
-    csv: empty_csv_view(),
-    json_evidence: empty_json_evidence_view(),
-    transcript: empty_transcript_view(),
-    draft,
-    generation: 0,
-    pending: false,
-    catalog: [],
-    opened: None,
-    error: None,
-    storage_problem,
-    restored_draft: restored is Some(_),
-    paste_name: "notes.txt",
-    paste_origin: "",
-    paste_text: "",
-  })
+  sync_screening(
+    sync_reading_notes({
+      screening: restore_screening(draft),
+      screening_sessions: Map([]),
+      passage_memo: restore_passage_memo(draft),
+      passage_memo_sessions: Map([]),
+      reading_notes: restore_reading_notes(draft),
+      reading_note_sessions: {},
+      ris: empty_ris_view(),
+      endnote: empty_endnote_view(),
+      nbib: empty_nbib_view(),
+      reference_shortlist: [],
+      reference_source_generation: 0,
+      reference_query: "",
+      reference_duplicates: false,
+      reference_doi_filter: "",
+      reference_timeline: initial_reference_timeline(),
+      search_query: "",
+      search_fold: false,
+      search_open: None,
+      bibtex: empty_bibtex_view(),
+      csl: empty_csl_view(),
+      csv: empty_csv_view(),
+      csv_join: empty_csv_join(),
+      json_evidence: empty_json_evidence_view(),
+      transcript: empty_transcript_view(),
+      draft,
+      generation: 0,
+      pending: false,
+      catalog: [],
+      opened: None,
+      error: None,
+      storage_problem,
+      restored_draft: restored is Some(_),
+      paste_name: "notes.txt",
+      paste_origin: "",
+      paste_text: "",
+    }),
+  )
 }
 
 ///|
@@ -319,6 +346,10 @@ fn reduce_brief_view(
   view : BriefView,
 ) -> (@rabbita.Cmd, BriefView) {
   match action {
+    PassageMemo(key, token, action) =>
+      update_passage_memo(key, token, action, view)
+    Screening(key, revision, action) =>
+      update_screening(key, revision, action, view)
     ReadingNotes(key, revision, action) =>
       update_reading_notes(emit, key, revision, action, view)
     ReferenceList(action) => update_reference_list(action, view)
@@ -355,8 +386,11 @@ fn reduce_brief_view(
       )
     }
     Ris(action) => update_ris_view(emit, action, view)
+    Endnote(action) => update_endnote_view(emit, action, view)
+    Nbib(action) => update_nbib_view(emit, action, view)
     Bibtex(action) => update_bibtex_view(emit, action, view)
     Csl(action) => update_csl_view(emit, action, view)
+    CsvJoin(action) => update_csv_join(emit, action, view)
     Csv(action) => update_csv_view(emit, action, view)
     JsonEvidence(action) => update_json_evidence(emit, action, view)
     Transcript(action) => update_transcript(emit, action, view)
@@ -366,9 +400,12 @@ fn reduce_brief_view(
         {
           ..view,
           ris: empty_ris_view(),
+          endnote: empty_endnote_view(),
+          nbib: empty_nbib_view(),
           bibtex: empty_bibtex_view(),
           csl: empty_csl_view(),
           csv: empty_csv_view(),
+          csv_join: empty_csv_join(),
           json_evidence: empty_json_evidence_view(),
           transcript: empty_transcript_view(),
           draft: blank_brief(),
@@ -389,8 +426,16 @@ fn reduce_brief_view(
           paste_text: "",
         },
       )
-    Edit(_, _) | AddPaste | ChooseFiles | RemoveSource(_) | Save | Open(_, _) if view.pending =>
-      (@rabbita.none, view)
+    Edit(_, _)
+    | AddPaste
+    | ChooseFiles
+    | ChooseEmail
+    | ChooseSlackExport
+    | ChooseRss
+    | ChooseBookmarks
+    | RemoveSource(_)
+    | Save
+    | Open(_, _) if view.pending => (@rabbita.none, view)
     Edit(field, value) => {
       let d = view.draft
       let draft = match field {
@@ -454,6 +499,68 @@ fn reduce_brief_view(
         },
       )
     }
+    ChooseBookmarks => {
+      let generation = view.generation + 1
+      (
+        @cmd.custom_cmd(scheduler => {
+          bookmark_source_choose(bookmark_source_capture, raw => {
+            scheduler.add(emit(BriefAction(BookmarksLoaded(generation, raw))))
+          })
+        }),
+        { ..view, generation, },
+      )
+    }
+    BookmarksLoaded(generation, _) if generation != view.generation ||
+      view.pending => (@rabbita.none, view)
+    BookmarksLoaded(_, raw) =>
+      (
+        @rabbita.none,
+        bookmark_source_loaded(view, raw) catch {
+          error => { ..view, error: Some("\{error}"), }
+        },
+      )
+    ChooseRss => {
+      let generation = view.generation + 1
+      (
+        @cmd.custom_cmd(scheduler => {
+          rss_source_choose(rss_source_capture, raw => {
+            scheduler.add(emit(BriefAction(RssLoaded(generation, raw))))
+          })
+        }),
+        { ..view, generation, },
+      )
+    }
+    RssLoaded(generation, _) if generation != view.generation || view.pending =>
+      (@rabbita.none, view)
+    RssLoaded(_, raw) =>
+      (
+        @rabbita.none,
+        rss_source_loaded(view, raw) catch {
+          error => { ..view, error: Some("\{error}"), }
+        },
+      )
+    ChooseEmail => {
+      let generation = view.generation
+      (
+        @cmd.custom_cmd(scheduler => {
+          email_source_choose(email_source_capture, value => {
+            scheduler.add(emit(BriefAction(FilesLoaded(generation, value))))
+          })
+        }),
+        view,
+      )
+    }
+    ChooseSlackExport => {
+      let generation = view.generation
+      (
+        @cmd.custom_cmd(scheduler => {
+          slack_source_choose(slack_source_capture, value => {
+            scheduler.add(emit(BriefAction(FilesLoaded(generation, value))))
+          })
+        }),
+        view,
+      )
+    }
     ChooseFiles => {
       let generation = view.generation
       (
@@ -462,7 +569,7 @@ fn reduce_brief_view(
             value => {
               scheduler.add(emit(BriefAction(FilesLoaded(generation, value))))
             },
-            ".txt,.md,.csv,.json,.bib,.ris",
+            ".txt,.md,.csv,.json,.bib,.ris,.enw,.nbib",
             true,
           )
         }),
@@ -483,6 +590,13 @@ fn reduce_brief_view(
         let sources : Array[BriefInputSource] = @json.from_json(sources)
         guard view.draft.sources.length() + sources.length() <= 8 else {
           fail("At most 8 sources can be selected")
+        }
+        let combined = view.draft.sources + sources
+        guard combined.fold(init=0, (total, source) => {
+            total + source.content_hex.length()
+          }) <=
+          262144 else {
+          fail("The selected source dossier is limited to 128 KiB total")
         }
         (
           @rabbita.none,
@@ -591,11 +705,18 @@ fn reduce_brief_view(
             },
             search_open: None,
             ris: empty_ris_view(),
+            endnote: empty_endnote_view(),
+            nbib: empty_nbib_view(),
             bibtex: empty_bibtex_view(),
             csl: empty_csl_view(),
             csv: empty_csv_view(),
+            csv_join: empty_csv_join(),
             json_evidence: empty_json_evidence_view(),
-            transcript: empty_transcript_view(),
+            transcript: if revision.is_empty() || status.state == "incomplete" {
+              view.transcript
+            } else {
+              empty_transcript_view()
+            },
             pending: false,
             opened: Some(status),
             restored_draft: if status.state == "prepared" {
@@ -646,5 +767,12 @@ fn update_brief_view(
   view : BriefView,
 ) -> (@rabbita.Cmd, BriefView) {
   let (command, next) = reduce_brief_view(emit, action, view)
-  (command, sync_reading_notes(sync_json_evidence(sync_transcript(next))))
+  (
+    command,
+    sync_screening(
+      sync_passage_memo(
+        sync_reading_notes(sync_json_evidence(sync_transcript(next))),
+      ),
+    ),
+  )
 }

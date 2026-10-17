@@ -3,6 +3,13 @@
 The brief studio now reads a reference manager's **CSL JSON** export as
 searchable reference cards. This is a local, provider-free source workflow.
 
+Starting from a local bibliography CSV? The
+[explicit CSV mapping CLI](CSV_BIBLIOGRAPHY_MAPPING.md) previews selected records
+and omissions, then writes ordinary CSL JSON with the unchanged original CSV
+and digest-linked row/mapping provenance. This avoids a prior external export
+for the documented subset. Native intake/save of the CLI output remains an
+unrun qualification gate for that development slice.
+
 ## Try the complete workflow
 
 1. Open `/apps/moonfind/briefs`. Fill the research question, audience, decision,

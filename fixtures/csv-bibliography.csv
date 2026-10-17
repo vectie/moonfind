@@ -1,0 +1,5 @@
+﻿"source_id","title","item_type","author_text","issued_text","venue","doi","url","abstract","curator_note"
+"001","Contact, sensing 🌒","article-journal","García, Ana; 王 明","2025-06 / forthcoming","Synthetic Review","10.1234/example","https://example.org/one","First line.
+第二行 with ""quotes"".","=UNTRUSTED()"
+"9007199254740993","Local research notes","report","Research and Development Group","circa 2024?","Synthetic Lab","","javascript:alert(1)","","Metadata only; no full text"
+"omit-003","Unselected source","book","Local Group","undated","Synthetic Press","","","Unselected abstract","This row is still retained"

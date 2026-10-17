@@ -1,0 +1,22 @@
+[
+  {
+    "id": "001",
+    "type": "article-journal",
+    "title": "Contact, sensing 🌒",
+    "author": [{"literal": "García, Ana; 王 明"}],
+    "issued": {"literal": "2025-06 / forthcoming"},
+    "container-title": "Synthetic Review",
+    "DOI": "10.1234/example",
+    "URL": "https://example.org/one",
+    "abstract": "First line.\r\n第二行 with \"quotes\"."
+  },
+  {
+    "id": "9007199254740993",
+    "type": "report",
+    "title": "Local research notes",
+    "author": [{"literal": "Research and Development Group"}],
+    "issued": {"literal": "circa 2024?"},
+    "container-title": "Synthetic Lab",
+    "URL": "javascript:alert(1)"
+  }
+]

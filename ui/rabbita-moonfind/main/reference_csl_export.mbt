@@ -4,6 +4,21 @@
 fn reference_csl_type(r : ReadingReference) -> String {
   let kind = csv_lower(r.reference_type)
   match (r.format, kind) {
+    ("nbib", "journal article") => "article-journal"
+    ("nbib", "book") => "book"
+    ("nbib", "book chapter") => "chapter"
+    ("endnote", "journal article") => "article-journal"
+    ("endnote", "book" | "edited book") => "book"
+    ("endnote", "book section") => "chapter"
+    ("endnote", "conference paper") => "paper-conference"
+    ("endnote", "thesis") => "thesis"
+    ("endnote", "report") => "report"
+    ("endnote", "web page") => "webpage"
+    ("endnote", "blog") => "post-weblog"
+    ("endnote", "newspaper article") => "article-newspaper"
+    ("endnote", "magazine article") => "article-magazine"
+    ("endnote", "dataset") => "dataset"
+    ("endnote", "unpublished work") => "manuscript"
     ("bibtex", "article") | ("ris", "jour") => "article-journal"
     ("bibtex", "book") | ("ris", "book") => "book"
     ("bibtex", "inbook" | "incollection") | ("ris", "chap") => "chapter"

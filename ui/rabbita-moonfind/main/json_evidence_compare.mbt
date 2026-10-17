@@ -26,7 +26,7 @@ extern "js" fn json_evidence_compare_text(
   #|       if(!projection.table||!projection.lens||!projection.lens.pointer)throw Error('Enter a nonempty record key pointer and comparison field pointers.');
   #|     }
   #|     const table=projections[0].table,pointers=projections.map(p=>p.lens.pointer);
-  #|     if(!['json-array','jsonl'].includes(table.format)||table.rows.length>512)throw Error('Explore bounded JSON or JSONL records.');
+  #|     if(!['json-array','json-object','jsonl'].includes(table.format)||table.rows.length>512)throw Error('Explore bounded JSON or JSONL records.');
   #|     if(new Set(pointers.slice(1)).size!==pointers.length-1)throw Error('Choose each comparison field once.');
   #|     for(const projection of projections){
   #|       if(JSON.stringify(projection.table)!==JSON.stringify(table)||projection.lens.rows.length!==table.rows.length)throw Error(label+': all fields must inspect the same current source.');
@@ -43,8 +43,8 @@ extern "js" fn json_evidence_compare_text(
   #|       if(!['string','number','boolean'].includes(key.kind))throw Error(label+' record '+row.record_number+': key is '+key.kind+'. Choose a present nonempty string, number or boolean key in every record.');
   #|       const identity=JSON.stringify([key.kind,key.kind==='string'?key.text:key.raw]);
   #|       if(byKey.has(identity))throw Error(label+' records '+byKey.get(identity).source_record+' and '+row.record_number+': duplicate '+key.kind+' key '+(key.kind==='string'?JSON.stringify(key.text):key.raw)+'. Choose a unique key; no records were paired.');
-  #|       const record={source_record:row.record_number,source_line:table.format==='jsonl'?row.source_line:null,source_pointer:table.format==='json-array'?row.pointer:null,
-  #|         key:{kind:key.kind,text:key.text,raw:key.raw},fields:values.slice(1).map((value,i)=>({pointer:pointers[i+1],source_value_pointer:table.format==='json-array'?value.value_pointer:null,kind:value.kind,text:value.text,raw:value.raw}))};
+  #|       const record={source_record:row.record_number,source_line:table.format==='jsonl'?row.source_line:null,source_pointer:table.format!=='jsonl'?row.pointer:null,
+  #|         key:{kind:key.kind,text:key.text,raw:key.raw},fields:values.slice(1).map((value,i)=>({pointer:pointers[i+1],source_value_pointer:table.format!=='jsonl'?value.value_pointer:null,kind:value.kind,text:value.text,raw:value.raw}))};
   #|       byKey.set(identity,record);records.push({identity,record});
   #|     });
   #|     return {pointers,format:table.format,records,byKey};

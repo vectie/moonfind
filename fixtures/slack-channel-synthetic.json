@@ -1,0 +1,5 @@
+[
+  {"type":"message","user":"U_SYNTHETIC_RESEARCHER","text":"Synthetic interview question: would offline search help?","ts":"1700000000.000001","reply_count":2},
+  {"type":"message","user":"U_SYNTHETIC_REVIEWER","text":"Synthetic response: useful, but this is not demand proof.","ts":"1700000001.000001","thread_ts":"1700000000.000001","edited":{"user":"U_SYNTHETIC_REVIEWER","ts":"1700000002.000001"}},
+  {"type":"message","user":"U_SYNTHETIC_OTHER","text":"Synthetic orphan reply: earlier context is absent.","ts":"1700000003.000001","thread_ts":"1699999999.000001","files":[{"id":"F_SYNTHETIC","title":"Not downloaded"}]}
+]

@@ -1,0 +1,20 @@
+{
+  "contract_id": "moonfind.json-child-map-plan.v1",
+  "source_digest": "sha256:e92aa3f94d82fa7261b69c8ccba6a80ad1731b242971cdb5996fdb26433a119e",
+  "parent_pointer": "/studies",
+  "children_pointer": "/readings",
+  "child_mode": "records",
+  "empty_maps": "skip",
+  "missing_maps": "skip",
+  "fields": [
+    {"scope":"parent","pointer":"/study","name":"study"},
+    {"scope":"key","pointer":"","name":"observation_key"},
+    {"scope":"value","pointer":"/value","name":"measurement"}
+  ],
+  "source": {
+    "origin": "Synthetic keyed measurements for local review",
+    "captured_at": "2026-10-15",
+    "restrictions": "Synthetic example; no external source claims",
+    "access": "permitted"
+  }
+}

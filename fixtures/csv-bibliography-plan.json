@@ -1,0 +1,20 @@
+{
+  "contract_id": "moonfind.csv-bibliography-plan.v1",
+  "mapping": {
+    "sourceID": "source_id",
+    "title": "title",
+    "type": "item_type",
+    "literalAuthor": "author_text",
+    "issuedText": "issued_text",
+    "venue": "venue",
+    "DOI": "doi",
+    "URL": "url",
+    "abstract": "abstract"
+  },
+  "record_numbers": [3, 2],
+  "source": {
+    "origin": "Synthetic local bibliography prepared for the offline mapping example",
+    "captured_at": "2026-10-12T00:00:00Z",
+    "restrictions": "Synthetic references only; not scientific evidence. Review the entire original before sharing."
+  }
+}

@@ -174,6 +174,18 @@ fn dossier_panel(emit : @rabbita.Emit[Msg], view : BriefView) -> @rabbita.Html {
             "Open source \{hit.slot}: " + hit.name + " · line \{hit.line}",
             emit(BriefAction(SearchOpen(hit.slot, hit.line))),
           ),
+          action_button(
+            "Select passage from this search hit",
+            emit(
+              BriefAction(
+                PassageMemo(
+                  view.passage_memo.key,
+                  view.passage_memo.token,
+                  FromSearch(hit.slot, hit.line),
+                ),
+              ),
+            ),
+          ),
           pre(
             style=["white-space:pre-wrap", "overflow-wrap:anywhere"],
             hit.context,

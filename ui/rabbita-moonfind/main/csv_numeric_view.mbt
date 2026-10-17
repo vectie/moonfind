@@ -62,6 +62,7 @@ fn csv_numeric_panel(
         ],
       ),
     ),
+    csv_numeric_range_panel(emit, view),
     match result {
       None =>
         p(

@@ -1,0 +1,8 @@
+source_id,source_record,participant,visit,response,note
+wave-a,2,001,baseline,yes,"first, provisional"
+wave-a,3,002,baseline,no,unchanged
+wave-b,2,001,baseline,no,"corrected
+after review"
+wave-a,4,003,baseline,yes,single observation
+wave-b,3,002,baseline,no,unchanged
+wave-b,4,001,followup,yes,later visit

@@ -1,0 +1,15 @@
+{
+  "contract_id": "moonfind.csv-correction-plan.v1",
+  "source_digest": "sha256:611b83c6b2f0402b0d74e5ae8961a0354943990b35b693431a5e7fa2097ae9ae",
+  "corrections": [
+    {"record_number": 5, "column": "confidence", "expected_old": "", "replacement": "reviewed"},
+    {"record_number": 2, "column": "segment", "expected_old": "clinc", "replacement": "clinic"},
+    {"record_number": 3, "column": "observation", "expected_old": "quoted \"claim\",\nneeds check", "replacement": "quoted \"claim\",\nchecked"}
+  ],
+  "source": {
+    "origin": "Synthetic local interview correction exercise",
+    "captured_at": "2026-10-16",
+    "restrictions": "Synthetic fixture only; no real customer evidence",
+    "access": "permitted"
+  }
+}

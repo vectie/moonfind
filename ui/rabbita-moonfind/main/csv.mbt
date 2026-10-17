@@ -10,7 +10,10 @@ struct CsvIntake {
   columns : Array[String]
   rows : Array[CsvRow]
   total_count : Int
-} derive(Debug, FromJson)
+} derive(Debug, ToJson, FromJson)
+
+///|
+extend CsvIntake with ToJson::{to_json}
 
 ///|
 struct CsvSelection {
@@ -36,6 +39,8 @@ struct CsvView {
   numeric_column : Int
   numeric_scope : String
   numeric_detail : String
+  numeric_lower : String
+  numeric_upper : String
   extract_scope : String
 }
 
@@ -54,6 +59,9 @@ enum CsvMsg {
   NumericScope(String)
   NumericDetail(String)
   DownloadNumeric
+  NumericLower(String)
+  NumericUpper(String)
+  SelectNumericRange
   ComparisonColumn(Int)
   DownloadComparison
   ExtractScope(String)
@@ -80,6 +88,8 @@ fn empty_csv_view() -> CsvView {
     comparison_column: 0,
     numeric_scope: "all",
     numeric_detail: "numeric",
+    numeric_lower: "",
+    numeric_upper: "",
     extract_scope: "selected",
   }
 }
@@ -122,6 +132,12 @@ fn update_csv_view(
   action : CsvMsg,
   view : BriefView,
 ) -> (@rabbita.Cmd, BriefView) {
+  if view.pending && view.csv_join.pending_output is Some(_) {
+    match action {
+      Imported(_, _) | Selected(_, _) | FileLoaded(_, _) => ()
+      _ => return update_csv_view(emit, action, csv_join_cancel(view))
+    }
+  }
   match action {
     Choose
     | Filter(_)
@@ -134,6 +150,9 @@ fn update_csv_view(
     | NumericScope(_)
     | NumericDetail(_)
     | DownloadNumeric
+    | NumericLower(_)
+    | NumericUpper(_)
+    | SelectNumericRange
     | ComparisonColumn(_)
     | DownloadComparison
     | ExtractScope(_)
@@ -144,7 +163,7 @@ fn update_csv_view(
     | ClearRows
     | AddSelected if view.pending => (@rabbita.none, view)
     Choose => {
-      let generation = view.generation
+      let generation = view.generation + 1
       (
         @cmd.custom_cmd(scheduler => {
           brief_choose_files(
@@ -155,7 +174,7 @@ fn update_csv_view(
             false,
           )
         }),
-        view,
+        { ..view, generation, },
       )
     }
     FileLoaded(generation, _) if generation != view.generation || view.pending =>
@@ -208,6 +227,7 @@ fn update_csv_view(
           {
             ..view,
             pending: false,
+            csv_join: { ..view.csv_join, adopted: None, pending_output: None, },
             csv: {
               intake: Some(intake),
               query: "",
@@ -220,6 +240,8 @@ fn update_csv_view(
               comparison_column: 0,
               numeric_scope: "all",
               numeric_detail: "numeric",
+              numeric_lower: "",
+              numeric_upper: "",
               extract_scope: "selected",
             },
             error: None,
@@ -285,6 +307,26 @@ fn update_csv_view(
         { ..view, error: if error.is_empty() { None } else { Some(error) }, },
       )
     }
+    NumericLower(value) =>
+      (@rabbita.none, { ..view, csv: { ..view.csv, numeric_lower: value, }, })
+    NumericUpper(value) =>
+      (@rabbita.none, { ..view, csv: { ..view.csv, numeric_upper: value, }, })
+    SelectNumericRange =>
+      try {
+        let rows = csv_numeric_range(view.csv)
+        let selected = view.csv.selected.copy()
+        for row in rows {
+          if !selected.contains(row.record_number) {
+            selected.push(row.record_number)
+          }
+        }
+        (
+          @rabbita.none,
+          { ..view, csv: { ..view.csv, selected, }, error: None, },
+        )
+      } catch {
+        error => (@rabbita.none, { ..view, error: Some("\{error}"), })
+      }
     NumericColumn(number) => {
       guard view.csv.intake is Some(intake) &&
         number >= 0 &&
@@ -372,13 +414,20 @@ fn update_csv_view(
           },
         )
       }
-      guard view.draft.sources.length() <= 6 else {
+      let retained = csv_join_retained(view) catch {
+        error => return (@rabbita.none, { ..view, error: Some("\{error}"), })
+      }
+      guard view.draft.sources.length() + retained.length() <= 6 else {
         return (
           @rabbita.none,
           {
             ..view,
             error: Some(
-              "CSV selection uses two source slots: the complete original file and selected rows",
+              if retained.is_empty() {
+                "CSV selection uses two source slots: the complete original file and selected rows"
+              } else {
+                "Joined selection needs five free source slots: both originals, lineage, joined CSV and selected rows"
+              },
             ),
           },
         )
@@ -403,15 +452,26 @@ fn update_csv_view(
           fail(message)
         }
         let sources : Array[BriefInputSource] = @json.from_json(payload)
+        csv_validate_selection(view, sources)
+        let retained = csv_join_retained(view)
+        let combined = view.draft.sources + retained + sources
+        guard combined.length() <= 8 &&
+          combined.all(source => source.content_hex.length() <= 65536) &&
+          combined.fold(init=0, (sum, source) => {
+            sum + source.content_hex.length() / 2
+          }) <=
+          131072 else {
+          fail(
+            "The selected source dossier exceeds eight sources, 32 KiB per source or 128 KiB total. Your table remains available.",
+          )
+        }
         (
           @rabbita.none,
           {
-            ..brief_edited(view, {
-              ..view.draft,
-              sources: view.draft.sources + sources,
-            }),
+            ..brief_edited(view, { ..view.draft, sources: combined, }),
             pending: false,
             csv: empty_csv_view(),
+            csv_join: empty_csv_join(),
           },
         )
       } catch {

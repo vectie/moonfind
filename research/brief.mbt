@@ -101,7 +101,7 @@ pub fn brief_issues(brief : ResearchBriefV1) -> Array[String] {
       )
     }
     let lower = source.name.to_lower()
-    if ![".txt", ".md", ".csv", ".json", ".bib", ".ris"].any(ext => {
+    if ![".txt", ".md", ".csv", ".json", ".bib", ".ris", ".enw", ".nbib"].any(ext => {
         lower.has_suffix(ext)
       }) {
       issues.push(
