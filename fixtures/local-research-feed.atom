@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>urn:moonfind:synthetic-research</id>
+  <title>Synthetic field research</title>
+  <updated>2026-10-20T08:00:00+08:00</updated>
+  <author><name>Feed editor</name></author>
+  <entry>
+    <id>urn:moonfind:clinic-one</id>
+    <title>Clinic field notes</title>
+    <updated>2026-10-19T16:00:00Z</updated>
+    <author><name>Ada</name></author>
+    <link href="https://example.invalid/clinic-one"/>
+    <category term="clinic"/>
+    <summary type="html">&lt;p&gt;Clinic intake observations.&lt;/p&gt;</summary>
+  </entry>
+  <entry>
+    <id>urn:moonfind:clinic-two</id>
+    <title>Clinic follow-up</title>
+    <updated>2026-10-20T08:00:00+08:00</updated>
+    <summary>Supplied follow-up summary.</summary>
+  </entry>
+  <entry>
+    <id>urn:moonfind:school</id>
+    <title>School interview</title>
+    <updated>2026-10-18T09:00:00Z</updated>
+    <summary>Separate school observations.</summary>
+  </entry>
+</feed>

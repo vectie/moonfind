@@ -83,7 +83,7 @@ fn json_evidence_coverage_panel(
   emit : @rabbita.Emit[Msg],
   table : JsonEvidenceTable,
 ) -> @rabbita.Html {
-  let result = try? json_evidence_coverage(table)
+  let result = Ok(json_evidence_coverage(table)) catch { e => Err(e) }
   details([
     summary("Inspect JSON field coverage"),
     p(

@@ -1,0 +1,1044 @@
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/bibtex.mbt:128:45 ]
+     │
+ 128 │           .with_json({ "source": sources[0].to_json(), "query": "" })
+     │                                             ───┬───  
+     │                                                ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/bibtex.mbt:194:35 ]
+     │
+ 194 │           "source": intake.source.to_json(),
+     │                                   ───┬───  
+     │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/bibtex.mbt:195:50 ]
+     │
+ 195 │           "record_numbers": view.bibtex.selected.to_json(),
+     │                                                  ───┬───  
+     │                                                     ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/bibtex_wbtest.mbt:48:35 ]
+    │
+ 48 │             ({ "sources": [source.to_json()] } : Json).stringify(),
+    │                                   ───┬───  
+    │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/brief.mbt:328:18 ]
+     │
+ 328 │       view.draft.to_json().stringify(),
+     │                  ───┬───  
+     │                     ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/brief.mbt:653:31 ]
+     │
+ 653 │         .with_json(view.draft.to_json())
+     │                               ───┬───  
+     │                                  ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/brief_wbtest.mbt:35:22 ]
+    │
+ 35 │       "brief": draft.to_json(),
+    │                      ───┬───  
+    │                         ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/brief_wbtest.mbt:62:29 ]
+    │
+ 62 │       brief_fixture_draft().to_json().stringify()
+    │                             ───┬───  
+    │                                ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/brief_wbtest.mbt:86:37 ]
+    │
+ 86 │       ({ "value": fresh.brief.draft.to_json().stringify() } : Json),
+    │                                     ───┬───  
+    │                                        ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/brief_wbtest.mbt:99:13 ]
+    │
+ 99 │       draft.to_json().stringify(),
+    │             ───┬───  
+    │                ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/brief_wbtest.mbt:348:14 ]
+     │
+ 348 │   let cell = Ref::new({
+     │              ────┬───  
+     │                  ╰───── Warning (deprecated): Use `Ref(x)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/brief_wbtest.mbt:361:28 ]
+     │
+ 361 │       cell.val.brief.draft.to_json().stringify(),
+     │                            ───┬───  
+     │                               ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/completed_result.mbt:55:4 ]
+    │
+ 55 │   .to_json()
+    │    ───┬───  
+    │       ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csl.mbt:134:45 ]
+     │
+ 134 │           .with_json({ "source": sources[0].to_json(), "query": "" })
+     │                                             ───┬───  
+     │                                                ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csl.mbt:198:35 ]
+     │
+ 198 │           "source": intake.source.to_json(),
+     │                                   ───┬───  
+     │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csl.mbt:199:47 ]
+     │
+ 199 │           "record_numbers": view.csl.selected.to_json(),
+     │                                               ───┬───  
+     │                                                  ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csl_wbtest.mbt:50:41 ]
+    │
+ 50 │             ({ "sources": [wrong_export.to_json()] } : Json).stringify(),
+    │                                         ───┬───  
+    │                                            ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csl_wbtest.mbt:67:35 ]
+    │
+ 67 │             ({ "sources": [source.to_json()] } : Json).stringify(),
+    │                                   ───┬───  
+    │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv.mbt:202:34 ]
+     │
+ 202 │             "source": sources[0].to_json(),
+     │                                  ───┬───  
+     │                                     ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv.mbt:439:35 ]
+     │
+ 439 │           "source": intake.source.to_json(),
+     │                                   ───┬───  
+     │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv.mbt:440:47 ]
+     │
+ 440 │           "record_numbers": view.csv.selected.to_json(),
+     │                                               ───┬───  
+     │                                                  ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv.mbt:441:46 ]
+     │
+ 441 │           "column_numbers": view.csv.columns.to_json(),
+     │                                              ───┬───  
+     │                                                 ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0082]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories.mbt:20:36 ]
+    │
+ 20 │   let indexes : Map[String, Int] = {}
+    │                                    ─┬  
+    │                                     ╰── Warning (ambiguous_braces): The `{}` is ambiguous among empty map literal, block expression, empty struct literal and empty JSON object. Use `Map([])` for an empty map, `TypeName::{}` for an empty struct literal, `Json::empty_object()` for an empty JSON object, or `{ () }` for an empty block.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories.mbt:53:31 ]
+    │
+ 53 │       "source": intake.source.to_json(),
+    │                               ───┬───  
+    │                                  ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories.mbt:77:52 ]
+    │
+ 77 │             "record_numbers": group.record_numbers.to_json(),
+    │                                                    ───┬───  
+    │                                                       ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories.mbt:80:8 ]
+    │
+ 80 │       .to_json(),
+    │        ───┬───  
+    │           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories.mbt:160:27 ]
+     │
+ 160 │               group.value.to_json().stringify()
+     │                           ───┬───  
+     │                              ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories_wbtest.mbt:20:22 ]
+    │
+ 20 │     "source": source.to_json(),
+    │                      ───┬───  
+    │                         ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories_wbtest.mbt:22:18 ]
+    │
+ 22 │     "rows": rows.to_json(),
+    │                  ───┬───  
+    │                     ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0021]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories_wbtest.mbt:86:26 ]
+    │
+ 86 │     is { "counted_rows": Number(0), "groups": Array([]), .. },
+    │                          ────┬────  
+    │                              ╰────── Warning (missing_pattern_arguments): The argument(s) repr of constructor Number are omitted (To ignore them, add ".." to the end of argument list).
+────╯
+Warning: [0021]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories_wbtest.mbt:134:23 ]
+     │
+ 134 │       "counted_rows": Number(10),
+     │                       ─────┬────  
+     │                            ╰────── Warning (missing_pattern_arguments): The argument(s) repr of constructor Number are omitted (To ignore them, add ".." to the end of argument list).
+─────╯
+Warning: [0021]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories_wbtest.mbt:211:26 ]
+     │
+ 211 │     is { "counted_rows": Number(0), .. },
+     │                          ────┬────  
+     │                              ╰────── Warning (missing_pattern_arguments): The argument(s) repr of constructor Number are omitted (To ignore them, add ".." to the end of argument list).
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories_wbtest.mbt:236:58 ]
+     │
+ 236 │         "selected_record_numbers": selected.csv.selected.to_json(),
+     │                                                          ───┬───  
+     │                                                             ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories_wbtest.mbt:239:10 ]
+     │
+ 239 │         .to_json(),
+     │          ───┬───  
+     │             ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_categories_wbtest.mbt:240:58 ]
+     │
+ 240 │         "projected_column_numbers": selected.csv.columns.to_json(),
+     │                                                          ───┬───  
+     │                                                             ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_comparison.mbt:53:8 ]
+    │
+ 53 │       .to_json(),
+    │        ───┬───  
+    │           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_comparison.mbt:67:8 ]
+    │
+ 67 │       .to_json(),
+    │        ───┬───  
+    │           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_comparison.mbt:152:34 ]
+     │
+ 152 │                   group.category.to_json().stringify(),
+     │                                  ───┬───  
+     │                                     ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_comparison.mbt:169:58 ]
+     │
+ 169 │                   "Source records for " + group.category.to_json().stringify(),
+     │                                                          ───┬───  
+     │                                                             ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_comparison.mbt:186:37 ]
+     │
+ 186 │                       cell.original.to_json().stringify() +
+     │                                     ───┬───  
+     │                                        ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_extract_wbtest.mbt:40:22 ]
+    │
+ 40 │         "rows": rows.to_json(),
+    │                      ───┬───  
+    │                         ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join.mbt:117:28 ]
+     │
+ 117 │         state.right_fields.to_json().stringify(),
+     │                            ───┬───  
+     │                               ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join.mbt:137:38 ]
+     │
+ 137 │     left.columns[state.left_key - 1].to_json().stringify() +
+     │                                      ───┬───  
+     │                                         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join.mbt:140:40 ]
+     │
+ 140 │     right.columns[state.right_key - 1].to_json().stringify() +
+     │                                        ───┬───  
+     │                                           ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join.mbt:145:6 ]
+     │
+ 145 │     .to_json()
+     │      ───┬───  
+     │         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join.mbt:180:29 ]
+     │
+ 180 │         "name": source.name.to_json(),
+     │                             ───┬───  
+     │                                ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join.mbt:181:33 ]
+     │
+ 181 │         "origin": source.origin.to_json(),
+     │                                 ───┬───  
+     │                                    ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join.mbt:182:43 ]
+     │
+ 182 │         "captured_at": source.captured_at.to_json(),
+     │                                           ───┬───  
+     │                                              ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join.mbt:183:57 ]
+     │
+ 183 │         "byte_count": (source.content_hex.length() / 2).to_json(),
+     │                                                         ───┬───  
+     │                                                            ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:64:39 ]
+    │
+ 64 │     "columns": output.preview.columns.to_json(),
+    │                                       ───┬───  
+    │                                          ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:65:33 ]
+    │
+ 65 │     "rows": output.preview.rows.to_json(),
+    │                                 ───┬───  
+    │                                    ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:66:49 ]
+    │
+ 66 │     "total_count": output.preview.rows.length().to_json(),
+    │                                                 ───┬───  
+    │                                                    ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:365:51 ]
+     │
+ 365 │   let response = csv_join_test_selection(pending).to_json()
+     │                                                   ───┬───  
+     │                                                      ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:418:39 ]
+     │
+ 418 │     "source_name": intake.source.name.to_json(),
+     │                                       ───┬───  
+     │                                          ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:419:67 ]
+     │
+ 419 │     "source_digest": csv_source_digest(intake.source.content_hex).to_json(),
+     │                                                                   ───┬───  
+     │                                                                      ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:420:44 ]
+     │
+ 420 │     "source_row_count": intake.total_count.to_json(),
+     │                                            ───┬───  
+     │                                               ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:421:49 ]
+     │
+ 421 │     "column_numbers": positions.map(i => i + 1).to_json(),
+     │                                                 ───┬───  
+     │                                                    ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:422:54 ]
+     │
+ 422 │     "columns": positions.map(i => intake.columns[i]).to_json(),
+     │                                                      ───┬───  
+     │                                                         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:429:6 ]
+     │
+ 429 │     .to_json(),
+     │      ───┬───  
+     │         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:510:63 ]
+     │
+ 510 │         Selected(pending.generation, Ok([valid[0], companion].to_json())),
+     │                                                               ───┬───  
+     │                                                                  ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_join_wbtest.mbt:522:45 ]
+     │
+ 522 │       Selected(pending.generation, Ok(valid.to_json())),
+     │                                             ───┬───  
+     │                                                ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric.mbt:232:26 ]
+     │
+ 232 │     Some(value) => value.to_json()
+     │                          ───┬───  
+     │                             ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric.mbt:252:6 ]
+     │
+ 252 │     .to_json(),
+     │      ───┬───  
+     │         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric.mbt:278:8 ]
+     │
+ 278 │       .to_json(),
+     │        ───┬───  
+     │           ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0014]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric_range_wbtest.mbt:62:14 ]
+    │
+ 62 │   let html = @rabbita.render_to_string(
+    │              ────────────┬────────────  
+    │                          ╰────────────── Warning (alert_unstable): Experimental API
+────╯
+Warning: [0014]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric_range_wbtest.mbt:68:22 ]
+    │
+ 68 │   let invalid_html = @rabbita.render_to_string(
+    │                      ────────────┬────────────  
+    │                                  ╰────────────── Warning (alert_unstable): Experimental API
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric_range_wbtest.mbt:84:31 ]
+    │
+ 84 │     "columns": intake.columns.to_json(),
+    │                               ───┬───  
+    │                                  ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric_range_wbtest.mbt:85:45 ]
+    │
+ 85 │     "rows": csv_numeric_range(selected.csv).to_json(),
+    │                                             ───┬───  
+    │                                                ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric_range_wbtest.mbt:94:44 ]
+    │
+ 94 │   let sources = [intake.source, companion].to_json()
+    │                                            ───┬───  
+    │                                               ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric_range_wbtest.mbt:110:29 ]
+     │
+ 110 │     @json.parse(added.draft.to_json().stringify()),
+     │                             ───┬───  
+     │                                ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric_view.mbt:141:33 ]
+     │
+ 141 │                   cell.original.to_json().stringify() +
+     │                                 ───┬───  
+     │                                    ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_numeric_wbtest.mbt:32:6 ]
+    │
+ 32 │     .to_json(),
+    │      ───┬───  
+    │         ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_selection_validation.mbt:64:39 ]
+    │
+ 64 │     "source_name": intake.source.name.to_json(),
+    │                                       ───┬───  
+    │                                          ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_selection_validation.mbt:65:67 ]
+    │
+ 65 │     "source_digest": csv_source_digest(intake.source.content_hex).to_json(),
+    │                                                                   ───┬───  
+    │                                                                      ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_selection_validation.mbt:66:44 ]
+    │
+ 66 │     "source_row_count": intake.total_count.to_json(),
+    │                                            ───┬───  
+    │                                               ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_selection_validation.mbt:67:49 ]
+    │
+ 67 │     "column_numbers": positions.map(i => i + 1).to_json(),
+    │                                                 ───┬───  
+    │                                                    ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_selection_validation.mbt:68:54 ]
+    │
+ 68 │     "columns": positions.map(i => intake.columns[i]).to_json(),
+    │                                                      ───┬───  
+    │                                                         ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_selection_validation.mbt:69:18 ]
+    │
+ 69 │     "rows": rows.to_json(),
+    │                  ───┬───  
+    │                     ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_wbtest.mbt:50:36 ]
+    │
+ 50 │             ({ "sources": [invalid.to_json()] } : Json).stringify(),
+    │                                    ───┬───  
+    │                                       ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/csv_wbtest.mbt:65:35 ]
+    │
+ 65 │             ({ "sources": [source.to_json()] } : Json).stringify(),
+    │                                   ───┬───  
+    │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/dossier_search.mbt:57:28 ]
+    │
+ 57 │         view.draft.sources.to_json().stringify(),
+    │                            ───┬───  
+    │                               ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/dossier_search.mbt:120:35 ]
+     │
+ 120 │       "sources": snapshot.sources.to_json(),
+     │                                   ───┬───  
+     │                                      ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/dossier_search.mbt:124:26 ]
+     │
+ 124 │       "results": results.to_json(),
+     │                          ───┬───  
+     │                             ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for DossierResults`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend DossierResults with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0021]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/dossier_search_wbtest.mbt:228:56 ]
+     │
+ 228 │   assert_true(json is { "results": { "matching_lines": Number(2), .. }, .. })
+     │                                                        ────┬────  
+     │                                                            ╰────── Warning (missing_pattern_arguments): The argument(s) repr of constructor Number are omitted (To ignore them, add ".." to the end of argument list).
+─────╯
+Warning: [0021]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/dossier_search_wbtest.mbt:348:57 ]
+     │
+ 348 │   assert_true(empty is { "results": { "matching_lines": Number(0), .. }, .. })
+     │                                                         ────┬────  
+     │                                                             ╰────── Warning (missing_pattern_arguments): The argument(s) repr of constructor Number are omitted (To ignore them, add ".." to the end of argument list).
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/endnote.mbt:125:45 ]
+     │
+ 125 │           .with_json({ "source": sources[0].to_json(), "author_filter": "" })
+     │                                             ───┬───  
+     │                                                ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/endnote.mbt:191:35 ]
+     │
+ 191 │           "source": intake.source.to_json(),
+     │                                   ───┬───  
+     │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/endnote.mbt:192:51 ]
+     │
+ 192 │           "record_numbers": view.endnote.selected.to_json(),
+     │                                                   ───┬───  
+     │                                                      ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/endnote_wbtest.mbt:46:35 ]
+    │
+ 46 │             ({ "sources": [source.to_json()] } : Json).stringify(),
+    │                                   ───┬───  
+    │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/endnote_wbtest.mbt:165:17 ]
+     │
+ 165 │     saved_draft.to_json().stringify(indent=2),
+     │                 ───┬───  
+     │                    ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/endnote_wbtest.mbt:181:35 ]
+     │
+ 181 │             ({ "sources": [broken.to_json()] } : Json).stringify(),
+     │                                   ───┬───  
+     │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0035]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/evidence.mbt:32:3 ]
+    │
+ 32 │   method : String
+    │   ───┬──  
+    │      ╰──── Warning (reserved_keyword): The word `method` is reserved for possible future use. Please consider using another name.
+────╯
+Warning: [0014]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/evidence_qa_wbtest.mbt:92:3 ]
+    │
+ 92 │   @rabbita.render_to_string(@rabbita.cell(model~, update~, view~))
+    │   ────────────┬────────────  
+    │               ╰────────────── Warning (alert_unstable): Experimental API
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/gateway.mbt:543:23 ]
+     │
+ 543 │     "intake": handoff.to_json(),
+     │                       ───┬───  
+     │                          ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for MoonFlowReceiverHandoff`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend MoonFlowReceiverHandoff with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_cohort.mbt:125:19 ]
+     │
+ 125 │         responses.to_json().stringify(),
+     │                   ───┬───  
+     │                      ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_cohort.mbt:126:16 ]
+     │
+ 126 │         values.to_json().stringify(),
+     │                ───┬───  
+     │                   ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_compare.mbt:143:23 ]
+     │
+ 143 │         before_fields.to_json().stringify(),
+     │                       ───┬───  
+     │                          ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_compare.mbt:144:22 ]
+     │
+ 144 │         after_fields.to_json().stringify(),
+     │                      ───┬───  
+     │                         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_coverage.mbt:57:41 ]
+    │
+ 57 │       json_evidence_coverage_json(table.to_json().stringify(), -1, ""),
+    │                                         ───┬───  
+    │                                            ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for JsonEvidenceTable`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend JsonEvidenceTable with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_coverage.mbt:73:41 ]
+    │
+ 73 │       json_evidence_coverage_json(table.to_json().stringify(), column, kind),
+    │                                         ───┬───  
+    │                                            ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for JsonEvidenceTable`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend JsonEvidenceTable with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_csv.mbt:99:19 ]
+    │
+ 99 │         responses.to_json().stringify(),
+    │                   ───┬───  
+    │                      ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_csv.mbt:100:24 ]
+     │
+ 100 │         state.selected.to_json().stringify(),
+     │                        ───┬───  
+     │                           ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_ndjson.mbt:49:15 ]
+    │
+ 49 │         table.to_json().stringify(),
+    │               ───┬───  
+    │                  ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for JsonEvidenceTable`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend JsonEvidenceTable with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_ndjson.mbt:50:24 ]
+    │
+ 50 │         state.selected.to_json().stringify(),
+    │                        ───┬───  
+    │                           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_evidence_pairs.mbt:90:56 ]
+    │
+ 90 │   match @json.parse(json_evidence_pairs_text(responses.to_json().stringify())) {
+    │                                                        ───┬───  
+    │                                                           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/json_keyed_wbtest.mbt:22:70 ]
+    │
+ 22 │   let restored : BriefDraft = @json.from_json(@json.parse(view.draft.to_json().stringify()))
+    │                                                                      ───┬───  
+    │                                                                         ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefDraft`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefDraft with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/model_route_wbtest.mbt:452:14 ]
+     │
+ 452 │   let cell = Ref::new(apply_native_route(route_model(), 7, route_fixture()))
+     │              ────┬───  
+     │                  ╰───── Warning (deprecated): Use `Ref(x)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/model_route_wbtest.mbt:491:14 ]
+     │
+ 491 │   let cell = Ref::new(apply_native_route(route_model(), 7, route_fixture()))
+     │              ────┬───  
+     │                  ╰───── Warning (deprecated): Use `Ref(x)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/nbib.mbt:126:45 ]
+     │
+ 126 │           .with_json({ "source": sources[0].to_json(), "author_filter": "" })
+     │                                             ───┬───  
+     │                                                ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/nbib.mbt:192:48 ]
+     │
+ 192 │           "record_numbers": view.nbib.selected.to_json(),
+     │                                                ───┬───  
+     │                                                   ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0001]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/offline_choices.mbt:49:37 ]
+    │
+ 49 │ extend OfflineVersion with ToJson::{to_json}
+    │                                     ───┬───  
+    │                                        ╰───── Warning (unused_value): Unused function 'to_json'
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/offline_choices_storage.mbt:150:30 ]
+     │
+ 150 │       [basis.brief.brief_id].to_json().stringify()
+     │                              ───┬───  
+     │                                 ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_bibtex_export_wbtest.mbt:55:16 ]
+    │
+ 55 │     references.to_json().stringify(indent=2),
+    │                ───┬───  
+    │                   ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_bibtex_export_wbtest.mbt:76:24 ]
+    │
+ 76 │     view.draft.sources.to_json().stringify(indent=2),
+    │                        ───┬───  
+    │                           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_csl_export.mbt:146:66 ]
+     │
+ 146 │         fields[name] = names.map(n => ({ "literal": n } : Json)).to_json()
+     │                                                                  ───┬───  
+     │                                                                     ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_csl_export.mbt:166:22 ]
+     │
+ 166 │   let output = items.to_json().stringify(indent=2) + "\n"
+     │                      ───┬───  
+     │                         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_csl_export_wbtest.mbt:65:24 ]
+    │
+ 65 │     view.draft.sources.to_json().stringify(indent=2),
+    │                        ───┬───  
+    │                           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_csl_export_wbtest.mbt:69:16 ]
+    │
+ 69 │     references.to_json().stringify(indent=2),
+    │                ───┬───  
+    │                   ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_export.mbt:47:43 ]
+    │
+ 47 │         view.reference_timeline.from_year.to_json()
+    │                                           ───┬───  
+    │                                              ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_export.mbt:52:46 ]
+    │
+ 52 │         view.reference_timeline.through_year.to_json()
+    │                                              ───┬───  
+    │                                                 ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_export.mbt:59:38 ]
+    │
+ 59 │       "selection_captures": captures.to_json(),
+    │                                      ───┬───  
+    │                                         ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_export.mbt:60:29 ]
+    │
+ 60 │       "references": matches.to_json(),
+    │                             ───┬───  
+    │                                ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_export.mbt:71:8 ]
+    │
+ 71 │       .to_json(),
+    │        ───┬───  
+    │           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_wbtest.mbt:147:6 ]
+     │
+ 147 │     .to_json()
+     │      ───┬───  
+     │         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_wbtest.mbt:166:66 ]
+     │
+ 166 │         Selected(1, Ok(reading_pair("bibtex", bib_original, bibs.to_json()))),
+     │                                                                  ───┬───  
+     │                                                                     ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_wbtest.mbt:176:53 ]
+     │
+ 176 │           Ok(reading_pair("csl", csl_original, csls.to_json())),
+     │                                                     ───┬───  
+     │                                                        ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_wbtest.mbt:187:51 ]
+     │
+ 187 │         Ok(reading_pair("ris", ris_original, riss.to_json())),
+     │                                                   ───┬───  
+     │                                                      ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0014]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_wbtest.mbt:201:3 ]
+     │
+ 201 │   @rabbita.render_to_string(
+     │   ────────────┬────────────  
+     │               ╰────────────── Warning (alert_unstable): Experimental API
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_wbtest.mbt:249:24 ]
+     │
+ 249 │     view.draft.sources.to_json().stringify(indent=2),
+     │                        ───┬───  
+     │                           ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_wbtest.mbt:442:57 ]
+     │
+ 442 │       Bibtex(Selected(base.generation, Ok(fresh_sources.to_json()))),
+     │                                                         ───┬───  
+     │                                                            ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_list_wbtest.mbt:634:43 ]
+     │
+ 634 │     reading_pair("bibtex", original, refs.to_json()),
+     │                                           ───┬───  
+     │                                              ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_ris_wbtest.mbt:73:24 ]
+    │
+ 73 │     view.draft.sources.to_json().stringify(indent=2),
+    │                        ───┬───  
+    │                           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_shortlist.mbt:100:32 ]
+     │
+ 100 │       "references": references.to_json(),
+     │                                ───┬───  
+     │                                   ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_shortlist.mbt:101:38 ]
+     │
+ 101 │       "selection_captures": captures.to_json(),
+     │                                      ───┬───  
+     │                                         ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_shortlist_wbtest.mbt:60:30 ]
+    │
+ 60 │   assert_eq(references, refs.to_json())
+    │                              ───┬───  
+    │                                 ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_shortlist_wbtest.mbt:82:24 ]
+    │
+ 82 │     view.draft.sources.to_json().stringify(indent=2),
+    │                        ───┬───  
+    │                           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_shortlist_wbtest.mbt:246:42 ]
+     │
+ 246 │     "references": replacement.references.to_json(),
+     │                                          ───┬───  
+     │                                             ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_timeline_wbtest.mbt:26:14 ]
+    │
+ 26 │             .to_json(),
+    │              ───┬───  
+    │                 ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_timeline_wbtest.mbt:43:14 ]
+    │
+ 43 │             .to_json(),
+    │              ───┬───  
+    │                 ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_timeline_wbtest.mbt:57:14 ]
+    │
+ 57 │             .to_json(),
+    │              ───┬───  
+    │                 ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_timeline_wbtest.mbt:141:40 ]
+     │
+ 141 │     reference_catalog(base).references.to_json().stringify(indent=2),
+     │                                        ───┬───  
+     │                                           ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/reference_timeline_wbtest.mbt:145:24 ]
+     │
+ 145 │     base.draft.sources.to_json().stringify(indent=2),
+     │                        ───┬───  
+     │                           ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/ris.mbt:113:45 ]
+     │
+ 113 │           .with_json({ "source": sources[0].to_json(), "author_filter": "" })
+     │                                             ───┬───  
+     │                                                ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/ris.mbt:178:35 ]
+     │
+ 178 │           "source": intake.source.to_json(),
+     │                                   ───┬───  
+     │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+─────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/ris.mbt:179:47 ]
+     │
+ 179 │           "record_numbers": view.ris.selected.to_json(),
+     │                                               ───┬───  
+     │                                                  ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/ris_wbtest.mbt:47:35 ]
+    │
+ 47 │             ({ "sources": [source.to_json()] } : Json).stringify(),
+    │                                   ───┬───  
+    │                                      ╰───── Warning (deprecated): The method `to_json` is implicitly promoted from `impl ToJson for BriefInputSource`. This behavior is deprecated, either use `ToJson::to_json` instead or add a `extend BriefInputSource with ToJson::{to_json, ..}` declaration.
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/screening_export.mbt:35:66 ]
+    │
+ 35 │             "latest_decision": screening_latest(view, reference).to_json(),
+    │                                                                  ───┬───  
+    │                                                                     ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+    ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/screening_export.mbt:38:8 ]
+    │
+ 38 │       .to_json(),
+    │        ───┬───  
+    │           ╰───── Warning (deprecated): Use `Json(value)` instead
+────╯
+Warning: [0020]
+     ╭─[ /workspace/scratch/665adc5202cf/moonsuite-cloud-20261020/work/R797/moonfind/ui/rabbita-moonfind/main/transcript_revision.mbt:116:36 ]
+     │
+ 116 │         state.revision.corrections.to_json().stringify(),
+     │                                    ───┬───  
+     │                                       ╰───── Warning (deprecated): Use `Json(value)` instead
+─────╯
+Total tests: 6, passed: 6, failed: 0.

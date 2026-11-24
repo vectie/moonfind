@@ -150,7 +150,14 @@ fn brief_panel(emit : @rabbita.Emit[Msg], view : BriefView) -> @rabbita.Html {
         emit(BriefAction(ChooseRss)),
       ),
       p(
-        "Import a UTF-8 RSS 2.0 file up to 32 KiB. The unchanged XML and structured items use two source slots; items open in the JSON explorer above for search, selection and CSV output. Titles, authors, dates, descriptions and links remain supplied metadata. Markup and URLs are inert. No article fetching, feed refresh or subscription. Atom, RDF, DTD and external entities are unsupported; extension fields remain in the original.",
+        "Import a UTF-8 RSS 2.0 file up to 32 KiB. The unchanged XML and structured items use two source slots; items open in the JSON explorer above for search, selection and CSV output. Titles, authors, dates, descriptions and links remain supplied metadata. Markup and URLs are inert. No article fetching, feed refresh or subscription. For Atom use its separate importer below. RDF, DTD and external entities are unsupported; extension fields remain in the original.",
+      ),
+      action_button(
+        "Import saved Atom feed (.atom / .xml)",
+        emit(BriefAction(ChooseAtom)),
+      ),
+      p(
+        "Import a UTF-8 Atom 1.0 feed up to 32 KiB. Exact XML and structured entries use two source slots. Search entries, select records and project CSV above. Entry and feed authors stay separate; all links remain supplied inert strings. Text/escaped HTML titles and summaries are supported; content and extensions remain in the original. No fetching or subscriptions.",
       ),
       action_button(
         "Import Slack channel export (.json)",

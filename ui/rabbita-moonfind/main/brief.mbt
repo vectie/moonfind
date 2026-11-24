@@ -130,6 +130,8 @@ enum BriefMsg {
   ChooseSlackExport
   ChooseRss
   RssLoaded(Int, String)
+  ChooseAtom
+  AtomLoaded(Int, String)
   ChooseBookmarks
   BookmarksLoaded(Int, String)
   FilesLoaded(Int, String)
@@ -432,6 +434,7 @@ fn reduce_brief_view(
     | ChooseEmail
     | ChooseSlackExport
     | ChooseRss
+    | ChooseAtom
     | ChooseBookmarks
     | RemoveSource(_)
     | Save
@@ -536,6 +539,26 @@ fn reduce_brief_view(
       (
         @rabbita.none,
         rss_source_loaded(view, raw) catch {
+          error => { ..view, error: Some("\{error}"), }
+        },
+      )
+    ChooseAtom => {
+      let generation = view.generation + 1
+      (
+        @cmd.custom_cmd(scheduler => {
+          atom_source_choose(atom_source_capture, raw => {
+            scheduler.add(emit(BriefAction(AtomLoaded(generation, raw))))
+          })
+        }),
+        { ..view, generation, },
+      )
+    }
+    AtomLoaded(generation, _) if generation != view.generation || view.pending =>
+      (@rabbita.none, view)
+    AtomLoaded(_, raw) =>
+      (
+        @rabbita.none,
+        atom_source_loaded(view, raw) catch {
           error => { ..view, error: Some("\{error}"), }
         },
       )

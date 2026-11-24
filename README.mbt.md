@@ -26,6 +26,7 @@ exports without a research run or provider. A prepared brief is not executed
 research or approval of its requested outputs and acceptance criteria.
 
 For a saved news or research bulletin, [import a local RSS 2.0 feed](docs/LOCAL_RSS_RESEARCH.md).
+Saved Atom feeds can also [open directly in the research explorer](docs/LOCAL_ATOM_RESEARCH.md), with entry selection and projected CSV output.
 Preserve the original XML, search structured items in the JSON explorer, select
 contradictory descriptions and take chosen title/link/date/author fields into CSV.
 The importer does not fetch articles, subscribe to feeds or verify source claims.

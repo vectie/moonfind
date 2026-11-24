@@ -7,8 +7,11 @@ fn comparison_ready() -> BriefView {
 test "comparison explicit columns and ordered source membership" {
   let initial = csv_numeric_fixture()
   assert_eq(initial.csv.comparison_column, 0)
-  assert_true((try? csv_comparison(initial.csv)) is Err(_))
-  assert_true((try? csv_comparison(csv_numeric_ready().csv)) is Err(_))
+  assert_true((Ok(csv_comparison(initial.csv)) catch { e => Err(e) }) is Err(_))
+  assert_true(
+    (Ok(csv_comparison(csv_numeric_ready().csv)) catch { e => Err(e) })
+    is Err(_),
+  )
   let view = comparison_ready()
   let groups = csv_comparison(view.csv)
   assert_eq(groups.length(), 2)
@@ -30,7 +33,9 @@ test "comparison explicit columns and ordered source membership" {
     2,
   )
   assert_true(
-    (try? csv_comparison(csv_numeric_apply(view, ComparisonColumn(0)).csv))
+    (Ok(csv_comparison(csv_numeric_apply(view, ComparisonColumn(0)).csv)) catch {
+      e => Err(e)
+    })
     is Err(_),
   )
 }
